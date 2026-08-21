@@ -1,6 +1,5 @@
 name: Deploy GitHub Pages
 
-# Novo disparo de deploy após ativar GitHub Actions no Pages
 on:
   push:
     branches: ["main"]
@@ -29,7 +28,7 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Build
         run: npm run build
