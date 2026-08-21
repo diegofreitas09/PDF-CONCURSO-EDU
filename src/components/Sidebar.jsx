@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 
 import {
   LayoutDashboard,
@@ -62,7 +62,7 @@ export default function Sidebar() {
     <aside className="sidebar">
 
       <div className="brand">
-        <img className="brand-logo" src="/logo-pdf-concurso.png" alt="PDF Concurso Edu" />
+        <img className="brand-logo" src={`${import.meta.env.BASE_URL}logo-pdf-concurso.png`} alt="PDF Concurso Edu" />
 
         <div className="brand-text">
           <strong>PDF</strong>

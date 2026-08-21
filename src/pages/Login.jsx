@@ -29,7 +29,7 @@ export default function Login() {
       } else if (code.includes("too-many-requests")) {
         setError("Muitas tentativas. Aguarde alguns minutos e tente novamente.");
       } else {
-        setError("Não foi possível entrar agora. Tente novamente.");
+        setError(`Erro Firebase: ${err?.code || err?.message || "desconhecido"}`);
       }
     } finally {
       setLoading(false);
@@ -78,3 +78,4 @@ export default function Login() {
     </main>
   );
 }
+
