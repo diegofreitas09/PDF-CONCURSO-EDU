@@ -6,3 +6,17 @@ dist/
 .DS_Store
 .vscode/
 desktop.ini
+
+# Scripts temporários de processamento
+classificacao_manual.py
+classificar_questoes.py
+corrigir_legislacao.py
+import_drive_question_bank.py
+listar_genericas.py
+listar_pedagogicos_gerais.py
+organizar_banco.py
+reclassificar_questoes.py
+
+# Relatórios temporários
+pedagogicos_gerais.txt
+questoes_genericas.txt

@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router";
 import "../styles/functions.css";
+import { QUESTION_BANK } from "../data/questionBank";
 
 const STORAGE_KEY = "pdf-concurso-edu-state-v1";
 
@@ -85,63 +86,6 @@ const STUDY_DATA = [
       "Crase",
       "Pontuação"
     ]
-  }
-];
-
-const QUESTION_BANK = [
-  {
-    id: 1,
-    discipline: "Legislação Educacional",
-    topic: "Lei de Diretrizes e Bases — LDB",
-    statement: "De acordo com a LDB, a educação escolar compõe-se de:",
-    options: ["Educação básica e educação superior", "Ensino fundamental e ensino médio", "Educação infantil e ensino superior", "Ensino regular e ensino técnico"],
-    answer: 0,
-    explanation: "A LDB organiza a educação escolar em educação básica e educação superior."
-  },
-  {
-    id: 2,
-    discipline: "Legislação Educacional",
-    topic: "Estatuto da Criança e do Adolescente — ECA",
-    statement: "O ECA considera criança a pessoa com idade:",
-    options: ["Até 10 anos incompletos", "Até 12 anos incompletos", "Até 14 anos incompletos", "Até 16 anos incompletos"],
-    answer: 1,
-    explanation: "Para o ECA, criança é a pessoa até doze anos de idade incompletos."
-  },
-  {
-    id: 3,
-    discipline: "Filosofia",
-    topic: "Filosofia Antiga",
-    statement: "A frase 'Só sei que nada sei' é tradicionalmente associada a:",
-    options: ["Platão", "Aristóteles", "Sócrates", "Epicuro"],
-    answer: 2,
-    explanation: "A expressão sintetiza a postura socrática de reconhecimento dos limites do próprio conhecimento."
-  },
-  {
-    id: 4,
-    discipline: "Filosofia",
-    topic: "Ética e Filosofia Política",
-    statement: "Na ética aristotélica, a virtude moral está relacionada principalmente:",
-    options: ["Ao meio-termo orientado pela razão", "À rejeição de toda emoção", "Ao conhecimento matemático", "À obediência cega às leis"],
-    answer: 0,
-    explanation: "Aristóteles relaciona a virtude ao justo meio, determinado racionalmente conforme a situação."
-  },
-  {
-    id: 5,
-    discipline: "Língua Portuguesa",
-    topic: "Crase",
-    statement: "Assinale a alternativa em que o emprego da crase está correto:",
-    options: ["Vou à escola todos os dias.", "Entreguei o livro à Pedro.", "Cheguei à pé.", "Refiro-me à pessoas dedicadas."],
-    answer: 0,
-    explanation: "Há crase em 'à escola' pela fusão da preposição a com o artigo feminino a."
-  },
-  {
-    id: 6,
-    discipline: "Língua Portuguesa",
-    topic: "Concordância",
-    statement: "Assinale a frase com concordância verbal adequada:",
-    options: ["Houveram muitos candidatos.", "Fazem dois anos que estudo.", "Existem boas oportunidades.", "Deve haverem novas provas."],
-    answer: 2,
-    explanation: "O verbo existir concorda normalmente com seu sujeito: 'Existem boas oportunidades'."
   }
 ];
 
@@ -322,7 +266,30 @@ export function Questoes() {
   const discipline = params.get("disciplina") || "";
   const topic = params.get("topico") || "";
 
-  const filtered = useMemo(() => QUESTION_BANK.filter((q) => (!discipline || q.discipline === discipline) && (!topic || q.topic === topic)), [discipline, topic]);
+  const disciplines = useMemo(
+    () => [...new Set(QUESTION_BANK.map((q) => q.discipline).filter(Boolean))].sort(),
+    []
+  );
+
+  const topics = useMemo(
+    () => [...new Set(
+      QUESTION_BANK
+        .filter((q) => !discipline || q.discipline === discipline)
+        .map((q) => q.topic)
+        .filter(Boolean)
+    )].sort(),
+    [discipline]
+  );
+
+  const filtered = useMemo(
+    () =>
+      QUESTION_BANK.filter(
+        (q) =>
+          (!discipline || q.discipline === discipline) &&
+          (!topic || q.topic === topic)
+      ),
+    [discipline, topic]
+  );
   const current = filtered[index] || filtered[0];
 
   useEffect(() => { setIndex(0); setSelected(null); setChecked(false); }, [discipline, topic]);
@@ -346,10 +313,34 @@ export function Questoes() {
     <ModulePage eyebrow="BANCO DE QUESTÕES" title="Questões" description="Filtre, responda e acompanhe seus resultados." icon={ListChecks}>
       <div className="question-filters">
         <select value={discipline} onChange={(e) => { const p = new URLSearchParams(params); e.target.value ? p.set("disciplina", e.target.value) : p.delete("disciplina"); p.delete("topico"); setParams(p); }}>
-          <option value="">Todas as disciplinas</option>{STUDY_DATA.map((d) => <option key={d.title}>{d.title}</option>)}
+          <option value="">Todas as disciplinas ({QUESTION_BANK.length})</option>
+          {disciplines.map((name) => {
+            const count = QUESTION_BANK.filter(
+              (q) => q.discipline === name
+            ).length;
+
+            return (
+              <option key={name} value={name}>
+                {name} ({count})
+              </option>
+            );
+          })}
         </select>
-        <select value={topic} onChange={(e) => { const p = new URLSearchParams(params); e.target.value ? p.set("topico", e.target.value) : p.delete("topico"); setParams(p); }} disabled={!discipline}>
-          <option value="">Todos os tópicos</option>{STUDY_DATA.find((d) => d.title === discipline)?.topics.map((t) => <option key={t}>{t}</option>)}
+        <select value={topic} onChange={(e) => { const p = new URLSearchParams(params); e.target.value ? p.set("topico", e.target.value) : p.delete("topico"); setParams(p); }} >
+          <option value="">Todos os tópicos</option>
+          {topics.map((name) => {
+            const count = QUESTION_BANK.filter(
+              (q) =>
+                (!discipline || q.discipline === discipline) &&
+                q.topic === name
+            ).length;
+
+            return (
+              <option key={name} value={name}>
+                {name} ({count})
+              </option>
+            );
+          })}
         </select>
         <span className="filter-count">{filtered.length} questão(ões)</span>
       </div>
@@ -366,7 +357,7 @@ export function Questoes() {
             })}
           </div>
           {checked && <div className={`answer-feedback ${selected === current.answer ? "success" : "error"}`}><strong>{selected === current.answer ? "Resposta correta!" : "Resposta incorreta."}</strong><p>{current.explanation}</p></div>}
-          <div className="question-actions"><button className="secondary-button" disabled={selected === null || checked} onClick={answerQuestion}>Corrigir questão</button><button className="primary-button" onClick={nextQuestion}>Próxima<ArrowRight size={17} /></button></div>
+          <div className="question-actions"><button className="secondary-button" disabled={selected === null || checked} onClick={answerQuestion}>Corrigir questão</button><button className="primary-button" disabled={!checked} onClick={nextQuestion}>Próxima<ArrowRight size={17} /></button></div>
         </div>
       )}
       <div className="mini-history">Respondidas nesta sessão/histórico: <strong>{state.answers.length}</strong></div>
