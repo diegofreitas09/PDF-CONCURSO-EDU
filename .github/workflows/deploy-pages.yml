@@ -1,5 +1,6 @@
 name: Deploy GitHub Pages
 
+# Novo disparo de deploy após ativar GitHub Actions no Pages
 on:
   push:
     branches: ["main"]
