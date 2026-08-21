@@ -1,5 +1,5 @@
 ﻿import React from "react";
-import { createBrowserRouter } from "react-router";
+import { createHashRouter } from "react-router";
 
 import App from "../App";
 
@@ -13,7 +13,7 @@ import Flashcards from "../pages/Flashcards";
 import MapasMentais from "../pages/MapasMentais";
 import Configuracoes from "../pages/Configuracoes";
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: "/",
     Component: App,
@@ -59,4 +59,3 @@ const router = createBrowserRouter([
 ]);
 
 export default router;
-
