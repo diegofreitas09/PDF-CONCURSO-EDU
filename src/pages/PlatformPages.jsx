@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
+﻿import React, { useEffect, useMemo, useState } from "react";
+import { LIBRARY_MATERIALS } from "../data/libraryMaterials";
 import {
   ArrowRight,
   BookOpenText,
@@ -29,7 +30,6 @@ import {
 import { useNavigate, useSearchParams } from "react-router";
 import "../styles/functions.css";
 import { QUESTION_BANK } from "../data/questionBank";
-
 const STORAGE_KEY = "pdf-concurso-edu-state-v1";
 
 const DEFAULT_STATE = {
@@ -197,7 +197,7 @@ export function Dashboard() {
           <div className="card-heading"><div><div className="card-eyebrow">BASE PDF CONCURSO EDU</div><h2>Base de conhecimento</h2></div><Database size={26} strokeWidth={1.6} /></div>
           <div className="source-list">
             <button onClick={() => navigate("/questoes")}><div><strong>01&nbsp;&nbsp; Base de Questões</strong><span>{QUESTION_BANK.length} questões disponíveis</span></div><ArrowRight size={17} /></button>
-            <button onClick={() => navigate("/biblioteca")}><div><strong>02&nbsp;&nbsp; Biblioteca de Pesquisa</strong><span>{LIBRARY.length} materiais cadastrados</span></div><ArrowRight size={17} /></button>
+            <button onClick={() => navigate("/biblioteca")}><div><strong>02&nbsp;&nbsp; Biblioteca de Pesquisa</strong><span>{LIBRARY_MATERIALS.length} materiais cadastrados</span></div><ArrowRight size={17} /></button>
             <button onClick={() => navigate("/desempenho")}><div><strong>03&nbsp;&nbsp; Motor de Análise</strong><span>Histórico de acertos e erros</span></div><ArrowRight size={17} /></button>
           </div>
         </div>
@@ -400,11 +400,71 @@ export function Cronograma() {
 
 export function Biblioteca() {
   const [search, setSearch] = useState("");
-  const materials = LIBRARY.filter((m) => `${m.title} ${m.type} ${m.note}`.toLowerCase().includes(search.toLowerCase()));
+
+  const materials = LIBRARY_MATERIALS.filter((m) =>
+    `${m.title} ${m.type} ${m.discipline}`
+      .toLowerCase()
+      .includes(search.toLowerCase())
+  );
+
+  function abrirMaterial(url) {
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
+
   return (
-    <ModulePage eyebrow="BASE DE PESQUISA" title="Biblioteca" description="Consulte os materiais utilizados como fonte de conhecimento." icon={LibraryBig}>
-      <div className="library-search"><Search size={19} /><input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Buscar na biblioteca..." /></div>
-      <div className="library-grid">{materials.map((m) => <article className="library-card" key={m.title}><div className="library-type">{m.type}</div><LibraryBig size={25} /><h2>{m.title}</h2><p>{m.note}</p><button className="secondary-button" onClick={() => alert(`Material '${m.title}' pronto para receber o arquivo PDF correspondente.`)}>Ver material<ArrowRight size={16} /></button></article>)}</div>
+    <ModulePage
+      eyebrow="BASE DE PESQUISA"
+      title="Biblioteca"
+      description="Consulte apostilas, cadernos de questões e materiais de estudo."
+      icon={LibraryBig}
+    >
+      <div className="library-search">
+        <Search size={19} />
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Buscar material, disciplina ou tipo..."
+        />
+      </div>
+
+      <div className="library-grid">
+        {materials.map((m) => (
+          <article className="library-card" key={m.id}>
+            <div className="library-type">{m.type}</div>
+
+            <LibraryBig size={25} />
+
+            <span
+              style={{
+                fontSize: "12px",
+                color: "#7b8798",
+                fontWeight: 700,
+                marginTop: "8px"
+              }}
+            >
+              {m.discipline}
+            </span>
+
+            <h2>{m.title}</h2>
+
+            <p>Material disponível no Google Drive para estudo e consulta.</p>
+
+            <button
+              className="secondary-button"
+              onClick={() => abrirMaterial(m.url)}
+            >
+              Abrir material
+              <ArrowRight size={16} />
+            </button>
+          </article>
+        ))}
+      </div>
+
+      {materials.length === 0 && (
+        <div className="empty-inline">
+          Nenhum material encontrado.
+        </div>
+      )}
     </ModulePage>
   );
 }
@@ -450,3 +510,8 @@ export function Configuracoes() {
     </ModulePage>
   );
 }
+
+
+
+
+
