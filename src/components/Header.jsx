@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Search, Bell, Wifi, X, CalendarRange, ListChecks, BookOpenText, ChartNoAxesCombined } from "lucide-react";
+import { Search, Bell, Wifi, X, CalendarRange, ListChecks, BookOpenText, ChartNoAxesCombined, LogOut } from "lucide-react";
 import { useNavigate } from "react-router";
+import { useAuth } from "../context/AuthContext";
 
 const STORAGE_KEY = "pdf-concurso-edu-state-v1";
 
@@ -14,6 +15,7 @@ function readState() {
 
 export default function Header() {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const [apiOnline, setApiOnline] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -85,6 +87,11 @@ export default function Header() {
     navigate(route);
   }
 
+  async function handleLogout() {
+    await logout();
+    navigate("/login", { replace: true });
+  }
+
   return (
     <header className="top-header">
       <div className="search-box">
@@ -100,6 +107,9 @@ export default function Header() {
         <button className="icon-button" onClick={() => setNotificationsOpen((open) => !open)} aria-label="Notificações">
           <Bell size={20} strokeWidth={1.8} />
           {notifications.length > 0 && <span className="notification-dot" />}
+        </button>
+        <button className="icon-button" onClick={handleLogout} aria-label="Sair" title={`Sair${user?.email ? ` — ${user.email}` : ""}`}>
+          <LogOut size={20} strokeWidth={1.8} />
         </button>
       </div>
 
