@@ -1,0 +1,1873 @@
+﻿:root {
+  font-family: Inter, "Segoe UI", system-ui, sans-serif;
+
+  color: #172033;
+  background: #f6f8fb;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+body {
+  background: #f6f8fb;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, .18);
+  outline-offset: 2px;
+}
+
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* SIDEBAR */
+
+.sidebar {
+  width: 255px;
+  min-height: 100vh;
+
+  position: fixed;
+  inset: 0 auto 0 0;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 22px 15px;
+
+  background: #0d1626;
+  color: #fff;
+
+  z-index: 20;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 5px 11px 30px;
+}
+
+.brand-mark {
+  width: 42px;
+  height: 42px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 12px;
+
+  background: #fff;
+  color: #0d1626;
+
+  font-size: 21px;
+  font-weight: 900;
+}
+
+.brand-text strong,
+.brand-text span {
+  display: block;
+}
+
+.brand-text strong {
+  font-size: 15px;
+  letter-spacing: 1.5px;
+}
+
+.brand-text span {
+  margin-top: 2px;
+
+  font-size: 10px;
+  letter-spacing: 2.7px;
+
+  color: #8491a8;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nav-label {
+  padding: 18px 12px 8px;
+
+  color: #66748c;
+
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.nav-item {
+  width: 100%;
+
+  border: 0;
+  border-radius: 10px;
+
+  padding: 11px 12px;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  background: transparent;
+  color: #aab5c7;
+
+  text-align: left;
+
+  transition: all .18s ease;
+}
+
+.nav-item:hover {
+  background: rgba(255,255,255,.06);
+  color: #fff;
+  transform: translateX(2px);
+}
+
+.nav-item.active {
+  background: #fff;
+  color: #0d1626;
+  font-weight: 750;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 17px 8px 4px;
+
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+
+.sidebar-footer strong,
+.sidebar-footer span {
+  display: block;
+}
+
+.sidebar-footer strong {
+  font-size: 13px;
+}
+
+.sidebar-footer span {
+  margin-top: 2px;
+
+  color: #7e8ba1;
+  font-size: 11px;
+}
+
+.user-avatar {
+  width: 35px;
+  height: 35px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+
+  background: #253249;
+
+  font-weight: 800;
+}
+
+/* MAIN */
+
+.main-area {
+  flex: 1;
+  min-width: 0;
+
+  margin-left: 255px;
+}
+
+/* TOPBAR */
+
+.topbar {
+  height: 72px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 0 34px;
+
+  background: rgba(255,255,255,.94);
+
+  border-bottom: 1px solid #e7ebf1;
+
+  position: sticky;
+  top: 0;
+
+  z-index: 10;
+
+  backdrop-filter: blur(12px);
+}
+
+.mobile-title {
+  display: none;
+}
+
+.search-box {
+  width: min(560px, 58%);
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px 14px;
+
+  background: #f5f7fa;
+
+  border: 1px solid #e5e9ef;
+  border-radius: 10px;
+
+  color: #8994a6;
+}
+
+.search-box:focus-within {
+  border-color: #b8c4d6;
+  background: #fff;
+}
+
+.search-box input {
+  width: 100%;
+
+  border: 0;
+  outline: 0;
+
+  background: transparent;
+
+  color: #172033;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.connection-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  color: #657286;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.connection-status svg {
+  color: #16a34a;
+}
+
+.icon-button {
+  width: 39px;
+  height: 39px;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid #e5e9ef;
+  border-radius: 10px;
+
+  background: #fff;
+  color: #66748a;
+}
+
+/* PAGE */
+
+.page-content {
+  width: 100%;
+  max-width: 1480px;
+
+  margin: 0 auto;
+
+  padding: 38px 42px 70px;
+}
+
+.welcome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 25px;
+
+  margin-bottom: 27px;
+}
+
+.eyebrow {
+  color: #8994a6;
+
+  font-size: 10px;
+  font-weight: 850;
+
+  letter-spacing: 1.5px;
+}
+
+.welcome h1 {
+  margin: 7px 0 5px;
+
+  font-size: 31px;
+  letter-spacing: -.8px;
+}
+
+.welcome p {
+  margin: 0;
+
+  color: #778397;
+
+  font-size: 14px;
+}
+
+.primary-button,
+.secondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
+  border-radius: 10px;
+
+  padding: 11px 17px;
+
+  border: 0;
+
+  font-weight: 750;
+
+  transition: .18s ease;
+}
+
+.primary-button {
+  background: #111827;
+  color: #fff;
+  box-shadow: 0 5px 15px rgba(15,23,42,.12);
+}
+
+.primary-button:hover {
+  background: #1f2937;
+  transform: translateY(-1px);
+}
+
+.secondary-button {
+  margin-top: 22px;
+
+  background: #f0f3f7;
+  color: #172033;
+}
+
+.secondary-button:hover {
+  background: #e7ebf0;
+}
+
+/* STATS */
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 15px;
+
+  margin-bottom: 18px;
+}
+
+.stat-card,
+.panel {
+  background: #fff;
+
+  border: 1px solid #e5e9ef;
+  border-radius: 14px;
+
+  box-shadow: 0 2px 8px rgba(15,23,42,.025);
+}
+
+.stat-card {
+  min-height: 108px;
+
+  display: flex;
+  align-items: flex-start;
+
+  gap: 14px;
+
+  padding: 19px;
+}
+
+.stat-icon {
+  width: 40px;
+  height: 40px;
+
+  display: grid;
+  place-items: center;
+
+  flex-shrink: 0;
+
+  border-radius: 10px;
+
+  background: #f0f3f7;
+  color: #344054;
+}
+
+.stat-content span,
+.stat-content strong,
+.stat-content small {
+  display: block;
+}
+
+.stat-content span {
+  color: #8792a4;
+
+  font-size: 10px;
+  font-weight: 850;
+
+  letter-spacing: 1px;
+}
+
+.stat-content strong {
+  margin-top: 4px;
+
+  font-size: 24px;
+  letter-spacing: -.4px;
+}
+
+.stat-content small {
+  margin-top: 3px;
+
+  color: #9aa4b3;
+
+  font-size: 10px;
+}
+
+/* PANELS */
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1.2fr .8fr;
+
+  gap: 18px;
+}
+
+.panel {
+  padding: 25px;
+}
+
+.panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+.panel-header > svg {
+  color: #8792a5;
+}
+
+.panel h2,
+.section-heading h2 {
+  margin: 6px 0 0;
+
+  font-size: 18px;
+  letter-spacing: -.2px;
+}
+
+.panel-description {
+  max-width: 680px;
+
+  margin: 14px 0 0;
+
+  color: #748095;
+
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.study-meta {
+  display: flex;
+  justify-content: space-between;
+
+  margin-top: 22px;
+
+  font-size: 11px;
+}
+
+.study-meta span {
+  color: #8994a6;
+}
+
+.study-meta strong {
+  color: #344054;
+}
+
+.progress-wrapper {
+  margin-top: 9px;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+
+  margin-bottom: 8px;
+
+  color: #778397;
+
+  font-size: 11px;
+}
+
+.progress-label strong {
+  color: #172033;
+}
+
+.progress-bar {
+  height: 7px;
+
+  overflow: hidden;
+
+  border-radius: 99px;
+
+  background: #edf0f4;
+}
+
+.progress-value {
+  width: 0%;
+  height: 100%;
+
+  border-radius: inherit;
+
+  background: #111827;
+}
+
+/* SOURCES */
+
+.source-list {
+  margin-top: 20px;
+}
+
+.source-item {
+  display: grid;
+  grid-template-columns: 30px 1fr auto;
+
+  align-items: center;
+
+  gap: 11px;
+
+  padding: 15px 0;
+
+  border-bottom: 1px solid #edf0f4;
+
+  text-align: left;
+}
+
+.source-item:last-child {
+  border-bottom: 0;
+}
+
+.source-item > svg {
+  color: #a0a9b7;
+}
+
+.source-number {
+  color: #9aa4b2;
+
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.source-item strong,
+.source-item span {
+  display: block;
+}
+
+.source-item strong {
+  font-size: 13px;
+}
+
+.source-item span {
+  margin-top: 4px;
+
+  color: #8792a4;
+
+  font-size: 11px;
+}
+
+/* QUICK ACTIONS */
+
+.section-heading {
+  margin: 31px 0 14px;
+}
+
+.quick-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+
+  gap: 12px;
+}
+
+.quick-action {
+  min-height: 115px;
+
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  gap: 12px;
+
+  padding: 17px;
+
+  border: 1px solid #e5e9ef;
+  border-radius: 13px;
+
+  background: #fff;
+
+  color: #172033;
+
+  text-align: left;
+
+  transition: .18s ease;
+}
+
+.quick-action:hover {
+  border-color: #cfd6e1;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(15,23,42,.06);
+}
+
+.quick-action > svg {
+  position: absolute;
+
+  top: 18px;
+  right: 17px;
+
+  color: #a0a9b7;
+}
+
+.quick-action-icon {
+  width: 36px;
+  height: 36px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 9px;
+
+  background: #f1f4f8;
+  color: #344054;
+}
+
+.quick-action strong,
+.quick-action span {
+  display: block;
+}
+
+.quick-action strong {
+  font-size: 12px;
+}
+
+.quick-action span {
+  margin-top: 4px;
+
+  color: #8a95a5;
+
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1200px) {
+  .quick-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 1050px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .sidebar {
+    display: none;
+  }
+
+  .main-area {
+    margin-left: 0;
+  }
+
+  .topbar {
+    padding: 0 18px;
+  }
+
+  .mobile-title {
+    display: block;
+
+    font-size: 13px;
+    font-weight: 850;
+    letter-spacing: 1px;
+  }
+
+  .search-box {
+    display: none;
+  }
+
+  .connection-status span {
+    display: none;
+  }
+
+  .page-content {
+    padding: 28px 18px 45px;
+  }
+
+  .welcome {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .stats-grid,
+  .quick-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* ===== IDENTIDADE PDF CONCURSO EDU ===== */
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 4px 8px 26px;
+}
+
+.brand-logo {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.brand-text strong {
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  color: #ffffff;
+}
+
+.brand-text span {
+  margin-top: 3px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #8491a8;
+}
+
+
+/* PDF CONCURSO EDU - LOGO OFICIAL */
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0 12px 30px;
+}
+
+.brand-logo {
+  width: 155px;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  background: transparent;
+}
+
+.brand-text {
+  display: none;
+}
+
+
+/* ===== CORREÇÃO DEFINITIVA DA ESTRUTURA ===== */
+
+.sidebar {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 274px !important;
+  height: 100vh !important;
+  z-index: 1000 !important;
+}
+
+.app-shell {
+  width: 100% !important;
+  min-height: 100vh !important;
+}
+
+.app-main {
+  margin-left: 274px !important;
+  width: calc(100% - 274px) !important;
+  min-height: 100vh !important;
+  overflow-x: hidden !important;
+}
+
+.content-area {
+  width: 100% !important;
+  max-width: none !important;
+  padding: 32px 40px 60px !important;
+}
+
+.page,
+.dashboard-page {
+  width: 100% !important;
+  max-width: 1500px !important;
+  margin: 0 auto !important;
+}
+
+
+/* ==================================================
+   PDF CONCURSO EDU — HEADER PROFISSIONAL
+================================================== */
+
+.top-header {
+  position: sticky;
+  top: 0;
+  z-index: 90;
+
+  width: 100%;
+  height: 78px;
+
+  padding: 14px 38px;
+
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 24px;
+
+  background: rgba(245, 248, 253, 0.96);
+  border-bottom: 1px solid #e5eaf2;
+  backdrop-filter: blur(12px);
+}
+
+.search-box {
+  width: min(600px, 55%) !important;
+  height: 48px;
+
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 10px;
+
+  padding: 0 15px !important;
+
+  background: #ffffff !important;
+  border: 1px solid #dfe6f0 !important;
+  border-radius: 13px !important;
+
+  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.025);
+}
+
+.search-box svg {
+  flex-shrink: 0;
+  color: #7a899f;
+}
+
+.search-box input {
+  flex: 1;
+  width: 100%;
+
+  border: 0 !important;
+  outline: 0 !important;
+
+  background: transparent !important;
+
+  color: #15233b;
+  font-size: 14px;
+}
+
+.search-box input::placeholder {
+  color: #8b98aa;
+}
+
+.search-box:focus-within {
+  border-color: #b4232d !important;
+  box-shadow: 0 0 0 3px rgba(180, 35, 45, 0.08);
+}
+
+.search-clear {
+  width: 30px;
+  height: 30px;
+
+  display: grid;
+  place-items: center;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 8px;
+
+  background: transparent;
+  color: #718096;
+}
+
+.search-clear:hover {
+  background: #f0f3f8;
+  color: #15233b;
+}
+
+.header-actions {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 12px;
+
+  flex-shrink: 0;
+}
+
+.api-status {
+  height: 38px;
+
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 7px;
+
+  padding: 0 12px;
+
+  border-radius: 10px;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.api-status.online {
+  color: #16734a;
+  background: #eaf8f1;
+  border: 1px solid #cceede;
+}
+
+.api-status.offline {
+  color: #a1262e;
+  background: #fff0f1;
+  border: 1px solid #f3d2d5;
+}
+
+.icon-button {
+  position: relative;
+
+  width: 42px;
+  height: 42px;
+
+  padding: 0;
+
+  display: grid !important;
+  place-items: center;
+
+  border: 1px solid #dfe6f0;
+  border-radius: 11px;
+
+  background: #ffffff;
+  color: #31415a;
+
+  cursor: pointer;
+}
+
+.icon-button:hover {
+  background: #f7f9fc;
+  border-color: #ccd6e4;
+}
+
+.notification-dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+
+  background: #c3212b;
+}
+
+.notification-panel {
+  position: absolute;
+  top: 68px;
+  right: 38px;
+
+  width: 330px;
+
+  overflow: hidden;
+
+  background: #ffffff;
+  border: 1px solid #e0e6ef;
+  border-radius: 15px;
+
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.16);
+
+  z-index: 2000;
+}
+
+.notification-header {
+  min-height: 52px;
+
+  padding: 0 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid #edf0f5;
+}
+
+.notification-header button {
+  width: 30px;
+  height: 30px;
+
+  padding: 0;
+
+  display: grid;
+  place-items: center;
+
+  border: 0;
+  border-radius: 7px;
+
+  background: transparent;
+}
+
+.notification-header button:hover {
+  background: #f2f5f8;
+}
+
+.notification-empty {
+  min-height: 180px;
+
+  padding: 28px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+}
+
+.notification-empty svg {
+  margin-bottom: 12px;
+  color: #8a98ab;
+}
+
+.notification-empty strong {
+  color: #16243b;
+  font-size: 14px;
+}
+
+.notification-empty span {
+  margin-top: 6px;
+
+  color: #8491a3;
+  font-size: 12px;
+}
+
+/* espaço entre header e páginas */
+
+.content-area {
+  padding-top: 34px !important;
+}
+
+@media (max-width: 850px) {
+  .top-header {
+    padding: 12px 18px;
+  }
+
+  .search-box {
+    width: 100% !important;
+  }
+
+  .api-status span {
+    display: none;
+  }
+
+  .notification-panel {
+    right: 18px;
+  }
+}
+
+
+/* ==================================================
+   PDF CONCURSO EDU — DASHBOARD V3
+================================================== */
+
+.dashboard-heading {
+  margin-bottom: 24px !important;
+}
+
+.dashboard-heading h1 {
+  font-size: 36px !important;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.stats-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0,1fr)) !important;
+  gap: 16px !important;
+  margin: 0 0 28px !important;
+}
+
+.stat-card {
+  position: relative;
+  min-height: 125px !important;
+
+  padding: 22px !important;
+
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 15px !important;
+
+  background: #fff !important;
+  border: 1px solid #e2e8f1 !important;
+  border-radius: 16px !important;
+
+  box-shadow: 0 5px 20px rgba(15,23,42,.04) !important;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(15,23,42,.08) !important;
+}
+
+.stat-icon {
+  width: 44px;
+  height: 44px;
+
+  flex: 0 0 44px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 12px;
+
+  background: #f1f5fa;
+  color: #25364f;
+}
+
+.stat-card strong {
+  display: block;
+  margin-bottom: 5px;
+
+  color: #101c31;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.stat-card span {
+  display: block;
+
+  color: #77869b;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+/* PAINÉIS DO DASHBOARD */
+
+.dashboard-grid {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.45fr) minmax(350px, .85fr) !important;
+  gap: 20px !important;
+  align-items: stretch;
+}
+
+.panel {
+  padding: 25px !important;
+
+  background: #fff !important;
+  border: 1px solid #e2e8f1 !important;
+  border-radius: 18px !important;
+
+  box-shadow: 0 5px 22px rgba(15,23,42,.04) !important;
+}
+
+.panel h2 {
+  color: #111e34;
+  font-size: 21px !important;
+  font-weight: 800;
+}
+
+/* BASE DE CONHECIMENTO */
+
+.knowledge-list {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  margin-top: 20px;
+
+  overflow: hidden;
+
+  border: 1px solid #e3e9f1;
+  border-radius: 13px;
+}
+
+.knowledge-item {
+  min-height: 66px;
+
+  padding: 13px 15px;
+
+  display: grid;
+  grid-template-columns: 35px 1fr auto;
+  align-items: center;
+  gap: 10px;
+
+  background: #fff;
+
+  border-bottom: 1px solid #e8edf4;
+}
+
+.knowledge-item:last-child {
+  border-bottom: 0;
+}
+
+.knowledge-item:hover {
+  background: #f8faff;
+}
+
+.knowledge-number {
+  color: #b51f29;
+
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.knowledge-item strong {
+  display: block;
+
+  color: #142139;
+  font-size: 14px;
+}
+
+.knowledge-item span {
+  color: #7b8899;
+  font-size: 12px;
+}
+
+/* TRILHA DE ESTUDO */
+
+.progress-track {
+  width: 100%;
+  height: 8px;
+
+  margin: 10px 0 18px;
+
+  overflow: hidden;
+
+  background: #edf1f6;
+  border-radius: 99px;
+}
+
+.progress-bar {
+  height: 100%;
+
+  background: linear-gradient(90deg,#9f1822,#d33b45);
+
+  border-radius: inherit;
+}
+
+/* botão principal com identidade da marca */
+
+.primary-button {
+  background: linear-gradient(135deg,#951721,#c92c37) !important;
+  color: #fff !important;
+}
+
+.primary-button:hover {
+  background: linear-gradient(135deg,#7d1119,#ad202a) !important;
+}
+
+/* RESPONSIVO */
+
+@media (max-width: 1100px) {
+  .stats-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+
+/* ===== HOTFIX DASHBOARD ===== */
+
+.progress-bar {
+  width: 0 !important;
+  max-width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+}
+
+.progress-track {
+  width: 100% !important;
+  height: 8px !important;
+  min-height: 8px !important;
+  max-height: 8px !important;
+  overflow: hidden !important;
+  border-radius: 999px !important;
+  background: #e7ecf3 !important;
+}
+
+/* Corrige os cards da Base de Conhecimento
+   mesmo que o JSX ainda use classes antigas */
+
+.knowledge-row,
+.source-row {
+  width: 100% !important;
+  min-height: 68px !important;
+  padding: 14px 16px !important;
+  margin: 0 0 10px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+
+  background: #fff !important;
+  border: 1px solid #e1e7ef !important;
+  border-radius: 12px !important;
+
+  box-shadow: 0 3px 12px rgba(15,23,42,.03) !important;
+}
+
+
+/* =====================================================
+   PDF CONCURSO EDU — BASE DE CONHECIMENTO
+   ===================================================== */
+
+.source-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  margin-top: 20px !important;
+}
+
+.source-list button {
+  width: 100% !important;
+  min-height: 72px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+
+  padding: 14px 18px !important;
+
+  border: 1px solid #e1e7ef !important;
+  border-radius: 14px !important;
+
+  background: #ffffff !important;
+  color: #101827 !important;
+
+  font-family: inherit !important;
+  text-align: left !important;
+
+  cursor: pointer !important;
+
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease,
+    border-color .18s ease,
+    background .18s ease !important;
+}
+
+.source-list button > div {
+  min-width: 0 !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 5px !important;
+}
+
+.source-list button strong {
+  display: block !important;
+
+  font-size: 15px !important;
+  line-height: 1.3 !important;
+  font-weight: 750 !important;
+
+  color: #101827 !important;
+}
+
+.source-list button span {
+  display: block !important;
+
+  font-size: 13px !important;
+  line-height: 1.4 !important;
+  font-weight: 400 !important;
+
+  color: #69768a !important;
+}
+
+.source-list button > svg {
+  flex: 0 0 auto !important;
+
+  color: #9b1c27 !important;
+
+  transition: transform .18s ease !important;
+}
+
+.source-list button:hover {
+  transform: translateY(-2px) !important;
+
+  border-color: #d5a5aa !important;
+
+  background: #fffafb !important;
+
+  box-shadow: 0 8px 22px rgba(15,23,42,.08) !important;
+}
+
+.source-list button:hover > svg {
+  transform: translateX(4px) !important;
+}
+
+/* ===== CORREÇÃO DEFINITIVA DA BARRA DE PROGRESSO ===== */
+
+.progress-track {
+  position: relative !important;
+
+  width: 100% !important;
+  height: 7px !important;
+  min-height: 7px !important;
+  max-height: 7px !important;
+
+  overflow: hidden !important;
+
+  border-radius: 999px !important;
+
+  background: #e5eaf1 !important;
+}
+
+.progress-track > * {
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: 7px !important;
+
+  border-radius: 999px !important;
+}
+
+.progress-bar {
+  height: 7px !important;
+  min-height: 0 !important;
+  max-height: 7px !important;
+
+  background: linear-gradient(90deg,#a91624,#d6303d) !important;
+}
+
+/* 0% no dashboard atual */
+.progress-bar[style*="0%"] {
+  width: 0 !important;
+}
+
+/* ===== RESPONSIVO ===== */
+
+@media (max-width: 900px) {
+  .source-list button {
+    min-height: 66px !important;
+    padding: 12px 14px !important;
+  }
+
+  .source-list button strong {
+    font-size: 14px !important;
+  }
+
+  .source-list button span {
+    font-size: 12px !important;
+  }
+}
+
+
+/* =====================================================
+   PDF CONCURSO EDU — PÁGINA ESTUDOS
+   ===================================================== */
+
+.content-grid,
+.study-grid,
+.subject-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 20px !important;
+  align-items: stretch !important;
+}
+
+/* Cards de disciplinas */
+.content-card,
+.study-card,
+.subject-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 18px !important;
+
+  padding: 24px !important;
+  min-height: 235px !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+
+  box-shadow: 0 5px 18px rgba(15,23,42,.045) !important;
+
+  transition:
+    transform .2s ease,
+    box-shadow .2s ease,
+    border-color .2s ease !important;
+}
+
+.content-card:hover,
+.study-card:hover,
+.subject-card:hover {
+  transform: translateY(-4px) !important;
+  border-color: #d5a5aa !important;
+  box-shadow: 0 12px 30px rgba(15,23,42,.09) !important;
+}
+
+/* Ícone */
+.content-card > svg,
+.study-card > svg,
+.subject-card > svg {
+  width: 24px !important;
+  height: 24px !important;
+
+  padding: 10px !important;
+  box-sizing: content-box !important;
+
+  border-radius: 12px !important;
+
+  background: #f6f7fa !important;
+  color: #9f1825 !important;
+
+  margin-bottom: 17px !important;
+}
+
+/* Títulos */
+.content-card h2,
+.content-card h3,
+.study-card h2,
+.study-card h3,
+.subject-card h2,
+.subject-card h3 {
+  margin: 0 0 10px !important;
+
+  font-size: 20px !important;
+  line-height: 1.25 !important;
+  font-weight: 750 !important;
+
+  color: #101827 !important;
+}
+
+/* Descrição */
+.content-card p,
+.study-card p,
+.subject-card p {
+  margin: 0 0 22px !important;
+
+  color: #667085 !important;
+
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+}
+
+/* Botões dos cards */
+.content-card button,
+.study-card button,
+.subject-card button {
+  margin-top: auto !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 9px !important;
+
+  min-height: 42px !important;
+
+  padding: 10px 16px !important;
+
+  border: 0 !important;
+  border-radius: 10px !important;
+
+  background: #f3f5f8 !important;
+  color: #172033 !important;
+
+  font-family: inherit !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+
+  cursor: pointer !important;
+
+  transition: all .18s ease !important;
+}
+
+.content-card button:hover,
+.study-card button:hover,
+.subject-card button:hover {
+  background: #a91624 !important;
+  color: #ffffff !important;
+}
+
+/* Página de estudos mais compacta */
+.page-content {
+  max-width: 1440px !important;
+}
+
+/* Tablet */
+@media (max-width: 1100px) {
+  .content-grid,
+  .study-grid,
+  .subject-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+/* Celular */
+@media (max-width: 720px) {
+  .content-grid,
+  .study-grid,
+  .subject-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .content-card,
+  .study-card,
+  .subject-card {
+    min-height: auto !important;
+  }
+}
+
+
+/* =====================================================
+   PDF CONCURSO EDU — ESTUDOS / MODULE CARDS
+   ===================================================== */
+
+.module-grid {
+  width: 100%;
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 22px !important;
+  margin-top: 28px !important;
+  align-items: stretch !important;
+}
+
+.module-card {
+  position: relative !important;
+  min-width: 0 !important;
+  min-height: 245px !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+
+  padding: 26px !important;
+
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 18px !important;
+
+  box-shadow: 0 5px 20px rgba(15, 23, 42, .045) !important;
+
+  overflow: hidden !important;
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease !important;
+}
+
+.module-card:hover {
+  transform: translateY(-4px) !important;
+  border-color: #d7a4a9 !important;
+  box-shadow: 0 14px 32px rgba(15, 23, 42, .09) !important;
+}
+
+.module-card > svg {
+  width: 25px !important;
+  height: 25px !important;
+
+  box-sizing: content-box !important;
+  padding: 11px !important;
+
+  background: #f5f7fa !important;
+  color: #a71926 !important;
+
+  border-radius: 12px !important;
+  margin-bottom: 20px !important;
+}
+
+.module-card h2,
+.module-card h3 {
+  margin: 0 0 11px !important;
+
+  color: #101827 !important;
+
+  font-size: 20px !important;
+  font-weight: 750 !important;
+  line-height: 1.3 !important;
+}
+
+.module-card p {
+  margin: 0 0 24px !important;
+
+  color: #667085 !important;
+
+  font-size: 14px !important;
+  line-height: 1.65 !important;
+}
+
+.module-card button {
+  margin-top: auto !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 9px !important;
+
+  min-height: 43px !important;
+  padding: 10px 17px !important;
+
+  border: 0 !important;
+  border-radius: 10px !important;
+
+  background: #f2f4f7 !important;
+  color: #172033 !important;
+
+  font-family: inherit !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+
+  cursor: pointer !important;
+
+  transition: background .18s ease, color .18s ease, transform .18s ease !important;
+}
+
+.module-card button:hover {
+  background: #b51d2a !important;
+  color: #ffffff !important;
+  transform: translateY(-1px) !important;
+}
+
+.module-card button svg {
+  width: 17px !important;
+  height: 17px !important;
+}
+
+/* RESPONSIVO */
+
+@media (max-width: 1150px) {
+  .module-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .module-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .module-card {
+    min-height: 220px !important;
+  }
+}
+
+
+/* ===== DASHBOARD — CARD DE ESTUDO ===== */
+
+.study-card {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 400px !important;
+}
+
+.study-card .card-heading {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  gap: 20px !important;
+}
+
+.study-card .card-heading p {
+  color: #667085 !important;
+  line-height: 1.55 !important;
+  margin-top: 10px !important;
+}
+
+.study-card .progress-meta {
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 20px !important;
+
+  margin-top: 14px !important;
+
+  font-size: 14px !important;
+}
+
+.study-card .progress-meta span {
+  color: #7b8798 !important;
+}
+
+.study-card .progress-meta strong {
+  color: #101827 !important;
+  font-weight: 700 !important;
+}
+
+.study-card .progress-bar {
+  width: 100% !important;
+  height: 8px !important;
+  min-height: 8px !important;
+
+  margin-top: 10px !important;
+
+  background: #e8edf3 !important;
+  border-radius: 999px !important;
+  overflow: hidden !important;
+}
+
+.study-card .progress-bar span {
+  display: block !important;
+  height: 100% !important;
+
+  background: #bd1e2d !important;
+  border-radius: inherit !important;
+}
+
+.study-card .secondary-button {
+  margin-top: auto !important;
+  align-self: flex-start !important;
+}
+
