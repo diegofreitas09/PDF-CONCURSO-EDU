@@ -1,0 +1,157 @@
+/* ===== PDF CONCURSO EDU · REFINAMENTO VISUAL GLOBAL ===== */
+:root{
+  --ui-font:"Segoe UI Variable","Inter","Aptos","Segoe UI",system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  --ui-ink:#182230;
+  --ui-muted:#667085;
+  --ui-line:#e6eaf0;
+  --ui-soft:#f7f8fa;
+  --ui-surface:#ffffff;
+  --ui-accent:#c92836;
+  --ui-accent-dark:#a91f2b;
+  --ui-sidebar:#101827;
+  --ui-sidebar-soft:#1a2435;
+  --ui-shadow:0 8px 24px rgba(16,24,40,.055);
+  --ui-shadow-hover:0 16px 34px rgba(16,24,40,.11);
+}
+
+html,body,#root,button,input,select,textarea{font-family:var(--ui-font)!important}
+body{font-weight:400;letter-spacing:-.006em}
+
+/* elimina sublinhados herdados e deixa ícones limpos */
+a,a:link,a:visited,a:hover,a:active,.nav-item,.brand,.sidebar-footer{
+  text-decoration:none!important;
+  text-decoration-line:none!important;
+}
+a svg,button svg,.nav-item svg,.brand svg,.sidebar-footer svg{
+  text-decoration:none!important;
+  flex-shrink:0;
+}
+
+/* tipografia mais elegante e menos pesada */
+h1,h2,h3,h4,h5,h6,.page-header h1,.dashboard-heading h1,.questions-title h1,.sim-heading h1{
+  font-family:var(--ui-font)!important;
+  letter-spacing:-.035em!important;
+  color:var(--text,var(--ui-ink));
+}
+h1,.dashboard-heading h1,.questions-title h1,.sim-heading h1{font-weight:720!important}
+h2,h3{font-weight:680!important}
+p,span,small,label{letter-spacing:-.008em}
+.page-eyebrow,.card-eyebrow,.nav-label,.eyebrow{
+  letter-spacing:.105em!important;
+  font-weight:760!important;
+}
+
+/* sidebar: menos cor, mais contraste e movimento */
+.sidebar{
+  background:linear-gradient(180deg,var(--ui-sidebar) 0%,#0d1522 100%)!important;
+  box-shadow:8px 0 30px rgba(15,23,42,.06);
+}
+.sidebar-nav{gap:5px!important}
+.nav-item{
+  position:relative;
+  border:1px solid transparent!important;
+  transition:transform .2s ease,background .2s ease,color .2s ease,box-shadow .2s ease,border-color .2s ease!important;
+  will-change:transform;
+}
+.nav-item:hover{
+  transform:translate3d(5px,-2px,0)!important;
+  background:rgba(255,255,255,.075)!important;
+  color:#fff!important;
+  border-color:rgba(255,255,255,.055)!important;
+  box-shadow:0 8px 18px rgba(0,0,0,.14)!important;
+}
+.nav-item svg{transition:transform .2s ease,color .2s ease}
+.nav-item:hover svg{transform:translateY(-2px) scale(1.08);color:#fff}
+.nav-item.active{
+  background:#fff!important;
+  color:#182230!important;
+  border-color:#fff!important;
+  box-shadow:0 8px 22px rgba(0,0,0,.13)!important;
+  transform:none!important;
+}
+.nav-item.active::before{
+  content:"";
+  position:absolute;
+  left:-8px;
+  width:3px;
+  height:22px;
+  border-radius:99px;
+  background:var(--ui-accent);
+}
+.sidebar-footer{transition:transform .2s ease,background .2s ease;border-radius:12px}
+.sidebar-footer:hover{transform:translateY(-2px);background:rgba(255,255,255,.045)}
+
+/* cabeçalho e botões de ícone flutuantes */
+.icon-button,.questions-title-icon,.sim-heading-icon,.page-icon,.stat-icon,.ai-icon{
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease,background .22s ease!important;
+}
+.icon-button:hover,.questions-title-icon:hover,.sim-heading-icon:hover,.page-icon:hover,.stat-card:hover .stat-icon,.ai-icon:hover{
+  transform:translateY(-4px)!important;
+  box-shadow:0 12px 24px rgba(16,24,40,.12)!important;
+  border-color:#d5dbe4!important;
+}
+
+/* cards: superfície neutra + hover elegante */
+.stat-card,.card,.panel,.question-panel,.sim-builder,.sim-question-card,.sim-result-card,.study-discipline-card,.feature-panel{
+  border-color:var(--ui-line)!important;
+  box-shadow:var(--ui-shadow)!important;
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease!important;
+}
+.stat-card:hover,.card:hover,.panel:hover,.sim-result-card:hover,.study-discipline-card:hover{
+  transform:translateY(-3px);
+  box-shadow:var(--ui-shadow-hover)!important;
+  border-color:#d9dee7!important;
+}
+
+/* reduz o arco-íris: vermelho só para ação principal */
+.primary-button,.next-question-button,.sim-generate,.sim-finish,.sim-new,.sim-download,.correct-question-button:not(:disabled){
+  background:linear-gradient(135deg,var(--ui-accent),#dd3542)!important;
+  color:#fff!important;
+  border:0!important;
+  box-shadow:0 8px 18px rgba(201,40,54,.16)!important;
+  transition:transform .2s ease,box-shadow .2s ease,filter .2s ease!important;
+}
+.primary-button:hover,.next-question-button:hover,.sim-generate:hover,.sim-finish:hover,.sim-new:hover,.sim-download:hover,.correct-question-button:not(:disabled):hover{
+  transform:translateY(-2px)!important;
+  box-shadow:0 13px 26px rgba(201,40,54,.24)!important;
+  filter:saturate(.92);
+}
+.secondary-button,.ghost-question-button,.review-button,.sim-clear,.sim-nav>button{
+  background:var(--surface,var(--ui-surface))!important;
+  border:1px solid var(--border,var(--ui-line))!important;
+  color:var(--text,var(--ui-ink))!important;
+}
+
+/* opções e linhas ficam neutras; cor só quando necessário */
+.question-option,.sim-options button,.sim-discipline-row,.source-list button{
+  box-shadow:none!important;
+  transition:transform .18s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease!important;
+}
+.question-option:hover:not(:disabled),.sim-options button:hover,.source-list button:hover{
+  transform:translateY(-2px)!important;
+  box-shadow:0 8px 18px rgba(16,24,40,.055)!important;
+}
+
+/* foco mais discreto */
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+  outline:2px solid rgba(201,40,54,.26)!important;
+  outline-offset:3px!important;
+}
+
+/* modo escuro coerente */
+:root[data-theme="dark"]{
+  --ui-ink:#f4f7fb;
+  --ui-muted:#a8b3c2;
+  --ui-line:#28384d;
+  --ui-soft:#111d2e;
+  --ui-surface:#0e1a2b;
+  --ui-shadow:0 9px 24px rgba(0,0,0,.18);
+  --ui-shadow-hover:0 16px 34px rgba(0,0,0,.28);
+}
+:root[data-theme="dark"] .nav-item.active{background:#f5f7fa!important;color:#172033!important}
+:root[data-theme="dark"] .icon-button:hover,:root[data-theme="dark"] .questions-title-icon:hover,:root[data-theme="dark"] .sim-heading-icon:hover{border-color:#3a4d66!important}
+
+/* respeita usuários que preferem menos movimento */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+}
