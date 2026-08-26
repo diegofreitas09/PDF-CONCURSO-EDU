@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Search, Bell, Wifi, X, CalendarRange, ListChecks, BookOpenText, ChartNoAxesCombined, LogOut } from "lucide-react";
+import { Search, Bell, Wifi, WifiOff, X, CalendarRange, ListChecks, BookOpenText, ChartNoAxesCombined, LogOut } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
 
@@ -16,29 +16,24 @@ function readState() {
 export default function Header() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const [apiOnline, setApiOnline] = useState(false);
+  const [online, setOnline] = useState(() => navigator.onLine);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [platformState, setPlatformState] = useState(readState);
 
-  function checkApi() {
-    fetch("http://127.0.0.1:8000/api/health")
-      .then((response) => {
-        if (!response.ok) throw new Error("API indisponível");
-        return response.json();
-      })
-      .then(() => setApiOnline(true))
-      .catch(() => setApiOnline(false));
-  }
-
   useEffect(() => {
-    checkApi();
-    const timer = setInterval(checkApi, 30000);
+    const handleOnline = () => setOnline(true);
+    const handleOffline = () => setOnline(false);
     const sync = () => setPlatformState(readState());
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
     window.addEventListener("storage", sync);
     window.addEventListener("pdfedu-state", sync);
+
     return () => {
-      clearInterval(timer);
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
       window.removeEventListener("storage", sync);
       window.removeEventListener("pdfedu-state", sync);
     };
@@ -60,26 +55,29 @@ export default function Header() {
       items.push({ icon: BookOpenText, title: `${completed} tópico${completed > 1 ? "s" : ""} concluído${completed > 1 ? "s" : ""}`, text: "Continue avançando na sua trilha de estudos.", route: "/estudos" });
     }
     if (!items.length) {
-      items.push({ icon: ListChecks, title: "Comece sua preparação", text: "Resolva questões ou abra uma trilha de estudos.", route: "/estudos" });
+      items.push({ icon: ListChecks, title: "Comece sua preparação", text: "Resolva questões ou abra uma trilha de estudos.", route: "/questoes" });
     }
     return items;
   }, [platformState]);
 
   function runSearch() {
-    const termo = search.trim().toLowerCase();
+    const raw = search.trim();
+    const termo = raw.toLowerCase();
     if (!termo) return;
+
     if (termo.includes("ldb")) return navigate("/questoes?disciplina=Legisla%C3%A7%C3%A3o%20Educacional&topico=Lei%20de%20Diretrizes%20e%20Bases%20%E2%80%94%20LDB");
     if (termo.includes("eca")) return navigate("/questoes?disciplina=Legisla%C3%A7%C3%A3o%20Educacional&topico=Estatuto%20da%20Crian%C3%A7a%20e%20do%20Adolescente%20%E2%80%94%20ECA");
     if (termo.includes("filosof")) return navigate("/questoes?disciplina=Filosofia");
     if (termo.includes("portugu") || termo.includes("crase") || termo.includes("concord")) return navigate("/questoes?disciplina=L%C3%ADngua%20Portuguesa");
     if (termo.includes("quest") || termo.includes("prova") || termo.includes("simulado")) return navigate("/questoes");
-    if (termo.includes("livro") || termo.includes("pdf") || termo.includes("biblioteca") || termo.includes("material")) return navigate(`/biblioteca?busca=${encodeURIComponent(search.trim())}`);
+    if (termo.includes("livro") || termo.includes("pdf") || termo.includes("biblioteca") || termo.includes("material")) return navigate(`/biblioteca?busca=${encodeURIComponent(raw)}`);
     if (termo.includes("cronograma") || termo.includes("agenda") || termo.includes("planejamento")) return navigate("/cronograma");
     if (termo.includes("flash")) return navigate("/flashcards");
     if (termo.includes("mapa")) return navigate("/mapas-mentais");
     if (termo.includes("desempenho") || termo.includes("acerto") || termo.includes("erro")) return navigate("/desempenho");
     if (termo.includes("config")) return navigate("/configuracoes");
-    return navigate("/estudos");
+
+    return navigate(`/biblioteca?busca=${encodeURIComponent(raw)}`);
   }
 
   function openNotification(route) {
@@ -95,30 +93,46 @@ export default function Header() {
   return (
     <header className="top-header">
       <div className="search-box">
-        <Search size={19} strokeWidth={1.8} />
-        <input type="text" value={search} onChange={(event) => setSearch(event.target.value)} onKeyDown={(event) => event.key === "Enter" && runSearch()} placeholder="Buscar questões, temas, conteúdos..." />
-        {search && <button className="search-clear" onClick={() => setSearch("")} aria-label="Limpar busca"><X size={16} /></button>}
+        <button type="button" className="search-trigger" onClick={runSearch} aria-label="Buscar" title="Buscar">
+          <Search size={19} strokeWidth={1.8} />
+        </button>
+        <input
+          type="text"
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          onKeyDown={(event) => event.key === "Enter" && runSearch()}
+          placeholder="Buscar questões, temas, conteúdos..."
+        />
+        {search && <button type="button" className="search-clear" onClick={() => setSearch("")} aria-label="Limpar busca"><X size={16} /></button>}
       </div>
 
       <div className="header-actions">
-        <button type="button" className={`api-status ${apiOnline ? "online" : "offline"}`} onClick={checkApi} title="Clique para testar a conexão com a API">
-          <Wifi size={16} strokeWidth={2} /><span>{apiOnline ? "API online" : "API offline"}</span>
+        <button
+          type="button"
+          className={`api-status ${online ? "online" : "offline"}`}
+          onClick={() => setOnline(navigator.onLine)}
+          title={online ? "Plataforma conectada à internet" : "Sem conexão com a internet"}
+        >
+          {online ? <Wifi size={16} strokeWidth={2} /> : <WifiOff size={16} strokeWidth={2} />}
+          <span>{online ? "Plataforma online" : "Sem conexão"}</span>
         </button>
-        <button className="icon-button" onClick={() => setNotificationsOpen((open) => !open)} aria-label="Notificações">
+
+        <button type="button" className="icon-button" onClick={() => setNotificationsOpen((open) => !open)} aria-label="Notificações">
           <Bell size={20} strokeWidth={1.8} />
           {notifications.length > 0 && <span className="notification-dot" />}
         </button>
-        <button className="icon-button" onClick={handleLogout} aria-label="Sair" title={`Sair${user?.email ? ` — ${user.email}` : ""}`}>
+
+        <button type="button" className="icon-button" onClick={handleLogout} aria-label="Sair" title={`Sair${user?.email ? ` — ${user.email}` : ""}`}>
           <LogOut size={20} strokeWidth={1.8} />
         </button>
       </div>
 
       {notificationsOpen && (
         <div className="notification-panel">
-          <div className="notification-header"><strong>Notificações</strong><button onClick={() => setNotificationsOpen(false)} aria-label="Fechar notificações"><X size={16} /></button></div>
+          <div className="notification-header"><strong>Notificações</strong><button type="button" onClick={() => setNotificationsOpen(false)} aria-label="Fechar notificações"><X size={16} /></button></div>
           <div className="notification-list">
             {notifications.map(({ icon: Icon, title, text, route }) => (
-              <button className="notification-item" key={`${title}-${route}`} onClick={() => openNotification(route)}>
+              <button type="button" className="notification-item" key={`${title}-${route}`} onClick={() => openNotification(route)}>
                 <span className="notification-item-icon"><Icon size={18} /></span>
                 <span><strong>{title}</strong><small>{text}</small></span>
               </button>
