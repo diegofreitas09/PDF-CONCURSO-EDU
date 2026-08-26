@@ -1,0 +1,222 @@
+export const SIMULADO_05_TEORIAS_PEDAGOGICAS = [
+  {
+    id: "tp-s05-001",
+    discipline: "Conhecimentos Pedagógicos",
+    topic: "Tendências Pedagógicas",
+    source: "Lote autoral inspirado nos temas do Simulado 05 — Teorias Pedagógicas — PND 2025",
+    statement: "Um professor parte de um problema real vivido pela comunidade, promove diálogo, reflexão crítica e participação dos estudantes na busca de soluções. Essa prática se aproxima principalmente de qual tendência pedagógica?",
+    options: ["Tradicional", "Libertadora", "Tecnicista", "Renovada não diretiva"],
+    answer: 1,
+    explanation: "A tendência libertadora valoriza a problematização da realidade, o diálogo e a conscientização dos estudantes, tendo a educação como prática de transformação social.",
+    audited: true
+  },
+  {
+    id: "tp-s05-002",
+    discipline: "Conhecimentos Pedagógicos",
+    topic: "Pedagogia Tecnicista",
+    source: "Lote autoral inspirado nos temas do Simulado 05 — Teorias Pedagógicas — PND 2025",
+    statement: "Na pedagogia liberal tecnicista, qual característica é mais coerente com sua finalidade educacional?",
+    options: ["Transformação da ordem social por meio da crítica", "Formação eficiente para funções produtivas e profissionais", "Rejeição de técnicas e objetivos operacionais", "Centralidade das experiências emocionais do aluno"],
+    answer: 1,
+    explanation: "A tendência tecnicista enfatiza eficiência, produtividade, objetivos operacionais e preparação técnica do indivíduo para o sistema produtivo.",
+    audited: true
+  },
+  {
+    id: "tp-s05-003",
+    discipline: "Conhecimentos Pedagógicos",
+    topic: "Piaget e Construtivismo",
+    source: "Lote autoral inspirado nos temas do Simulado 05 — Teorias Pedagógicas — PND 2025",
+    statement: "Assimilação, acomodação e equilibração são conceitos centrais de qual perspectiva de aprendizagem?",
+    options: ["Construtivismo de Piaget", "Teoria histórico-cultural de Vygotsky", "Aprendizagem significativa de Ausubel", "Psicogenética de Wallon"],
+    answer: 0,
+    explanation: "Na teoria de Piaget, o sujeito constrói conhecimento em interação com o meio por meio de processos de assimilação, acomodação e equilibração.",
+    audited: true
+  },
+  {
+    id: "tp-s05-004",
+    discipline: "Conhecimentos Pedagógicos",
+    topic: "Escola Nova",
+    source: "Lote autoral inspirado nos temas do Simulado 05 — Teorias Pedagógicas — PND 2025",
+    statement: "Qual diferença melhor caracteriza a tendência renovada progressivista em relação à renovada não diretiva?",
+    options: ["A progressivista reduz a intervenção docente ao mínimo", "A não diretiva enfatiza conteúdos sistematizados e desafios planejados", "A progressivista mantém o professor como mediador e valoriza aprendizagem ativa", "Ambas defendem centralidade absoluta da exposição docente"],
+    answer: 2,
+    explanation: "A renovada progressivista valoriza atividade, experiência e resolução de problemas com mediação docente. A não diretiva reduz a intervenção do professor e enfatiza autorrealização e aspectos emocionais.",
+    audited: true
+  },
+  {
+    id: "tp-s05-005",
+    discipline: "Conhecimentos Pedagógicos",
+    topic: "Educação Física e Tendências Pedagógicas",
+    source: "Lote autoral inspirado nos temas do Simulado 05 — Teorias Pedagógicas — PND 2025",
+    statement: "Em abordagens críticas da Educação Física, a prática corporal deve ser compreendida principalmente como:",
+    options: ["Treino técnico isolado do contexto social", "Prática a ser problematizada em seu contexto histórico e social", "Sequência padronizada de movimentos sem adaptações", "Atividade voltada exclusivamente ao alto rendimento"],
+    answer: 1,
+    explanation: "Abordagens críticas, como a crítico-superadora e a crítico-emancipatória, relacionam práticas corporais ao contexto social, histórico e cultural, problematizando modelos hegemônicos de rendimento.",
+    audited: true
+  },
+  {
+    id: "tp-s05-006",
+    discipline: "Conhecimentos Pedagógicos",
+    topic: "Pedagogias Progressistas",
+    source: "Lote autoral inspirado nos temas do Simulado 05 — Teorias Pedagógicas — PND 2025",
+    statement: "Na pedagogia histórico-crítica, a didática é compreendida como:",
+    options: ["Processo espontâneo sem intervenção docente", "Mediação entre o saber sistematizado e a realidade concreta do estudante", "Treinamento de respostas observáveis", "Livre expressão sem conteúdos escolares"],
+    answer: 1,
+    explanation: "A perspectiva histórico-crítica entende a mediação docente e o acesso ao conhecimento sistematizado como fundamentais para compreender e transformar a realidade.",
+    audited: true
+  },
+  {
+    id: "tp-s05-007",
+    discipline: "Conhecimentos Pedagógicos",
+    topic: "Crítica às Tendências Pedagógicas",
+    source: "Lote autoral inspirado nos temas do Simulado 05 — Teorias Pedagógicas — PND 2025",
+    statement: "Uma crítica feita às pedagogias tradicional e renovada é que certas práticas podem excluir estudantes quando:",
+    options: ["Valorizam a participação política", "Pressupõem repertórios culturais que nem todos tiveram oportunidade de adquirir", "Oferecem acesso ao conhecimento sistematizado", "Reconhecem desigualdades sociais"],
+    answer: 1,
+    explanation: "Quando a escola pressupõe pré-requisitos culturais desigualmente distribuídos, estudantes das camadas populares podem ficar marginalizados do processo de aquisição do saber.",
+    audited: true
+  },
+  {
+    id: "tp-s05-008",
+    discipline: "Conhecimentos Pedagógicos",
+    topic: "Pedagogia Libertadora",
+    source: "Lote autoral inspirado nos temas do Simulado 05 — Teorias Pedagógicas — PND 2025",
+    statement: "Em uma prática em que professor e estudantes discutem problemas sociais da comunidade e buscam soluções coletivamente, o professor atua prioritariamente como:",
+    options: ["Fiscal do comportamento", "Transmissor exclusivo do conteúdo", "Coordenador e mediador do diálogo problematizador", "Executor de instruções programadas"],
+    answer: 2,
+    explanation: "Na pedagogia libertadora, o professor coordena e media um processo dialógico em que a realidade social é problematizada com participação ativa dos estudantes.",
+    audited: true
+  },
+  {
+    id: "tp-s05-009",
+    discipline: "Conhecimentos Pedagógicos",
+    topic: "Tendências Progressistas",
+    source: "Lote autoral inspirado nos temas do Simulado 05 — Teorias Pedagógicas — PND 2025",
+    statement: "Qual prática se aproxima mais das tendências pedagógicas progressistas?",
+    options: ["Memorização descontextualizada", "Padronização rígida do comportamento", "Reflexão crítica sobre conhecimentos e realidade social", "Exposição verbal como único método"],
+    answer: 2,
+    explanation: "As tendências progressistas relacionam educação e realidade social, valorizando reflexão crítica, participação e compreensão das condições históricas da aprendizagem.",
+    audited: true
+  },
+  {
+    id: "tp-s05-010",
+    discipline: "Conhecimentos Pedagógicos",
+    topic: "Paulo Freire",
+    source: "Lote autoral inspirado nos temas do Simulado 05 — Teorias Pedagógicas — PND 2025",
+    statement: "Na concepção libertadora de Paulo Freire, quais elementos são centrais no processo educativo?",
+    options: ["Diálogo, problematização da realidade e desenvolvimento da criticidade", "Treinamento técnico e controle de desempenho", "Memorização e transmissão unilateral", "Neutralidade social e ausência de contexto"],
+    answer: 0,
+    explanation: "A educação libertadora é dialógica e problematizadora, buscando desenvolver consciência crítica e participação dos sujeitos na leitura e transformação do mundo.",
+    audited: true
+  },
+  {
+    id: "tp-s05-011",
+    discipline: "Conhecimentos Pedagógicos",
+    topic: "Tendências Pedagógicas",
+    source: "Lote autoral inspirado nos temas do Simulado 05 — Teorias Pedagógicas — PND 2025",
+    statement: "Assinale a alternativa correta sobre tendências pedagógicas.",
+    options: ["A tradicional retira do professor a centralidade do ensino", "A tecnicista rejeita padronização e eficiência", "Tendências críticas relacionam educação e transformação social", "A progressista elimina a participação do estudante"],
+    answer: 2,
+    explanation: "Tendências críticas e progressistas compreendem a educação em relação às condições sociais e buscam desenvolver consciência crítica e possibilidades de transformação.",
+    audited: true
+  },
+  {
+    id: "tp-s05-012",
+    discipline: "Conhecimentos Pedagógicos",
+    topic: "Classificação das Tendências Pedagógicas",
+    source: "Lote autoral inspirado nos temas do Simulado 05 — Teorias Pedagógicas — PND 2025",
+    statement: "Na classificação de Libâneo, as tendências pedagógicas são organizadas em duas grandes linhas. Quais são elas?",
+    options: ["Liberais e progressistas", "Tradicionais e tecnológicas", "Diretivas e não diretivas", "Cognitivas e comportamentais"],
+    answer: 0,
+    explanation: "Libâneo organiza as tendências pedagógicas em duas grandes linhas: liberais e progressistas, cada uma reunindo diferentes concepções de escola, sociedade e ensino.",
+    audited: true
+  },
+  {
+    id: "tp-s05-013",
+    discipline: "Conhecimentos Pedagógicos",
+    topic: "Ensino Híbrido",
+    source: "Lote autoral inspirado nos temas do Simulado 05 — Teorias Pedagógicas — PND 2025",
+    statement: "Sala de aula invertida, rotação por estações, modelo flex e modelo à la carte são estratégias associadas principalmente a:",
+    options: ["Método Montessori", "Abordagem Pikler", "Ensino híbrido", "Método tradicional"],
+    answer: 2,
+    explanation: "Esses modelos integram experiências presenciais e online e são formas conhecidas de organização do ensino híbrido.",
+    audited: true
+  },
+  {
+    id: "tp-s05-014",
+    discipline: "Conhecimentos Pedagógicos",
+    topic: "Comenius",
+    source: "Lote autoral inspirado nos temas do Simulado 05 — Teorias Pedagógicas — PND 2025",
+    statement: "Qual princípio associado a Comenius contribuiu para sua importância na pedagogia moderna?",
+    options: ["Educação restrita a grupos socialmente privilegiados", "Ausência de orientação docente", "Defesa de educação acessível a todos", "Formação exclusivamente industrial"],
+    answer: 2,
+    explanation: "Comenius defendeu uma educação sistemática e amplamente acessível, contribuindo para a ideia de universalização do ensino.",
+    audited: true
+  },
+  {
+    id: "tp-s05-015",
+    discipline: "Conhecimentos Pedagógicos",
+    topic: "Cognitivismo",
+    source: "Lote autoral inspirado nos temas do Simulado 05 — Teorias Pedagógicas — PND 2025",
+    statement: "Uma teoria que estuda como informações são recebidas, processadas, armazenadas e recuperadas pelas estruturas mentais aproxima-se da perspectiva:",
+    options: ["Humanista", "Cognitivista", "Behaviorista", "Sociocultural", "Histórico-dialética"],
+    answer: 1,
+    explanation: "O cognitivismo concentra-se nos processos mentais internos envolvidos na aprendizagem, como memória, atenção, percepção e raciocínio.",
+    audited: true
+  },
+  {
+    id: "tp-s05-016",
+    discipline: "Conhecimentos Pedagógicos",
+    topic: "Construtivismo",
+    source: "Lote autoral inspirado nos temas do Simulado 05 — Teorias Pedagógicas — PND 2025",
+    statement: "Uma proposta que coloca o aluno como sujeito ativo e valoriza a construção do conhecimento por interação e colaboração aproxima-se do:",
+    options: ["Tradicionalismo", "Construtivismo pedagógico", "Pedagogia Waldorf", "Pedagogia logosófica"],
+    answer: 1,
+    explanation: "No construtivismo, o estudante participa ativamente da construção do conhecimento, interagindo com problemas, colegas, experiências e o ambiente.",
+    audited: true
+  },
+  {
+    id: "tp-s05-017",
+    discipline: "Conhecimentos Pedagógicos",
+    topic: "Pedagogia Tecnicista",
+    source: "Lote autoral inspirado nos temas do Simulado 05 — Teorias Pedagógicas — PND 2025",
+    statement: "Qual tendência enfatiza organização racional dos meios, eficiência, padronização e influência do positivismo?",
+    options: ["Tradicional", "Tecnicista", "Escola Nova", "Libertadora", "Crítico-social dos conteúdos"],
+    answer: 1,
+    explanation: "A pedagogia tecnicista valoriza racionalização do ensino, objetivos operacionais, eficiência técnica e organização dos meios para alcançar resultados previstos.",
+    audited: true
+  },
+  {
+    id: "tp-s05-018",
+    discipline: "Conhecimentos Pedagógicos",
+    topic: "Interacionismo",
+    source: "Lote autoral inspirado nos temas do Simulado 05 — Teorias Pedagógicas — PND 2025",
+    statement: "Para uma perspectiva interacionista, a aprendizagem é explicada sobretudo pela:",
+    options: ["Conexão mecânica entre estímulo e reação", "Separação entre sujeito e ambiente", "Interação entre organismo e meio", "Divergência entre mente e experiência", "Oposição entre ensino e aprendizagem"],
+    answer: 2,
+    explanation: "O interacionismo enfatiza que desenvolvimento e aprendizagem resultam da relação ativa entre o sujeito e o meio em que ele vive.",
+    audited: true
+  },
+  {
+    id: "tp-s05-019",
+    discipline: "Conhecimentos Pedagógicos",
+    topic: "Classificação das Tendências Pedagógicas",
+    source: "Lote autoral inspirado nos temas do Simulado 05 — Teorias Pedagógicas — PND 2025",
+    statement: "Considerando a classificação liberal/progressista, como se classificam, respectivamente, a pedagogia renovada, a pedagogia tradicional e a crítico-social dos conteúdos?",
+    options: ["Liberal, liberal, progressista", "Liberal, progressista, liberal", "Progressista, liberal, progressista", "Progressista, progressista, liberal"],
+    answer: 0,
+    explanation: "A pedagogia renovada e a tradicional integram as tendências liberais. A crítico-social dos conteúdos integra as tendências progressistas.",
+    audited: true
+  },
+  {
+    id: "tp-s05-020",
+    discipline: "Conhecimentos Pedagógicos",
+    topic: "Wallon",
+    source: "Lote autoral inspirado nos temas do Simulado 05 — Teorias Pedagógicas — PND 2025",
+    statement: "Na teoria psicogenética de Henri Wallon, qual combinação melhor representa sua compreensão do desenvolvimento infantil?",
+    options: ["Afetividade, movimento, inteligência e relações socioculturais integradas", "Separação rígida entre mente e corpo", "Predomínio exclusivo da cognição", "Autoritarismo docente como eixo do desenvolvimento"],
+    answer: 0,
+    explanation: "Wallon compreende o desenvolvimento de forma integrada, articulando afetividade, ato motor, inteligência, fatores biológicos e relações sociais.",
+    audited: true
+  }
+];
