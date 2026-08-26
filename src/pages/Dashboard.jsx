@@ -1,5 +1,5 @@
 import React,{useEffect,useMemo,useState}from"react";
-import{ArrowRight,BookOpenText,Clock3,Database,FileText,ListChecks,PlayCircle,Target}from"lucide-react";
+import{ArrowRight,BookOpenText,Clock3,Database,FileText,ListChecks,PlayCircle,Target,TrendingUp,Sparkles,ShieldCheck}from"lucide-react";
 import{useNavigate}from"react-router";
 import{ALL_QUESTIONS,QUESTION_AUDIT_STATS,QUESTION_SOURCE_STATS}from"../data/questionSources";
 import{LIBRARY_MATERIALS}from"../data/libraryMaterials";
@@ -22,22 +22,29 @@ export default function Dashboard(){
  const uniqueDisciplines=useMemo(()=>new Set(ALL_QUESTIONS.map(q=>q.discipline).filter(Boolean)).size,[]);
  const completedCount=(state.completedTopics||[]).length;
  const progress=uniqueTopics?Math.min(100,Math.round(completedCount/uniqueTopics*100)):0;
- return <section className="page dashboard-page">
-  <div className="dashboard-heading"><div><div className="page-eyebrow">PAINEL DE ESTUDOS</div><h1>Olá, {state.settings?.name||"Diego"}!</h1><p>Continue sua preparação para o seu concurso.</p></div><button className="primary-button" onClick={()=>navigate("/estudos")}><PlayCircle size={19}/>Iniciar estudo<ArrowRight size={18}/></button></div>
-  <div className="stats-grid">
-   <Stat icon={ListChecks} label="QUESTÕES RESPONDIDAS" value={totalAnswered} description={`Banco atual: ${publishedQuestions} disponíveis`}/>
-   <Stat icon={Target} label="ACERTOS" value={`${accuracy}%`} description={`${correct} respostas corretas`}/>
-   <Stat icon={FileText} label="SIMULADOS" value={state.simulations||0} description="Simulados realizados"/>
-   <Stat icon={Clock3} label="TEMPO DE ESTUDO" value={`${studiedMinutes} min`} description="Tempo acumulado"/>
+ const reviewCount=(QUESTION_AUDIT_STATS?.quarantinedMissingContext||0)+(QUESTION_AUDIT_STATS?.quarantinedOversizedOption||0);
+ const goal=Number(state.settings?.weeklyGoal||300);const goalPct=Math.min(100,Math.round(studiedMinutes/Math.max(1,goal)*100));
+ return <section className="page dashboard-page dashboard-pro">
+  <div className="dashboard-hero">
+   <div className="dashboard-hero-copy"><div className="page-eyebrow">CENTRAL DE PREPARAÇÃO</div><h1>Olá, {state.settings?.name||"Diego"}.</h1><p>Seu estudo, suas questões e sua evolução em um único painel.</p><div className="hero-actions"><button className="primary-button" onClick={()=>navigate("/questoes")}><PlayCircle size={19}/>Resolver questões<ArrowRight size={17}/></button><button className="hero-secondary" onClick={()=>navigate("/simulados")}><FileText size={18}/>Criar simulado</button></div></div>
+   <div className="hero-focus"><div className="hero-focus-icon"><Sparkles size={22}/></div><div><span>FOCO DA SESSÃO</span><strong>{totalAnswered?`${accuracy}% de aproveitamento`:`Comece pelas questões`}</strong><small>{totalAnswered?`${correct} acertos em ${totalAnswered} respostas registradas`:`Use o banco para gerar seu primeiro diagnóstico.`}</small></div></div>
   </div>
-  <div className="dashboard-grid">
-   <div className="card study-card"><div className="card-heading"><div><div className="card-eyebrow">CONTINUE ESTUDANDO</div><h2>Trilha geral</h2><p>Conclua tópicos e acompanhe sua evolução geral.</p></div><BookOpenText size={27} strokeWidth={1.6}/></div><div className="progress-meta"><span>Tópicos concluídos</span><strong>{completedCount}/{uniqueTopics}</strong></div><div className="progress-meta"><span>Progresso</span><strong>{progress}%</strong></div><div className="progress-bar"><span style={{width:`${progress}%`}}/></div><button className="secondary-button" onClick={()=>navigate("/estudos")}>Abrir estudos<ArrowRight size={17}/></button></div>
-   <div className="card"><div className="card-heading"><div><div className="card-eyebrow">BASE PDF CONCURSO EDU</div><h2>Base de conhecimento</h2></div><Database size={26} strokeWidth={1.6}/></div><div className="source-list">
-    <button onClick={()=>navigate("/questoes")}><div><strong>01&nbsp;&nbsp; Base de Questões</strong><span>{publishedQuestions} questões publicadas · {uniqueDisciplines} disciplinas</span></div><ArrowRight size={17}/></button>
-    <button onClick={()=>navigate("/biblioteca")}><div><strong>02&nbsp;&nbsp; Biblioteca de Pesquisa</strong><span>{LIBRARY_MATERIALS.length} materiais cadastrados</span></div><ArrowRight size={17}/></button>
-    <button onClick={()=>navigate("/desempenho")}><div><strong>03&nbsp;&nbsp; Motor de Análise</strong><span>{totalAnswered} respostas registradas no histórico</span></div><ArrowRight size={17}/></button>
-   </div><div style={{marginTop:14,fontSize:12,color:"var(--muted)",lineHeight:1.6}}>Auditoria do banco: {QUESTION_AUDIT_STATS?.raw??publishedQuestions} registros analisados · {QUESTION_AUDIT_STATS?.published??publishedQuestions} publicados · {(QUESTION_AUDIT_STATS?.quarantinedMissingContext||0)+(QUESTION_AUDIT_STATS?.quarantinedOversizedOption||0)} em revisão. Fontes integradas: {Object.keys(QUESTION_SOURCE_STATS||{}).filter(k=>k!=="total").length}.</div></div>
+  <div className="stats-grid stats-pro">
+   <Stat icon={ListChecks} label="QUESTÕES" value={totalAnswered} description={`${publishedQuestions} disponíveis`} tone="blue"/>
+   <Stat icon={Target} label="APROVEITAMENTO" value={`${accuracy}%`} description={`${correct} respostas corretas`} tone="green"/>
+   <Stat icon={FileText} label="SIMULADOS" value={state.simulations||0} description="realizados até agora" tone="red"/>
+   <Stat icon={Clock3} label="TEMPO DE ESTUDO" value={`${studiedMinutes} min`} description={`${goalPct}% da meta semanal`} tone="amber"/>
+  </div>
+  <div className="dashboard-main-grid">
+   <div className="dashboard-column">
+    <div className="card study-card pro-card"><div className="card-heading"><div><div className="card-eyebrow">PLANO DE EVOLUÇÃO</div><h2>Trilha geral</h2><p>Avance por tópicos e transforme estudo em progresso mensurável.</p></div><div className="card-icon-soft"><BookOpenText size={23}/></div></div><div className="progress-hero"><div><strong>{progress}%</strong><span>concluído</span></div><small>{completedCount} de {uniqueTopics} tópicos</small></div><div className="progress-bar pro-progress"><span style={{width:`${progress}%`}}/></div><div className="study-mini-grid"><div><span>Meta semanal</span><strong>{goal} min</strong></div><div><span>Estudado</span><strong>{studiedMinutes} min</strong></div><div><span>Disciplinas</span><strong>{uniqueDisciplines}</strong></div></div><button className="secondary-button card-action" onClick={()=>navigate("/estudos")}>Continuar trilha<ArrowRight size={17}/></button></div>
+    <div className="card pro-card quick-card"><div className="card-heading"><div><div className="card-eyebrow">ATALHOS INTELIGENTES</div><h2>Próxima ação</h2></div><TrendingUp size={23}/></div><div className="quick-actions"><button onClick={()=>navigate("/questoes")}><ListChecks size={19}/><div><strong>Treinar por questões</strong><span>Filtre disciplina e assunto</span></div><ArrowRight size={16}/></button><button onClick={()=>navigate("/simulados")}><FileText size={19}/><div><strong>Sortear simulado</strong><span>Prova personalizada e aleatória</span></div><ArrowRight size={16}/></button><button onClick={()=>navigate("/desempenho")}><Target size={19}/><div><strong>Analisar desempenho</strong><span>Veja seus pontos fortes e fracos</span></div><ArrowRight size={16}/></button></div></div>
+   </div>
+   <div className="dashboard-column">
+    <div className="card pro-card knowledge-card"><div className="card-heading"><div><div className="card-eyebrow">BASE PDF CONCURSO EDU</div><h2>Seu ambiente de preparação</h2><p>Conteúdo centralizado e pronto para prática.</p></div><div className="card-icon-soft"><Database size={23}/></div></div><div className="knowledge-number"><strong>{publishedQuestions}</strong><span>questões publicadas</span></div><div className="source-list pro-source-list"><button onClick={()=>navigate("/questoes")}><div className="source-index">01</div><div><strong>Banco de Questões</strong><span>{uniqueDisciplines} disciplinas integradas</span></div><ArrowRight size={17}/></button><button onClick={()=>navigate("/biblioteca")}><div className="source-index">02</div><div><strong>Biblioteca</strong><span>{LIBRARY_MATERIALS.length} materiais cadastrados</span></div><ArrowRight size={17}/></button><button onClick={()=>navigate("/desempenho")}><div className="source-index">03</div><div><strong>Motor de Análise</strong><span>{totalAnswered} respostas no histórico</span></div><ArrowRight size={17}/></button></div></div>
+    <div className="card pro-card audit-card"><div className="audit-status"><div className="audit-icon"><ShieldCheck size={21}/></div><div><span>QUALIDADE DO BANCO</span><strong>{reviewCount?`${reviewCount} itens em revisão`:`Base auditada`}</strong><small>{QUESTION_AUDIT_STATS?.published??publishedQuestions} questões liberadas para estudo</small></div></div><div className="audit-meta"><span>{Object.keys(QUESTION_SOURCE_STATS||{}).filter(k=>k!=="total").length} fontes integradas</span><span>{QUESTION_AUDIT_STATS?.raw??publishedQuestions} registros analisados</span></div></div>
+   </div>
   </div>
  </section>
 }
-function Stat({icon:Icon,label,value,description}){return <div className="stat-card"><div className="stat-icon"><Icon size={21} strokeWidth={1.7}/></div><div><span>{label}</span><strong>{value}</strong><small>{description}</small></div></div>}
+function Stat({icon:Icon,label,value,description,tone}){return <div className={`stat-card stat-pro stat-${tone}`}><div className="stat-icon"><Icon size={20} strokeWidth={1.8}/></div><div className="stat-copy"><span>{label}</span><strong>{value}</strong><small>{description}</small></div></div>}
