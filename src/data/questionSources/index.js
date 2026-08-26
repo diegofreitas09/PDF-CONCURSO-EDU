@@ -7,10 +7,6 @@ import { PORTUGUES_APOSTILA_PRESENCIAL } from "./portuguesApostilaPresencial";
 import { INDICADORES_EDUCACIONAIS_APOSTILA_PRESENCIAL } from "./indicadoresEducacionaisApostilaPresencial";
 import { ADMINISTRACAO_PUBLICA_SEDUC_01 } from "./administracaoPublicaSeduc01";
 
-/**
- * Camada de auditoria do banco.
- * Corrige problemas típicos de OCR antes de qualquer questão aparecer ao aluno.
- */
 function cleanText(value = "") {
   return String(value)
     .replace(/<[^>]*>/g, " ")
@@ -24,10 +20,6 @@ function cleanText(value = "") {
     .trim();
 }
 
-function hasEmbeddedContext(q) {
-  return Boolean(q?.context || q?.passage || q?.supportText || q?.texto || q?.textBase || q?.baseText);
-}
-
 function getContext(q) {
   return cleanText(q?.context || q?.passage || q?.supportText || q?.texto || q?.textBase || q?.baseText || "");
 }
@@ -39,16 +31,12 @@ function dependsOnText(statement = "") {
     /\bcom base no texto\b/, /\bcom base no trecho\b/, /\ba partir do texto\b/,
     /\bsegundo o texto\b/, /\btexto acima\b/, /\btexto anterior\b/, /\bleia o texto\b/,
     /\bleia o trecho\b/, /\bconsidere o texto\b/, /\bobserve o texto\b/,
-    /\binterpretação coerente com o texto\b/, /\bideia central do texto\b/, /\bautor do texto\b/
+    /\binterpretação coerente com o texto\b/, /\bideia central do texto\b/, /\bautor do texto\b/,
+    /\bparágrafo\b/, /\bno trecho\b/, /\btrecho destacado\b/
   ];
   return patterns.some(pattern => pattern.test(s));
 }
 
-/**
- * PDFs em colunas fizeram o OCR anexar o texto-base ao fim da última alternativa.
- * Ex.: "Alternativa E. 43 TEXTO TÍTULO...".
- * Este método separa a alternativa do texto sem apagar o conteúdo recuperado.
- */
 function splitPassageFromOption(option = "") {
   const text = cleanText(option);
   const marker = /(?:\s|^)(?:\d{1,3}\s+)?TEXTO(?:\s+\d+)?\s+(?=[A-ZÁÉÍÓÚÂÊÔÃÕÇ])/i;
@@ -66,19 +54,23 @@ function splitPassageFromOption(option = "") {
   return { option: before, passage };
 }
 
-function normalizeQuestion(q, sourceIndex, inheritedContext = "") {
-  const originalOptions = Array.isArray(q?.options) ? q.options : [];
-  const options = originalOptions.map(cleanText);
+function normalizeQuestion(q, sourceIndex, inheritedContext = "", inheritedFromOCR = false) {
+  const options = Array.isArray(q?.options) ? q.options.map(cleanText) : [];
   const explicitContext = getContext(q);
   const context = explicitContext || inheritedContext || "";
-  const statement = cleanText(q?.statement);
+  const originalStatement = cleanText(q?.statement);
+  const shouldShowContext = Boolean(context && (inheritedFromOCR || explicitContext || dependsOnText(originalStatement)));
+  const statement = shouldShowContext
+    ? `TEXTO-BASE\n${context}\n\nQUESTÃO\n${originalStatement}`
+    : originalStatement;
 
   const suspiciousOversizedOption = options.some(option => option.length > 900);
-  const missingContext = dependsOnText(statement) && !context;
+  const missingContext = dependsOnText(originalStatement) && !context;
 
   return {
     ...q,
     id: q?.id ?? `audit-${sourceIndex}`,
+    originalStatement,
     statement,
     context,
     options,
@@ -87,44 +79,44 @@ function normalizeQuestion(q, sourceIndex, inheritedContext = "") {
   };
 }
 
-/**
- * Recupera textos-base sequenciais no banco legado.
- * Um texto encontrado no fim de uma alternativa passa a valer para as questões seguintes,
- * até que um novo marcador TEXTO seja encontrado.
- */
 function recoverLegacyQuestions(questions) {
   let activeContext = "";
+  let activeContextFromOCR = false;
   let recoveredPassages = 0;
   const recovered = [];
 
   questions.forEach((raw, index) => {
     const cloned = { ...raw, options: Array.isArray(raw?.options) ? [...raw.options] : [] };
-
-    // A questão atual usa o texto recuperado anteriormente.
-    const normalized = normalizeQuestion(cloned, index, activeContext);
+    const normalized = normalizeQuestion(cloned, index, activeContext, activeContextFromOCR);
 
     let nextContext = activeContext;
+    let nextContextFromOCR = activeContextFromOCR;
     const cleanedOptions = [];
+
     for (const option of normalized.options) {
       const split = splitPassageFromOption(option);
       if (split) {
         cleanedOptions.push(split.option);
         nextContext = split.passage;
+        nextContextFromOCR = true;
         recoveredPassages += 1;
       } else {
         cleanedOptions.push(option);
       }
     }
 
-    // Recalcula status após retirar o texto gigante da alternativa.
+    const stillOversized = cleanedOptions.some(o => o.length > 900);
     const fixed = {
       ...normalized,
       options: cleanedOptions,
-      auditStatus: dependsOnText(normalized.statement) && !normalized.context ? "missing-context" : (normalized.auditStatus === "oversized-option" && !cleanedOptions.some(o => o.length > 900) ? "ok" : normalized.auditStatus)
+      auditStatus: dependsOnText(normalized.originalStatement) && !normalized.context
+        ? "missing-context"
+        : (stillOversized ? "oversized-option" : "ok")
     };
 
     recovered.push(fixed);
     activeContext = nextContext;
+    activeContextFromOCR = nextContextFromOCR;
   });
 
   return { questions: recovered, recoveredPassages };
