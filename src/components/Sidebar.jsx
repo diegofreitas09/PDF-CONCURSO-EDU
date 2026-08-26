@@ -1,5 +1,4 @@
 import React from "react";
-
 import {
   LayoutDashboard,
   BookOpenText,
@@ -11,7 +10,6 @@ import {
   Network,
   Settings2
 } from "lucide-react";
-
 import { NavLink } from "react-router";
 
 const menu = [
@@ -30,42 +28,28 @@ export default function Sidebar() {
     <aside className="sidebar">
       <NavLink to="/" className="brand" title="Ir para o Dashboard">
         <img className="brand-logo" src={`${import.meta.env.BASE_URL}logo-pdf-concurso.png`} alt="PDF Concurso Edu" />
-        <div className="brand-text">
-          <strong>PDF</strong>
-          <span>CONCURSO EDU</span>
-        </div>
       </NavLink>
 
       <nav className="sidebar-nav">
         <div className="nav-label">PLATAFORMA</div>
-
         {menu.map(({ to, label, icon: Icon }) => (
-          <NavLink
-            key={to}
-            to={to}
-            end={to === "/"}
-            className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
-          >
-            <Icon size={19} strokeWidth={1.8} />
+          <NavLink key={to} to={to} end={to === "/"} className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}>
+            <Icon size={18} strokeWidth={1.8} />
             <span>{label}</span>
           </NavLink>
         ))}
 
         <div className="nav-label system-label">SISTEMA</div>
-
-        <NavLink
-          to="/configuracoes"
-          className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
-        >
-          <Settings2 size={19} strokeWidth={1.8} />
+        <NavLink to="/configuracoes" className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}>
+          <Settings2 size={18} strokeWidth={1.8} />
           <span>Configurações</span>
         </NavLink>
       </nav>
 
       <NavLink to="/configuracoes" className="sidebar-footer" title="Abrir configurações do perfil">
-        <div className="user-avatar">D</div>
+        <div className="user-avatar">DF</div>
         <div className="user-info">
-          <strong>Diego</strong>
+          <strong>Diego Freitas</strong>
           <span>Administrador</span>
         </div>
       </NavLink>
