@@ -7,6 +7,7 @@ import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
 import Estudos from "../pages/Estudos";
 import Questoes from "../pages/Questoes";
+import Simulados from "../pages/Simulados";
 import Desempenho from "../pages/Desempenho";
 import Cronograma from "../pages/Cronograma";
 import Biblioteca from "../pages/Biblioteca";
@@ -16,10 +17,7 @@ import AssistenteIA from "../pages/AssistenteIA";
 import Configuracoes from "../pages/Configuracoes";
 
 const router = createHashRouter([
-  {
-    path: "/login",
-    Component: Login,
-  },
+  { path: "/login", Component: Login },
   {
     Component: ProtectedRoute,
     children: [
@@ -30,6 +28,7 @@ const router = createHashRouter([
           { index: true, Component: Dashboard },
           { path: "estudos", Component: Estudos },
           { path: "questoes", Component: Questoes },
+          { path: "simulados", Component: Simulados },
           { path: "desempenho", Component: Desempenho },
           { path: "cronograma", Component: Cronograma },
           { path: "biblioteca", Component: Biblioteca },
