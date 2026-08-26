@@ -8,7 +8,8 @@ import {
   LibraryBig,
   BrainCircuit,
   Network,
-  Settings2
+  Settings2,
+  Bot
 } from "lucide-react";
 import { NavLink } from "react-router";
 
@@ -21,6 +22,7 @@ const menu = [
   { to: "/biblioteca", label: "Biblioteca", icon: LibraryBig },
   { to: "/flashcards", label: "Flashcards", icon: BrainCircuit },
   { to: "/mapas-mentais", label: "Mapas Mentais", icon: Network },
+  { to: "/assistente-ia", label: "Assistente IA", icon: Bot },
 ];
 
 export default function Sidebar() {
