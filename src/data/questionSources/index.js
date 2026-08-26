@@ -9,10 +9,7 @@ import { ADMINISTRACAO_PUBLICA_SEDUC_01 } from "./administracaoPublicaSeduc01";
 
 /**
  * Camada de auditoria do banco.
- * - remove marcações de Markdown/HTML herdadas de OCR;
- * - normaliza espaços e pontuação;
- * - impede a exibição de questões que dependem de texto-base ausente;
- * - preserva a questão original nos arquivos-fonte para futura revisão manual.
+ * Corrige problemas típicos de OCR antes de qualquer questão aparecer ao aluno.
  */
 function cleanText(value = "") {
   return String(value)
@@ -28,62 +25,136 @@ function cleanText(value = "") {
 }
 
 function hasEmbeddedContext(q) {
-  return Boolean(
-    q?.context || q?.passage || q?.supportText || q?.texto || q?.textBase || q?.baseText
-  );
+  return Boolean(q?.context || q?.passage || q?.supportText || q?.texto || q?.textBase || q?.baseText);
 }
 
-function dependsOnMissingText(q) {
-  if (hasEmbeddedContext(q)) return false;
-  const s = cleanText(q?.statement).toLowerCase();
+function getContext(q) {
+  return cleanText(q?.context || q?.passage || q?.supportText || q?.texto || q?.textBase || q?.baseText || "");
+}
+
+function dependsOnText(statement = "") {
+  const s = cleanText(statement).toLowerCase();
   const patterns = [
-    /\bno texto[\s:“\"']/,
-    /\bno texto intitulado\b/,
-    /\bde acordo com o texto\b/,
-    /\bcom base no texto\b/,
-    /\bcom base no trecho\b/,
-    /\ba partir do texto\b/,
-    /\bsegundo o texto\b/,
-    /\btexto acima\b/,
-    /\btexto anterior\b/,
-    /\bleia o texto\b/,
-    /\bleia o trecho\b/,
-    /\bconsidere o texto\b/,
-    /\bobserve o texto\b/
+    /\bno texto[\s:“\"']/, /\bno texto intitulado\b/, /\bde acordo com o texto\b/,
+    /\bcom base no texto\b/, /\bcom base no trecho\b/, /\ba partir do texto\b/,
+    /\bsegundo o texto\b/, /\btexto acima\b/, /\btexto anterior\b/, /\bleia o texto\b/,
+    /\bleia o trecho\b/, /\bconsidere o texto\b/, /\bobserve o texto\b/,
+    /\binterpretação coerente com o texto\b/, /\bideia central do texto\b/, /\bautor do texto\b/
   ];
-  return patterns.some((pattern) => pattern.test(s));
+  return patterns.some(pattern => pattern.test(s));
 }
 
-function normalizeQuestion(q, sourceIndex) {
-  const options = Array.isArray(q?.options) ? q.options.map(cleanText) : [];
+/**
+ * PDFs em colunas fizeram o OCR anexar o texto-base ao fim da última alternativa.
+ * Ex.: "Alternativa E. 43 TEXTO TÍTULO...".
+ * Este método separa a alternativa do texto sem apagar o conteúdo recuperado.
+ */
+function splitPassageFromOption(option = "") {
+  const text = cleanText(option);
+  const marker = /(?:\s|^)(?:\d{1,3}\s+)?TEXTO(?:\s+\d+)?\s+(?=[A-ZÁÉÍÓÚÂÊÔÃÕÇ])/i;
+  const match = marker.exec(text);
+  if (!match) return null;
+
+  const before = cleanText(text.slice(0, match.index)).replace(/\s+\d{1,3}\s*$/, "").trim();
+  const rawPassage = cleanText(text.slice(match.index));
+  const passage = rawPassage
+    .replace(/^\d{1,3}\s+TEXTO(?:\s+\d+)?\s+/i, "")
+    .replace(/^TEXTO(?:\s+\d+)?\s+/i, "")
+    .trim();
+
+  if (!before || passage.length < 120) return null;
+  return { option: before, passage };
+}
+
+function normalizeQuestion(q, sourceIndex, inheritedContext = "") {
+  const originalOptions = Array.isArray(q?.options) ? q.options : [];
+  const options = originalOptions.map(cleanText);
+  const explicitContext = getContext(q);
+  const context = explicitContext || inheritedContext || "";
+  const statement = cleanText(q?.statement);
+
+  const suspiciousOversizedOption = options.some(option => option.length > 900);
+  const missingContext = dependsOnText(statement) && !context;
+
   return {
     ...q,
     id: q?.id ?? `audit-${sourceIndex}`,
-    statement: cleanText(q?.statement),
+    statement,
+    context,
     options,
     explanation: cleanText(q?.explanation),
-    auditStatus: dependsOnMissingText(q) ? "missing-context" : (q?.auditStatus || "ok")
+    auditStatus: missingContext ? "missing-context" : (suspiciousOversizedOption ? "oversized-option" : (q?.auditStatus || "ok"))
   };
 }
 
+/**
+ * Recupera textos-base sequenciais no banco legado.
+ * Um texto encontrado no fim de uma alternativa passa a valer para as questões seguintes,
+ * até que um novo marcador TEXTO seja encontrado.
+ */
+function recoverLegacyQuestions(questions) {
+  let activeContext = "";
+  let recoveredPassages = 0;
+  const recovered = [];
+
+  questions.forEach((raw, index) => {
+    const cloned = { ...raw, options: Array.isArray(raw?.options) ? [...raw.options] : [] };
+
+    // A questão atual usa o texto recuperado anteriormente.
+    const normalized = normalizeQuestion(cloned, index, activeContext);
+
+    let nextContext = activeContext;
+    const cleanedOptions = [];
+    for (const option of normalized.options) {
+      const split = splitPassageFromOption(option);
+      if (split) {
+        cleanedOptions.push(split.option);
+        nextContext = split.passage;
+        recoveredPassages += 1;
+      } else {
+        cleanedOptions.push(option);
+      }
+    }
+
+    // Recalcula status após retirar o texto gigante da alternativa.
+    const fixed = {
+      ...normalized,
+      options: cleanedOptions,
+      auditStatus: dependsOnText(normalized.statement) && !normalized.context ? "missing-context" : (normalized.auditStatus === "oversized-option" && !cleanedOptions.some(o => o.length > 900) ? "ok" : normalized.auditStatus)
+    };
+
+    recovered.push(fixed);
+    activeContext = nextContext;
+  });
+
+  return { questions: recovered, recoveredPassages };
+}
+
+function normalizeAuthoredSource(questions, prefix) {
+  return questions.map((q, i) => normalizeQuestion(q, `${prefix}-${i}`));
+}
+
+const LEGACY_RECOVERY = recoverLegacyQuestions(LEGACY_QUESTION_BANK);
 const RAW_QUESTIONS = [
-  ...LEGACY_QUESTION_BANK,
-  ...SIMULADO_05_TEORIAS_PEDAGOGICAS,
-  ...SEDUC_CONHECIMENTOS_GERAIS_MODULO_1,
-  ...APOSTILA_PRESENCIAL_SEDUC_PEDAGOGICOS_01,
-  ...PORTUGUES_APOSTILA_PRESENCIAL,
-  ...INDICADORES_EDUCACIONAIS_APOSTILA_PRESENCIAL,
-  ...ADMINISTRACAO_PUBLICA_SEDUC_01,
+  ...LEGACY_RECOVERY.questions,
+  ...normalizeAuthoredSource(SIMULADO_05_TEORIAS_PEDAGOGICAS, "sim05"),
+  ...normalizeAuthoredSource(SEDUC_CONHECIMENTOS_GERAIS_MODULO_1, "seduc1"),
+  ...normalizeAuthoredSource(APOSTILA_PRESENCIAL_SEDUC_PEDAGOGICOS_01, "ped01"),
+  ...normalizeAuthoredSource(PORTUGUES_APOSTILA_PRESENCIAL, "port"),
+  ...normalizeAuthoredSource(INDICADORES_EDUCACIONAIS_APOSTILA_PRESENCIAL, "ind"),
+  ...normalizeAuthoredSource(ADMINISTRACAO_PUBLICA_SEDUC_01, "adm"),
 ];
 
-export const AUDITED_QUESTIONS = RAW_QUESTIONS.map(normalizeQuestion);
-export const QUARANTINED_QUESTIONS = AUDITED_QUESTIONS.filter(q => q.auditStatus === "missing-context");
-export const ALL_QUESTIONS = AUDITED_QUESTIONS.filter(q => q.auditStatus !== "missing-context");
+export const AUDITED_QUESTIONS = RAW_QUESTIONS;
+export const QUARANTINED_QUESTIONS = AUDITED_QUESTIONS.filter(q => q.auditStatus === "missing-context" || q.auditStatus === "oversized-option");
+export const ALL_QUESTIONS = AUDITED_QUESTIONS.filter(q => q.auditStatus !== "missing-context" && q.auditStatus !== "oversized-option");
 
 export const QUESTION_AUDIT_STATS = {
-  raw: RAW_QUESTIONS.length,
+  raw: AUDITED_QUESTIONS.length,
   published: ALL_QUESTIONS.length,
-  quarantinedMissingContext: QUARANTINED_QUESTIONS.length,
+  recoveredPassagesFromOptions: LEGACY_RECOVERY.recoveredPassages,
+  quarantinedMissingContext: AUDITED_QUESTIONS.filter(q => q.auditStatus === "missing-context").length,
+  quarantinedOversizedOption: AUDITED_QUESTIONS.filter(q => q.auditStatus === "oversized-option").length,
 };
 
 export const QUESTION_SOURCE_STATS = {
