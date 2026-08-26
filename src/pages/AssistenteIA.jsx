@@ -3,7 +3,7 @@ import { Bot, Send, Trash2, Wifi, WifiOff, Sparkles } from "lucide-react";
 import "../styles/assistant.css";
 
 const CHAT_KEY = "pdf-concurso-edu-ai-chat";
-const OLLAMA_URL = "https://openings-shall-undertake-metallic.trycloudflare.com";
+const OLLAMA_URL = "https://audience-discovered-episodes-persistent.trycloudflare.com";
 const MODEL = "qwen3:8b";
 const SYSTEM_PROMPT = `Você é o assistente pedagógico do PDF Concurso EDU, especializado em concursos públicos brasileiros. Responda sempre em português brasileiro, de forma didática e objetiva. Use prioritariamente as informações fornecidas pelo usuário e pela plataforma. Não invente leis, artigos, autores, datas, gabaritos ou referências. Quando não tiver segurança, diga claramente que a informação precisa ser conferida em fonte oficial. Em questões, nunca altere o gabarito oficial informado pela plataforma; sua função é explicá-lo. Em legislação, dê preferência à terminologia legal brasileira e sinalize quando a redação vigente precisar ser conferida.`;
 
