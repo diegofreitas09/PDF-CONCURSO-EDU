@@ -6,14 +6,19 @@ import {
   Bot,
   CheckCircle2,
   ListChecks,
+  RefreshCw,
   Shuffle,
+  Sparkles,
 } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router";
 import { QUESTION_BANK } from "../data/questionBank";
+import { auth } from "../lib/firebase";
 import "../styles/questions.css";
 
 const STORAGE_KEY = "pdf-concurso-edu-state-v1";
 const REVIEW_KEY = "pdf-concurso-edu-review-questions";
+const AI_COMMENT_KEY = "pdf-concurso-edu-ai-comments";
+const AI_API_URL = "https://us-central1-pdf-concurso-edu.cloudfunctions.net/aiChat";
 
 function loadState() {
   try {
@@ -36,6 +41,14 @@ function loadReview() {
   }
 }
 
+function loadAIComments() {
+  try {
+    return JSON.parse(localStorage.getItem(AI_COMMENT_KEY)) || {};
+  } catch {
+    return {};
+  }
+}
+
 export default function Questoes() {
   const navigate = useNavigate();
   const [params, setParams] = useSearchParams();
@@ -44,6 +57,9 @@ export default function Questoes() {
   const [checked, setChecked] = useState(false);
   const [index, setIndex] = useState(0);
   const [reviewIds, setReviewIds] = useState(loadReview);
+  const [aiComments, setAIComments] = useState(loadAIComments);
+  const [aiLoading, setAILoading] = useState(false);
+  const [aiError, setAIError] = useState("");
 
   const discipline = params.get("disciplina") || "";
   const topic = params.get("topico") || "";
@@ -73,11 +89,13 @@ export default function Questoes() {
 
   const current = filtered[index] || null;
   const isMarked = current ? reviewIds.includes(current.id) : false;
+  const aiComment = current ? aiComments[current.id] || "" : "";
 
   useEffect(() => {
     setIndex(0);
     setSelected(null);
     setChecked(false);
+    setAIError("");
   }, [discipline, topic]);
 
   useEffect(() => {
@@ -90,6 +108,7 @@ export default function Questoes() {
     setIndex(safeIndex);
     setSelected(null);
     setChecked(false);
+    setAIError("");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -98,7 +117,7 @@ export default function Questoes() {
     setSelected(optionIndex);
   }
 
-  function correctQuestion() {
+  async function correctQuestion() {
     if (selected === null || !current || checked) return;
 
     const record = {
@@ -120,6 +139,10 @@ export default function Questoes() {
     saveState(nextState);
     setState(nextState);
     setChecked(true);
+
+    if (!aiComments[current.id]) {
+      generateAIComment(current, selected);
+    }
   }
 
   function toggleReview() {
@@ -138,12 +161,60 @@ export default function Questoes() {
     changeQuestion(next);
   }
 
-  function explainWithAI() {
-    if (!current) return;
-    const alternatives = current.options
+  function buildQuestionPrompt(question, studentChoice = null) {
+    const alternatives = question.options
       .map((option, i) => `${String.fromCharCode(65 + i)}) ${option}`)
       .join("\n");
-    const prompt = `Explique esta questão de concurso de forma didática, indicando por que a alternativa correta está certa e, quando possível, por que as demais estão erradas.\n\n${current.statement}\n\n${alternatives}\n\nGabarito: ${String.fromCharCode(65 + current.answer)}.`;
+
+    const studentLine = studentChoice === null
+      ? ""
+      : `\nAlternativa marcada pelo aluno: ${String.fromCharCode(65 + studentChoice)}.`;
+
+    return `Comente esta questão de concurso em português brasileiro. Seja didático, objetivo e pedagógico. Estruture a resposta em três partes curtas: 1) por que a alternativa correta está certa; 2) por que as demais alternativas estão erradas ou inadequadas, quando isso puder ser afirmado com segurança; 3) uma dica rápida para memorizar o conteúdo. Não invente informações. Se a questão envolver legislação, avise quando for importante conferir a redação legal vigente.\n\nDisciplina: ${question.discipline}\nAssunto: ${question.topic}\n\nEnunciado:\n${question.statement}\n\nAlternativas:\n${alternatives}\n\nGabarito oficial: ${String.fromCharCode(65 + question.answer)}.${studentLine}`;
+  }
+
+  async function generateAIComment(question = current, studentChoice = selected, force = false) {
+    if (!question || aiLoading) return;
+    if (!force && aiComments[question.id]) return;
+
+    setAILoading(true);
+    setAIError("");
+
+    try {
+      const user = auth.currentUser;
+      if (!user) throw new Error("Faça login novamente para gerar o comentário com IA.");
+      const token = await user.getIdToken();
+
+      const response = await fetch(AI_API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          messages: [{ role: "user", content: buildQuestionPrompt(question, studentChoice) }],
+        }),
+      });
+
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data?.error || `Erro ${response.status}`);
+
+      const content = data?.message?.content?.trim();
+      if (!content) throw new Error("A IA não retornou um comentário para esta questão.");
+
+      const nextComments = { ...loadAIComments(), [question.id]: content };
+      localStorage.setItem(AI_COMMENT_KEY, JSON.stringify(nextComments));
+      setAIComments(nextComments);
+    } catch (error) {
+      setAIError(error?.message || "Não foi possível gerar o comentário com IA agora.");
+    } finally {
+      setAILoading(false);
+    }
+  }
+
+  function explainWithAI() {
+    if (!current) return;
+    const prompt = buildQuestionPrompt(current, selected);
     navigate(`/assistente-ia?pergunta=${encodeURIComponent(prompt)}`);
   }
 
@@ -280,11 +351,34 @@ export default function Questoes() {
               <strong>Gabarito: {String.fromCharCode(65 + current.answer)}</strong>
               <span>{selected === current.answer ? "Você acertou!" : `Você marcou ${String.fromCharCode(65 + selected)}.`}</span>
             </div>
-            <button type="button" onClick={explainWithAI}><Bot size={17} /> Explicar com IA</button>
+            <button type="button" onClick={explainWithAI}><Bot size={17} /> Abrir no Assistente IA</button>
           </div>
-          <div className="feedback-comment">
-            <strong>Comentário da questão</strong>
-            <p>{current.explanation || "Comentário detalhado ainda não cadastrado para esta questão."}</p>
+
+          <div className="feedback-comment ai-generated-comment">
+            <div className="ai-comment-heading">
+              <div>
+                <span className="ai-comment-badge"><Sparkles size={14} /> Comentário por IA</span>
+                <strong>Comentário da questão</strong>
+              </div>
+              {aiComment && (
+                <button type="button" className="regenerate-comment-button" onClick={() => generateAIComment(current, selected, true)} disabled={aiLoading}>
+                  <RefreshCw size={15} className={aiLoading ? "spinning" : ""} /> Gerar novamente
+                </button>
+              )}
+            </div>
+
+            {aiLoading ? (
+              <div className="ai-comment-loading"><RefreshCw size={18} className="spinning" /><span>A IA está analisando a questão...</span></div>
+            ) : aiComment ? (
+              <p className="ai-comment-text">{aiComment}</p>
+            ) : aiError ? (
+              <div className="ai-comment-error">
+                <p>{aiError}</p>
+                <button type="button" onClick={() => generateAIComment(current, selected, true)}>Tentar novamente</button>
+              </div>
+            ) : (
+              <div className="ai-comment-loading"><Sparkles size={18} /><span>Preparando comentário inteligente...</span></div>
+            )}
           </div>
         </section>
       )}
