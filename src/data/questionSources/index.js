@@ -2,6 +2,7 @@ import { QUESTION_BANK as LEGACY_QUESTION_BANK } from "../questionBank";
 import { SIMULADO_05_TEORIAS_PEDAGOGICAS } from "./simulado05TeoriasPedagogicas";
 import { SEDUC_CONHECIMENTOS_GERAIS_MODULO_1 } from "./seducConhecimentosGeraisModulo1";
 import { APOSTILA_PRESENCIAL_SEDUC_PEDAGOGICOS_01 } from "./apostilaPresencialSeducPedagogicos01";
+import { PORTUGUES_APOSTILA_PRESENCIAL } from "./portuguesApostilaPresencial";
 
 /**
  * Banco unificado da plataforma.
@@ -13,6 +14,7 @@ export const ALL_QUESTIONS = [
   ...SIMULADO_05_TEORIAS_PEDAGOGICAS,
   ...SEDUC_CONHECIMENTOS_GERAIS_MODULO_1,
   ...APOSTILA_PRESENCIAL_SEDUC_PEDAGOGICOS_01,
+  ...PORTUGUES_APOSTILA_PRESENCIAL,
 ];
 
 export const QUESTION_SOURCE_STATS = {
@@ -20,5 +22,6 @@ export const QUESTION_SOURCE_STATS = {
   simulado05TeoriasPedagogicas: SIMULADO_05_TEORIAS_PEDAGOGICAS.length,
   seducConhecimentosGeraisModulo1: SEDUC_CONHECIMENTOS_GERAIS_MODULO_1.length,
   apostilaPresencialSeducPedagogicos01: APOSTILA_PRESENCIAL_SEDUC_PEDAGOGICOS_01.length,
-  total: LEGACY_QUESTION_BANK.length + SIMULADO_05_TEORIAS_PEDAGOGICAS.length + SEDUC_CONHECIMENTOS_GERAIS_MODULO_1.length + APOSTILA_PRESENCIAL_SEDUC_PEDAGOGICOS_01.length,
+  portuguesApostilaPresencial: PORTUGUES_APOSTILA_PRESENCIAL.length,
+  total: LEGACY_QUESTION_BANK.length + SIMULADO_05_TEORIAS_PEDAGOGICAS.length + SEDUC_CONHECIMENTOS_GERAIS_MODULO_1.length + APOSTILA_PRESENCIAL_SEDUC_PEDAGOGICOS_01.length + PORTUGUES_APOSTILA_PRESENCIAL.length,
 };
