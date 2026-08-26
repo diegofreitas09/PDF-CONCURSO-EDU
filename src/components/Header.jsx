@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Search, Bell, Wifi, WifiOff, X, CalendarRange, ListChecks, BookOpenText, ChartNoAxesCombined, LogOut } from "lucide-react";
+import { Search, Bell, Wifi, WifiOff, X, CalendarRange, ListChecks, BookOpenText, ChartNoAxesCombined, LogOut, Sun, Moon } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
 
 const STORAGE_KEY = "pdf-concurso-edu-state-v1";
+const THEME_KEY = "pdf-concurso-edu-theme";
 
 function readState() {
   try {
@@ -13,6 +14,12 @@ function readState() {
   }
 }
 
+function readTheme() {
+  const saved = localStorage.getItem(THEME_KEY);
+  if (saved === "dark" || saved === "light") return saved;
+  return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
 export default function Header() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
@@ -20,6 +27,12 @@ export default function Header() {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [platformState, setPlatformState] = useState(readState);
+  const [theme, setTheme] = useState(readTheme);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem(THEME_KEY, theme);
+  }, [theme]);
 
   useEffect(() => {
     const handleOnline = () => setOnline(true);
@@ -103,10 +116,20 @@ export default function Header() {
           onKeyDown={(event) => event.key === "Enter" && runSearch()}
           placeholder="Buscar questões, temas, conteúdos..."
         />
+        <span className="search-shortcut">Ctrl + K</span>
         {search && <button type="button" className="search-clear" onClick={() => setSearch("")} aria-label="Limpar busca"><X size={16} /></button>}
       </div>
 
       <div className="header-actions">
+        <div className="theme-switch" aria-label="Tema da plataforma">
+          <button type="button" className={theme === "light" ? "active" : ""} onClick={() => setTheme("light")} title="Modo dia">
+            <Sun size={15} /><span>Dia</span>
+          </button>
+          <button type="button" className={theme === "dark" ? "active" : ""} onClick={() => setTheme("dark")} title="Modo noite">
+            <Moon size={15} /><span>Noite</span>
+          </button>
+        </div>
+
         <button
           type="button"
           className={`api-status ${online ? "online" : "offline"}`}
