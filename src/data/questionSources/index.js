@@ -6,6 +6,7 @@ import { APOSTILA_PRESENCIAL_SEDUC_PEDAGOGICOS_01 } from "./apostilaPresencialSe
 import { PORTUGUES_APOSTILA_PRESENCIAL } from "./portuguesApostilaPresencial";
 import { INDICADORES_EDUCACIONAIS_APOSTILA_PRESENCIAL } from "./indicadoresEducacionaisApostilaPresencial";
 import { ADMINISTRACAO_PUBLICA_SEDUC_01 } from "./administracaoPublicaSeduc01";
+import { RACIOCINIO_LOGICO_CONCURSOS_01 } from "./raciocinioLogicoConcursos01";
 
 function cleanText(value = "") {
   return String(value)
@@ -135,6 +136,7 @@ const RAW_QUESTIONS = [
   ...normalizeAuthoredSource(PORTUGUES_APOSTILA_PRESENCIAL, "port"),
   ...normalizeAuthoredSource(INDICADORES_EDUCACIONAIS_APOSTILA_PRESENCIAL, "ind"),
   ...normalizeAuthoredSource(ADMINISTRACAO_PUBLICA_SEDUC_01, "adm"),
+  ...normalizeAuthoredSource(RACIOCINIO_LOGICO_CONCURSOS_01, "rl"),
 ];
 
 export const AUDITED_QUESTIONS = RAW_QUESTIONS;
@@ -157,5 +159,6 @@ export const QUESTION_SOURCE_STATS = {
   portuguesApostilaPresencial: PORTUGUES_APOSTILA_PRESENCIAL.length,
   indicadoresEducacionaisApostilaPresencial: INDICADORES_EDUCACIONAIS_APOSTILA_PRESENCIAL.length,
   administracaoPublicaSeduc01: ADMINISTRACAO_PUBLICA_SEDUC_01.length,
+  raciocinioLogicoConcursos01: RACIOCINIO_LOGICO_CONCURSOS_01.length,
   total: ALL_QUESTIONS.length,
 };
