@@ -10,7 +10,8 @@ import {
   BrainCircuit,
   Network,
   Settings2,
-  Bot
+  Bot,
+  ScanText
 } from "lucide-react";
 import { NavLink } from "react-router";
 
@@ -24,6 +25,7 @@ const menu = [
   { to: "/biblioteca", label: "Biblioteca", icon: LibraryBig },
   { to: "/flashcards", label: "Flashcards", icon: BrainCircuit },
   { to: "/mapas-mentais", label: "Mapas Mentais", icon: Network },
+  { to: "/corretor-redacao", label: "Corretor de Redação", icon: ScanText },
   { to: "/assistente-ia", label: "Assistente IA", icon: Bot },
 ];
 
