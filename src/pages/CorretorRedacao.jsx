@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Camera, FileText, ImagePlus, RotateCcw, Save, Trash2 } from "lucide-react";
+import { Camera, CameraOff, FileText, ImagePlus, RotateCcw, Save, Trash2 } from "lucide-react";
 import "../styles/redacao.css";
 
 const STORAGE_KEY = "pdf-concurso-redacoes-v1";
@@ -23,7 +23,11 @@ function loadRecords() {
 }
 
 export default function CorretorRedacao() {
-  const inputRef = useRef(null);
+  const galleryInputRef = useRef(null);
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
+  const streamRef = useRef(null);
+
   const [records, setRecords] = useState(loadRecords);
   const [name, setName] = useState("");
   const [theme, setTheme] = useState("");
@@ -31,20 +35,94 @@ export default function CorretorRedacao() {
   const [scores, setScores] = useState([0, 0, 0, 0, 0]);
   const [notes, setNotes] = useState("");
   const [message, setMessage] = useState("");
+  const [cameraOpen, setCameraOpen] = useState(false);
+  const [cameraLoading, setCameraLoading] = useState(false);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
   }, [records]);
 
+  useEffect(() => () => stopCamera(), []);
+
   const total = useMemo(() => scores.reduce((sum, score) => sum + Number(score || 0), 0), [scores]);
 
-  function handlePhoto(event) {
+  function stopCamera() {
+    streamRef.current?.getTracks?.().forEach(track => track.stop());
+    streamRef.current = null;
+    if (videoRef.current) videoRef.current.srcObject = null;
+    setCameraOpen(false);
+    setCameraLoading(false);
+  }
+
+  async function openCamera() {
+    setMessage("");
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setMessage("Este navegador não permite abrir a câmera diretamente. Use 'Escolher foto' ou acesse pelo Chrome/Safari atualizado em conexão HTTPS.");
+      return;
+    }
+
+    try {
+      setCameraLoading(true);
+      stopCamera();
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: { ideal: "environment" },
+          width: { ideal: 1920 },
+          height: { ideal: 1080 },
+        },
+        audio: false,
+      });
+
+      streamRef.current = stream;
+      setCameraOpen(true);
+      setCameraLoading(false);
+
+      requestAnimationFrame(async () => {
+        if (!videoRef.current) return;
+        videoRef.current.srcObject = stream;
+        try { await videoRef.current.play(); } catch { /* autoplay pode depender do navegador */ }
+      });
+    } catch (error) {
+      setCameraLoading(false);
+      setCameraOpen(false);
+      if (error?.name === "NotAllowedError") {
+        setMessage("Permissão da câmera negada. Autorize a câmera para este site nas configurações do navegador e tente novamente.");
+      } else if (error?.name === "NotFoundError") {
+        setMessage("Nenhuma câmera foi encontrada neste dispositivo.");
+      } else {
+        setMessage("Não foi possível abrir a câmera. Verifique a permissão do navegador ou use 'Escolher foto'.");
+      }
+    }
+  }
+
+  function capturePhoto() {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if (!video || !canvas || !video.videoWidth || !video.videoHeight) {
+      setMessage("A câmera ainda está carregando. Aguarde um instante e tente novamente.");
+      return;
+    }
+
+    const maxWidth = 1800;
+    const scale = Math.min(1, maxWidth / video.videoWidth);
+    canvas.width = Math.round(video.videoWidth * scale);
+    canvas.height = Math.round(video.videoHeight * scale);
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
+    setImage(dataUrl);
+    setMessage("Foto registrada. Confira se a folha inteira está legível antes de salvar.");
+    stopCamera();
+  }
+
+  function handleGalleryPhoto(event) {
     const file = event.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith("image/")) {
       setMessage("Selecione uma imagem da redação.");
       return;
     }
+    stopCamera();
     const reader = new FileReader();
     reader.onload = () => {
       setImage(String(reader.result || ""));
@@ -58,13 +136,14 @@ export default function CorretorRedacao() {
   }
 
   function resetForm() {
+    stopCamera();
     setName("");
     setTheme("");
     setImage("");
     setScores([0, 0, 0, 0, 0]);
     setNotes("");
     setMessage("");
-    if (inputRef.current) inputRef.current.value = "";
+    if (galleryInputRef.current) galleryInputRef.current.value = "";
   }
 
   function saveEssay() {
@@ -90,8 +169,8 @@ export default function CorretorRedacao() {
     };
 
     setRecords(current => [record, ...current]);
-    setMessage("Redação cadastrada com sucesso.");
     resetForm();
+    setMessage("Redação cadastrada com sucesso.");
   }
 
   function removeRecord(id) {
@@ -115,22 +194,40 @@ export default function CorretorRedacao() {
 
       <section className="redacao-grid">
         <div className="redacao-panel">
-          <div className="panel-title"><Camera size={20} /><div><strong>1. Registrar redação</strong><span>Use a câmera traseira do celular para melhor leitura.</span></div></div>
+          <div className="panel-title"><Camera size={20} /><div><strong>1. Registrar redação</strong><span>A câmera agora abre dentro do navegador no celular ou computador.</span></div></div>
 
           <div className="redacao-fields">
             <label>Nome do candidato<input value={name} onChange={e => setName(e.target.value)} placeholder="Nome completo" /></label>
             <label>Tema da redação<input value={theme} onChange={e => setTheme(e.target.value)} placeholder="Ex.: Desafios da educação pública" /></label>
           </div>
 
-          <div className="camera-box">
-            {image ? <img src={image} alt="Prévia da redação" /> : <div className="camera-empty"><ImagePlus size={42} /><strong>Nenhuma imagem registrada</strong><span>Fotografe a folha inteira, sem sombras e com boa iluminação.</span></div>}
+          <div className={`camera-box ${cameraOpen ? "is-live" : ""}`}>
+            {cameraOpen ? (
+              <div className="camera-live-wrap">
+                <video ref={videoRef} className="camera-live" autoPlay playsInline muted />
+                <div className="camera-guide"><span>Enquadre toda a folha dentro da área</span></div>
+              </div>
+            ) : image ? (
+              <img src={image} alt="Prévia da redação" />
+            ) : (
+              <div className="camera-empty"><ImagePlus size={42} /><strong>Nenhuma imagem registrada</strong><span>Fotografe a folha inteira, sem sombras e com boa iluminação.</span></div>
+            )}
           </div>
 
-          <input ref={inputRef} className="camera-input" type="file" accept="image/*" capture="environment" onChange={handlePhoto} />
+          <canvas ref={canvasRef} className="camera-canvas" />
+          <input ref={galleryInputRef} className="camera-input" type="file" accept="image/*" onChange={handleGalleryPhoto} />
+
           <div className="camera-actions">
-            <button className="btn-redacao primary" onClick={() => inputRef.current?.click()}><Camera size={18} /> Abrir câmera</button>
-            <button className="btn-redacao" onClick={() => inputRef.current?.click()}><ImagePlus size={18} /> Escolher foto</button>
-            {image && <button className="btn-redacao ghost" onClick={() => setImage("")}><RotateCcw size={18} /> Refazer</button>}
+            {!cameraOpen ? (
+              <button className="btn-redacao primary" onClick={openCamera} disabled={cameraLoading}><Camera size={18} /> {cameraLoading ? "Abrindo câmera..." : "Abrir câmera"}</button>
+            ) : (
+              <>
+                <button className="btn-redacao primary capture" onClick={capturePhoto}><Camera size={18} /> Fotografar redação</button>
+                <button className="btn-redacao" onClick={stopCamera}><CameraOff size={18} /> Fechar câmera</button>
+              </>
+            )}
+            {!cameraOpen && <button className="btn-redacao" onClick={() => galleryInputRef.current?.click()}><ImagePlus size={18} /> Escolher foto</button>}
+            {image && !cameraOpen && <button className="btn-redacao ghost" onClick={() => { setImage(""); openCamera(); }}><RotateCcw size={18} /> Refazer pela câmera</button>}
           </div>
         </div>
 
