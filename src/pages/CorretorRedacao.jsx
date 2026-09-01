@@ -45,6 +45,13 @@ function optimizeFile(file, maxWidth = 1600, quality = 0.84) {
   });
 }
 
+function isMobileDevice() {
+  const ua = navigator.userAgent || "";
+  const mobileUA = /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
+  const coarsePointer = window.matchMedia?.("(pointer: coarse)")?.matches;
+  return mobileUA || Boolean(coarsePointer && window.innerWidth <= 1024);
+}
+
 function buildNotes(result) {
   const parts = [];
   if (result?.general_feedback) parts.push(result.general_feedback);
@@ -56,6 +63,7 @@ function buildNotes(result) {
 
 export default function CorretorRedacao() {
   const galleryInputRef = useRef(null);
+  const cameraInputRef = useRef(null);
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const streamRef = useRef(null);
@@ -100,6 +108,15 @@ export default function CorretorRedacao() {
 
   async function openCamera() {
     setMessage("");
+
+    if (isMobileDevice()) {
+      if (cameraInputRef.current) {
+        cameraInputRef.current.value = "";
+        cameraInputRef.current.click();
+        return;
+      }
+    }
+
     if (!navigator.mediaDevices?.getUserMedia) {
       setMessage("Este navegador não permite abrir a câmera diretamente. Use 'Escolher foto' ou acesse pelo Chrome/Safari atualizado em conexão HTTPS.");
       return;
@@ -150,8 +167,7 @@ export default function CorretorRedacao() {
     stopCamera();
   }
 
-  async function handleGalleryPhoto(event) {
-    const file = event.target.files?.[0];
+  async function processSelectedImage(file, sourceLabel) {
     if (!file) return;
     if (!file.type.startsWith("image/")) {
       setMessage("Selecione uma imagem da redação.");
@@ -165,10 +181,18 @@ export default function CorretorRedacao() {
       clearAiAnalysis();
       setScores([0, 0, 0, 0, 0]);
       setNotes("");
-      setMessage("Imagem registrada. Confira a legibilidade e clique em 'Corrigir com IA'.");
+      setMessage(`${sourceLabel} registrada. Confira a legibilidade e clique em 'Corrigir com IA'.`);
     } catch {
       setMessage("Não foi possível preparar esta imagem. Tente outra foto.");
     }
+  }
+
+  async function handleGalleryPhoto(event) {
+    await processSelectedImage(event.target.files?.[0], "Imagem");
+  }
+
+  async function handleCameraPhoto(event) {
+    await processSelectedImage(event.target.files?.[0], "Foto");
   }
 
   async function correctWithAI() {
@@ -217,6 +241,7 @@ export default function CorretorRedacao() {
     setMessage("");
     clearAiAnalysis();
     if (galleryInputRef.current) galleryInputRef.current.value = "";
+    if (cameraInputRef.current) cameraInputRef.current.value = "";
   }
 
   function saveEssay() {
@@ -265,7 +290,7 @@ export default function CorretorRedacao() {
 
       <section className="redacao-grid">
         <div className="redacao-panel">
-          <div className="panel-title"><Camera size={20} /><div><strong>1. Registrar redação</strong><span>Use a câmera traseira e enquadre toda a folha.</span></div></div>
+          <div className="panel-title"><Camera size={20} /><div><strong>1. Registrar redação</strong><span>No celular, o botão abre a câmera traseira do aparelho. No computador, abre a webcam.</span></div></div>
           <div className="redacao-fields">
             <label>Nome do candidato<input value={name} onChange={e => setName(e.target.value)} placeholder="Nome completo" /></label>
             <label>Tema da redação<input value={theme} onChange={e => setTheme(e.target.value)} placeholder="Ex.: Desafios da educação pública" /></label>
@@ -278,15 +303,16 @@ export default function CorretorRedacao() {
           </div>
 
           <canvas ref={canvasRef} className="camera-canvas" />
+          <input ref={cameraInputRef} className="camera-input" type="file" accept="image/*" capture="environment" onChange={handleCameraPhoto} />
           <input ref={galleryInputRef} className="camera-input" type="file" accept="image/*" onChange={handleGalleryPhoto} />
           <div className="camera-actions">
-            {!cameraOpen ? <button className="btn-redacao primary" onClick={openCamera} disabled={cameraLoading}><Camera size={18} /> {cameraLoading ? "Abrindo câmera..." : "Abrir câmera"}</button>
-              : <><button className="btn-redacao primary capture" onClick={capturePhoto}><Camera size={18} /> Fotografar redação</button><button className="btn-redacao" onClick={stopCamera}><CameraOff size={18} /> Fechar câmera</button></>}
-            {!cameraOpen && <button className="btn-redacao" onClick={() => galleryInputRef.current?.click()}><ImagePlus size={18} /> Escolher foto</button>}
-            {image && !cameraOpen && <button className="btn-redacao ghost" onClick={() => { setImage(""); clearAiAnalysis(); openCamera(); }}><RotateCcw size={18} /> Refazer pela câmera</button>}
+            {!cameraOpen ? <button className="btn-redacao primary" type="button" onClick={openCamera} disabled={cameraLoading}><Camera size={18} /> {cameraLoading ? "Abrindo câmera..." : "Bater foto"}</button>
+              : <><button className="btn-redacao primary capture" type="button" onClick={capturePhoto}><Camera size={18} /> Fotografar redação</button><button className="btn-redacao" type="button" onClick={stopCamera}><CameraOff size={18} /> Fechar câmera</button></>}
+            {!cameraOpen && <button className="btn-redacao" type="button" onClick={() => galleryInputRef.current?.click()}><ImagePlus size={18} /> Escolher foto</button>}
+            {image && !cameraOpen && <button className="btn-redacao ghost" type="button" onClick={() => { setImage(""); clearAiAnalysis(); openCamera(); }}><RotateCcw size={18} /> Refazer pela câmera</button>}
           </div>
 
-          {image && !cameraOpen && <button className="ai-correct-button" onClick={correctWithAI} disabled={aiLoading}>{aiLoading ? <LoaderCircle className="spin" size={19} /> : <Sparkles size={19} />} {aiLoading ? "Lendo e corrigindo..." : "Corrigir automaticamente com IA"}</button>}
+          {image && !cameraOpen && <button className="ai-correct-button" type="button" onClick={correctWithAI} disabled={aiLoading}>{aiLoading ? <LoaderCircle className="spin" size={19} /> : <Sparkles size={19} />} {aiLoading ? "Lendo e corrigindo..." : "Corrigir automaticamente com IA"}</button>}
         </div>
 
         <div className="redacao-panel">
@@ -301,7 +327,7 @@ export default function CorretorRedacao() {
           </div>
           <label className="redacao-notes">Observações da correção<textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="A correção automática preencherá este campo. Você também pode editar manualmente." /></label>
           {message && <div className="redacao-message">{message}</div>}
-          <button className="btn-redacao primary full" onClick={saveEssay}><Save size={18} /> Salvar redação</button>
+          <button className="btn-redacao primary full" type="button" onClick={saveEssay}><Save size={18} /> Salvar redação</button>
         </div>
       </section>
 
@@ -326,7 +352,7 @@ export default function CorretorRedacao() {
               {record.notes && <p>{record.notes}</p>}
               <small>{new Date(record.createdAt).toLocaleString("pt-BR")}</small>
             </div>
-            <button className="delete-redacao" onClick={() => removeRecord(record.id)} title="Excluir redação"><Trash2 size={17} /></button>
+            <button className="delete-redacao" type="button" onClick={() => removeRecord(record.id)} title="Excluir redação"><Trash2 size={17} /></button>
           </article>)}
         </div>}
       </section>
