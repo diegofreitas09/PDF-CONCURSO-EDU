@@ -5,6 +5,7 @@ import "../styles/redacao.css";
 
 const STORAGE_KEY = "pdf-concurso-redacoes-v1";
 const AI_ENDPOINT = "https://us-central1-pdf-concurso-edu.cloudfunctions.net/corrigirRedacao";
+const AI_ENABLED = false;
 const SCORE_VALUES = [0, 40, 80, 120, 160, 200];
 
 const COMPETENCIAS = [
@@ -163,7 +164,7 @@ export default function CorretorRedacao() {
     clearAiAnalysis();
     setScores([0, 0, 0, 0, 0]);
     setNotes("");
-    setMessage("Foto registrada. Confira a legibilidade e clique em 'Corrigir com IA'.");
+    setMessage("Foto registrada. Confira a legibilidade. A correção manual já pode ser feita; a IA será ativada posteriormente.");
     stopCamera();
   }
 
@@ -181,7 +182,7 @@ export default function CorretorRedacao() {
       clearAiAnalysis();
       setScores([0, 0, 0, 0, 0]);
       setNotes("");
-      setMessage(`${sourceLabel} registrada. Confira a legibilidade e clique em 'Corrigir com IA'.`);
+      setMessage(`${sourceLabel} registrada. A correção manual já está disponível; a IA será conectada depois.`);
     } catch {
       setMessage("Não foi possível preparar esta imagem. Tente outra foto.");
     }
@@ -196,6 +197,10 @@ export default function CorretorRedacao() {
   }
 
   async function correctWithAI() {
+    if (!AI_ENABLED) {
+      setMessage("Integração com IA preparada. Quando a API for configurada, este botão fará transcrição e correção automática.");
+      return;
+    }
     if (!image || aiLoading) return;
     const user = auth.currentUser;
     if (!user) {
@@ -282,8 +287,8 @@ export default function CorretorRedacao() {
       <section className="redacao-hero">
         <div>
           <span className="redacao-kicker">CORRETOR DE REDAÇÃO</span>
-          <h1>Fotografe, leia e corrija com IA</h1>
-          <p>O candidato registra a folha pelo celular. A plataforma transcreve a escrita, avalia as cinco competências e entrega orientações para reescrita.</p>
+          <h1>Fotografe e registre a redação</h1>
+          <p>O candidato fotografa a folha pelo celular, registra a produção e já pode receber correção manual por competências. A integração com IA ficou preparada para ativação posterior.</p>
         </div>
         <div className="redacao-score-card"><span>Nota atual</span><strong>{total}</strong><small>de 1000 pontos</small></div>
       </section>
@@ -312,11 +317,11 @@ export default function CorretorRedacao() {
             {image && !cameraOpen && <button className="btn-redacao ghost" type="button" onClick={() => { setImage(""); clearAiAnalysis(); openCamera(); }}><RotateCcw size={18} /> Refazer pela câmera</button>}
           </div>
 
-          {image && !cameraOpen && <button className="ai-correct-button" type="button" onClick={correctWithAI} disabled={aiLoading}>{aiLoading ? <LoaderCircle className="spin" size={19} /> : <Sparkles size={19} />} {aiLoading ? "Lendo e corrigindo..." : "Corrigir automaticamente com IA"}</button>}
+          {image && !cameraOpen && <button className="ai-correct-button" type="button" onClick={correctWithAI} disabled={!AI_ENABLED || aiLoading} title={!AI_ENABLED ? "Integração preparada para ativação futura" : "Corrigir com IA"}>{aiLoading ? <LoaderCircle className="spin" size={19} /> : <Sparkles size={19} />} {AI_ENABLED ? (aiLoading ? "Lendo e corrigindo..." : "Corrigir automaticamente com IA") : "Correção com IA · em breve"}</button>}
         </div>
 
         <div className="redacao-panel">
-          <div className="panel-title"><FileText size={20} /><div><strong>2. Correção por competências</strong><span>A IA preenche as notas; o corretor pode revisar antes de salvar.</span></div></div>
+          <div className="panel-title"><FileText size={20} /><div><strong>2. Correção por competências</strong><span>Preencha manualmente agora. Depois, a IA poderá sugerir as notas automaticamente.</span></div></div>
           <div className="competencias-list">
             {COMPETENCIAS.map((label, index) => (
               <div className="competencia-row" key={label}>
@@ -325,7 +330,7 @@ export default function CorretorRedacao() {
               </div>
             ))}
           </div>
-          <label className="redacao-notes">Observações da correção<textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="A correção automática preencherá este campo. Você também pode editar manualmente." /></label>
+          <label className="redacao-notes">Observações da correção<textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="Registre pontos fortes, desvios, repertório, argumentação e orientações para reescrita." /></label>
           {message && <div className="redacao-message">{message}</div>}
           <button className="btn-redacao primary full" type="button" onClick={saveEssay}><Save size={18} /> Salvar redação</button>
         </div>
@@ -334,7 +339,7 @@ export default function CorretorRedacao() {
       {(transcription || aiResult) && <section className="redacao-ai-report">
         <div className="ai-report-head"><ScanText size={22} /><div><span className="redacao-kicker">LEITURA DA IA</span><h2>Transcrição e diagnóstico</h2></div>{aiResult?.legibility && <span className={`legibility ${aiResult.legibility}`}>Legibilidade {aiResult.legibility}</span>}</div>
         <div className="ai-report-grid">
-          <div className="transcription-card"><strong>Texto reconhecido</strong><textarea value={transcription} onChange={e => setTranscription(e.target.value)} placeholder="A transcrição aparecerá aqui." /></div>
+          <div className="transcription-card"><strong>Texto reconhecido</strong><textarea value={transcription} onChange={e => setTranscription(e.target.value)} placeholder="A transcrição aparecerá aqui quando a IA for ativada." /></div>
           <div className="feedback-card"><strong>Feedback por competência</strong><div className="feedback-list">{(aiResult?.competencies || []).map((item, index) => <div key={`${item.code}-${index}`}><span>{item.code || `C${index + 1}`}</span><p>{item.feedback}</p></div>)}</div></div>
         </div>
       </section>}
