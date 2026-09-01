@@ -13,6 +13,7 @@ import Cronograma from "../pages/Cronograma";
 import Biblioteca from "../pages/Biblioteca";
 import Flashcards from "../pages/Flashcards";
 import MapasMentais from "../pages/MapasMentais";
+import CorretorRedacao from "../pages/CorretorRedacao";
 import AssistenteIA from "../pages/AssistenteIA";
 import Configuracoes from "../pages/Configuracoes";
 
@@ -34,6 +35,7 @@ const router = createHashRouter([
           { path: "biblioteca", Component: Biblioteca },
           { path: "flashcards", Component: Flashcards },
           { path: "mapas-mentais", Component: MapasMentais },
+          { path: "corretor-redacao", Component: CorretorRedacao },
           { path: "assistente-ia", Component: AssistenteIA },
           { path: "configuracoes", Component: Configuracoes },
         ],
