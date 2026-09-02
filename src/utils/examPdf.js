@@ -1,5 +1,6 @@
 import{jsPDF}from"jspdf";
 import{sanitizeOCRText,sanitizeQuestionOCR}from"./ocrSanitizer";
+import{downloadPdfDocument}from"./pdfDownload";
 const clean=sanitizeOCRText,letter=i=>String.fromCharCode(65+i),key=v=>clean(v).toLowerCase().replace(/[^a-zà-ÿ0-9]+/gi," ").trim();
 export function generateExamPdf({exam=[],code="",mode="official",official=null,paperType=1}){
  if(!exam.length)throw new Error("Nenhuma questão disponível para gerar a prova.");
@@ -13,7 +14,7 @@ export function generateExamPdf({exam=[],code="",mode="official",official=null,p
  const lines=(t,s,w)=>{doc.setFontSize(s);return doc.splitTextToSize(clean(t),w)},height=(t,s,w,lh)=>Math.max(1,lines(t,s,w).length)*lh;
  const write=(t,{size=8.8,bold=false,width=U,x=M,space=2,lh=4.15}={})=>{for(const ln of lines(t,size,width)){if(y+lh>BOT)next();font(size,bold);doc.text(ln,x,y);y+=lh}y+=space};
  const section=t=>{ensure(15);doc.setFillColor(239,241,244);doc.rect(M,y,U,9,"F");font(8.7,true);doc.text(clean(t).toUpperCase(),M+4,y+6);y+=14;lastContext=""};
- const table=m=>{if(!m?.headers?.length)return;const cols=m.headers.length,cw=U/cols,rh=9;if(m.title)write(m.title,{size:8.2,bold:true});ensure(Math.min(55,((m.rows||[]).length+1)*rh+5));const row=(cells,h=false)=>{ensure(rh+1);cells.forEach((v,c)=>{if(h){doc.setFillColor(240);doc.rect(M+c*cw,y,cw,rh,"FD")}else doc.rect(M+c*cw,y,cw,rh);font(6.8,h);doc.text(lines(v,6.8,cw-4).slice(0,2),M+c*cw+2,y+4)});y+=rh};row(m.headers,true);(m.rows||[]).forEach(row);y+=4};
+ const table=m=>{if(!m?.headers?.length)return;const cols=m.headers.length,cw=U/cols,rh=9;if(m.title)write(m.title,{size:8.2,bold:true});ensure(Math.min(55,((m.rows||[]).length+1)*rh+5));const row=(cells,h=false)=>{ensure(rh+1);cells.forEach((v,c)=>{if(h){doc.setFillColor(240);doc.rect(M+c*cw,y,cw,rh,"FD")}else doc.rect(M+c*cw,y,cw,rh);font(6.8,h);doc.text(lines(v,6.8,cw-4).slice(0,2),M+c*cw+2,y+4)});y+=rh};row(m.headers,true);(m.rows||[]).forEach(r=>row(r,false));y+=4};
  const bar=m=>{const d=(m.data||[]).filter(a=>Number.isFinite(+a.value));if(!d.length)return;ensure(58);if(m.title)write(m.title,{size:8.2,bold:true});const x0=M+12,w=U-20,base=y+34,max=Math.max(...d.map(a=>+a.value),1),gap=w/d.length,bw=Math.min(18,gap*.55);doc.line(x0,y,x0,base);doc.line(x0,base,x0+w,base);d.forEach((a,i)=>{const bh=29*(+a.value/max),x=x0+i*gap+(gap-bw)/2;doc.setFillColor(90);doc.rect(x,base-bh,bw,bh,"F");font(6.5,true);doc.text(String(a.displayValue??a.value),x+bw/2,base-bh-1,{align:"center"});font(6.2);doc.text(clean(a.label),x+bw/2,base+4,{align:"center",maxWidth:gap-2})});y=base+10};
  const media=m=>{if(!m)return;if(m.type==="table")table(m);else if(m.type==="bar-chart"||m.type==="bar")bar(m);else if(m.type==="statements"||m.type==="key")(m.items||m.statements||[]).forEach((s,i)=>write(`${i+1}. ${s}`,{size:8,x:M+5,width:U-5,space:1,lh:3.9}))};
  const groups=new Map();exam.forEach((q,i)=>{const k=key(q.context);if(k){if(!groups.has(k))groups.set(k,[]);groups.get(k).push(i+1)}}),ctxLabel=k=>{const n=groups.get(k)||[];return n.length>1?`TEXTO PARA AS QUESTÕES ${n[0]} A ${n[n.length-1]}`:"TEXTO-BASE"};
@@ -23,5 +24,5 @@ export function generateExamPdf({exam=[],code="",mode="official",official=null,p
  if(mode==="official"&&official?.blocks){y+=3;write("DISTRIBUIÇÃO DAS QUESTÕES",{size:9.5,bold:true});official.blocks.forEach(b=>{ensure(7);font(7.4);doc.text(clean(b.label),M+3,y);doc.text(String(b.count),W-M-3,y,{align:"right"});y+=6})}
  footer();doc.addPage();page++;y=TOP;header();
  exam.forEach((q,i)=>{const b=q.officialLabel||q.discipline||"Questões";if(b!==block){section(b);block=b}const ctx=clean(q.context),ck=key(ctx);if(ctx&&ck!==lastContext){ensure(Math.min(42,height(ctx,8.35,U-4,4.15)+12));font(8.1,true);doc.text(ctxLabel(ck),M,y);y+=5.5;write(ctx,{size:8.35,width:U-4,x:M+2,space:5,lh:4.15});lastContext=ck}media(q.media);const st=clean(q.originalStatement||q.statement),opts=(q.options||[]).slice(0,4),x=M+9,qh=7+height(st,8.8,U-9,4.25)+opts.reduce((s,o)=>s+height(o,8.35,U-9,4.05)+1.2,0)+5;if(qh<=BOT-TOP)ensure(qh);else if(y>TOP+8)next();font(8.8,true);doc.text(`${String(i+1).padStart(2,"0")}.`,M,y);write(st,{size:8.8,width:U-9,x,space:2.4,lh:4.25});opts.forEach((o,j)=>write(`${letter(j)}) ${o}`,{size:8.35,width:U-9,x,space:1.35,lh:4.05}));y+=2;ensure(4);doc.setDrawColor(220);doc.line(M,y,W-M,y);y+=5});
- footer();doc.save(`Prova_${code||"Simulado"}_Tipo_${type}.pdf`);
+ footer();return downloadPdfDocument(doc,`Prova_${code||"Simulado"}_Tipo_${type}.pdf`);
 }
