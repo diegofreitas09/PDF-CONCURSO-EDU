@@ -5,6 +5,7 @@ import router from "./routes/router";
 import { AuthProvider } from "./context/AuthContext";
 import "./styles/global.css";
 import "./styles/uiRefinement.css";
+import "./styles/mobileFix.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
