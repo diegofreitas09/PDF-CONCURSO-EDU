@@ -7,6 +7,7 @@ import { PORTUGUES_APOSTILA_PRESENCIAL } from "./portuguesApostilaPresencial";
 import { PORTUGUES_CONCURSOS_02 } from "./portuguesConcursos02";
 import { PORTUGUES_CONCURSOS_03 } from "./portuguesConcursos03";
 import { PORTUGUES_CONCURSOS_04 } from "./portuguesConcursos04";
+import { PORTUGUES_CONCURSOS_05_VISUAIS } from "./portuguesConcursos05Visuais";
 import { INDICADORES_EDUCACIONAIS_APOSTILA_PRESENCIAL } from "./indicadoresEducacionaisApostilaPresencial";
 import { ADMINISTRACAO_PUBLICA_SEDUC_01 } from "./administracaoPublicaSeduc01";
 import { RACIOCINIO_LOGICO_CONCURSOS_01 } from "./raciocinioLogicoConcursos01";
@@ -54,11 +55,20 @@ function normalizeAuthoredSource(questions,prefix){return questions.map((q,i)=>n
 function fingerprintText(value="") {
   return cleanText(value).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
 }
+function mediaFingerprint(media){
+  if(!media)return"";
+  const items=Array.isArray(media)?media:[media];
+  return items.map(item=>{
+    const safe={type:item?.type||"image",src:item?.src||item?.url||"",title:item?.title||"",caption:item?.caption||"",alt:item?.alt||"",headers:item?.headers||[],rows:item?.rows||[],data:item?.data||[],items:item?.items||[],nodes:item?.nodes||[]};
+    return fingerprintText(JSON.stringify(safe));
+  }).join("||");
+}
 function questionFingerprint(q) {
   const context=fingerprintText(q?.context||"");
   const statement=fingerprintText(q?.originalStatement||q?.statement||"");
   const options=(Array.isArray(q?.options)?q.options:[]).map(fingerprintText).sort().join("||");
-  return `${fingerprintText(q?.discipline||"")}::${context}::${statement}::${options}`;
+  const media=mediaFingerprint(q?.media);
+  return `${fingerprintText(q?.discipline||"")}::${context}::${statement}::${options}::${media}`;
 }
 function dedupeQuestions(questions) {
   const seen=new Map();const unique=[];const duplicates=[];
@@ -66,12 +76,12 @@ function dedupeQuestions(questions) {
   return{unique,duplicates};
 }
 const LEGACY_RECOVERY=recoverLegacyQuestions(LEGACY_QUESTION_BANK);
-const RAW_QUESTIONS=[...LEGACY_RECOVERY.questions,...normalizeAuthoredSource(SIMULADO_05_TEORIAS_PEDAGOGICAS,"sim05"),...normalizeAuthoredSource(SEDUC_CONHECIMENTOS_GERAIS_MODULO_1,"seduc1"),...normalizeAuthoredSource(APOSTILA_PRESENCIAL_SEDUC_PEDAGOGICOS_01,"ped01"),...normalizeAuthoredSource(PORTUGUES_APOSTILA_PRESENCIAL,"port"),...normalizeAuthoredSource(PORTUGUES_CONCURSOS_02,"port2"),...normalizeAuthoredSource(PORTUGUES_CONCURSOS_03,"port3"),...normalizeAuthoredSource(PORTUGUES_CONCURSOS_04,"port4"),...normalizeAuthoredSource(INDICADORES_EDUCACIONAIS_APOSTILA_PRESENCIAL,"ind"),...normalizeAuthoredSource(ADMINISTRACAO_PUBLICA_SEDUC_01,"adm"),...normalizeAuthoredSource(RACIOCINIO_LOGICO_CONCURSOS_01,"rl1"),...normalizeAuthoredSource(RACIOCINIO_LOGICO_CONCURSOS_02,"rl2"),...normalizeAuthoredSource(RACIOCINIO_LOGICO_CONCURSOS_03,"rl3"),...normalizeAuthoredSource(RACIOCINIO_LOGICO_CONCURSOS_04,"rl4"),...normalizeAuthoredSource(RACIOCINIO_LOGICO_CONCURSOS_05,"rl5"),...normalizeAuthoredSource(RACIOCINIO_LOGICO_CONCURSOS_06,"rl6"),...normalizeAuthoredSource(RACIOCINIO_LOGICO_CONCURSOS_07,"rl7"),...normalizeAuthoredSource(RACIOCINIO_LOGICO_CONCURSOS_08,"rl8"),...normalizeAuthoredSource(RACIOCINIO_LOGICO_CONCURSOS_09,"rl9")];
+const RAW_QUESTIONS=[...LEGACY_RECOVERY.questions,...normalizeAuthoredSource(SIMULADO_05_TEORIAS_PEDAGOGICAS,"sim05"),...normalizeAuthoredSource(SEDUC_CONHECIMENTOS_GERAIS_MODULO_1,"seduc1"),...normalizeAuthoredSource(APOSTILA_PRESENCIAL_SEDUC_PEDAGOGICOS_01,"ped01"),...normalizeAuthoredSource(PORTUGUES_APOSTILA_PRESENCIAL,"port"),...normalizeAuthoredSource(PORTUGUES_CONCURSOS_02,"port2"),...normalizeAuthoredSource(PORTUGUES_CONCURSOS_03,"port3"),...normalizeAuthoredSource(PORTUGUES_CONCURSOS_04,"port4"),...normalizeAuthoredSource(PORTUGUES_CONCURSOS_05_VISUAIS,"port5"),...normalizeAuthoredSource(INDICADORES_EDUCACIONAIS_APOSTILA_PRESENCIAL,"ind"),...normalizeAuthoredSource(ADMINISTRACAO_PUBLICA_SEDUC_01,"adm"),...normalizeAuthoredSource(RACIOCINIO_LOGICO_CONCURSOS_01,"rl1"),...normalizeAuthoredSource(RACIOCINIO_LOGICO_CONCURSOS_02,"rl2"),...normalizeAuthoredSource(RACIOCINIO_LOGICO_CONCURSOS_03,"rl3"),...normalizeAuthoredSource(RACIOCINIO_LOGICO_CONCURSOS_04,"rl4"),...normalizeAuthoredSource(RACIOCINIO_LOGICO_CONCURSOS_05,"rl5"),...normalizeAuthoredSource(RACIOCINIO_LOGICO_CONCURSOS_06,"rl6"),...normalizeAuthoredSource(RACIOCINIO_LOGICO_CONCURSOS_07,"rl7"),...normalizeAuthoredSource(RACIOCINIO_LOGICO_CONCURSOS_08,"rl8"),...normalizeAuthoredSource(RACIOCINIO_LOGICO_CONCURSOS_09,"rl9")];
 export const AUDITED_QUESTIONS=RAW_QUESTIONS;
 export const QUARANTINED_QUESTIONS=AUDITED_QUESTIONS.filter(q=>q.auditStatus==="missing-context"||q.auditStatus==="oversized-option");
 const VALID_QUESTIONS=AUDITED_QUESTIONS.filter(q=>q.auditStatus!=="missing-context"&&q.auditStatus!=="oversized-option");
 const DEDUPE_RESULT=dedupeQuestions(VALID_QUESTIONS);
 export const DUPLICATE_QUESTIONS=DEDUPE_RESULT.duplicates;
 export const ALL_QUESTIONS=DEDUPE_RESULT.unique;
-export const QUESTION_AUDIT_STATS={raw:AUDITED_QUESTIONS.length,published:ALL_QUESTIONS.length,recoveredPassagesFromOptions:LEGACY_RECOVERY.recoveredPassages,quarantinedMissingContext:AUDITED_QUESTIONS.filter(q=>q.auditStatus==="missing-context").length,quarantinedOversizedOption:AUDITED_QUESTIONS.filter(q=>q.auditStatus==="oversized-option").length,duplicatesRemoved:DUPLICATE_QUESTIONS.length};
-export const QUESTION_SOURCE_STATS={legado:LEGACY_QUESTION_BANK.length,simulado05TeoriasPedagogicas:SIMULADO_05_TEORIAS_PEDAGOGICAS.length,seducConhecimentosGeraisModulo1:SEDUC_CONHECIMENTOS_GERAIS_MODULO_1.length,apostilaPresencialSeducPedagogicos01:APOSTILA_PRESENCIAL_SEDUC_PEDAGOGICOS_01.length,portuguesApostilaPresencial:PORTUGUES_APOSTILA_PRESENCIAL.length,portuguesConcursos02:PORTUGUES_CONCURSOS_02.length,portuguesConcursos03:PORTUGUES_CONCURSOS_03.length,portuguesConcursos04:PORTUGUES_CONCURSOS_04.length,indicadoresEducacionaisApostilaPresencial:INDICADORES_EDUCACIONAIS_APOSTILA_PRESENCIAL.length,administracaoPublicaSeduc01:ADMINISTRACAO_PUBLICA_SEDUC_01.length,raciocinioLogicoConcursos01:RACIOCINIO_LOGICO_CONCURSOS_01.length,raciocinioLogicoConcursos02:RACIOCINIO_LOGICO_CONCURSOS_02.length,raciocinioLogicoConcursos03:RACIOCINIO_LOGICO_CONCURSOS_03.length,raciocinioLogicoConcursos04:RACIOCINIO_LOGICO_CONCURSOS_04.length,raciocinioLogicoConcursos05:RACIOCINIO_LOGICO_CONCURSOS_05.length,raciocinioLogicoConcursos06:RACIOCINIO_LOGICO_CONCURSOS_06.length,raciocinioLogicoConcursos07:RACIOCINIO_LOGICO_CONCURSOS_07.length,raciocinioLogicoConcursos08:RACIOCINIO_LOGICO_CONCURSOS_08.length,raciocinioLogicoConcursos09:RACIOCINIO_LOGICO_CONCURSOS_09.length,total:ALL_QUESTIONS.length};
+export const QUESTION_AUDIT_STATS={raw:AUDITED_QUESTIONS.length,published:ALL_QUESTIONS.length,recoveredPassagesFromOptions:LEGACY_RECOVERY.recoveredPassages,quarantinedMissingContext:AUDITED_QUESTIONS.filter(q=>q.auditStatus==="missing-context").length,quarantinedOversizedOption:AUDITED_QUESTIONS.filter(q=>q.auditStatus==="oversized-option").length,duplicatesRemoved:DUPLICATE_QUESTIONS.length,withMedia:ALL_QUESTIONS.filter(q=>q.media).length};
+export const QUESTION_SOURCE_STATS={legado:LEGACY_QUESTION_BANK.length,simulado05TeoriasPedagogicas:SIMULADO_05_TEORIAS_PEDAGOGICAS.length,seducConhecimentosGeraisModulo1:SEDUC_CONHECIMENTOS_GERAIS_MODULO_1.length,apostilaPresencialSeducPedagogicos01:APOSTILA_PRESENCIAL_SEDUC_PEDAGOGICOS_01.length,portuguesApostilaPresencial:PORTUGUES_APOSTILA_PRESENCIAL.length,portuguesConcursos02:PORTUGUES_CONCURSOS_02.length,portuguesConcursos03:PORTUGUES_CONCURSOS_03.length,portuguesConcursos04:PORTUGUES_CONCURSOS_04.length,portuguesConcursos05Visuais:PORTUGUES_CONCURSOS_05_VISUAIS.length,indicadoresEducacionaisApostilaPresencial:INDICADORES_EDUCACIONAIS_APOSTILA_PRESENCIAL.length,administracaoPublicaSeduc01:ADMINISTRACAO_PUBLICA_SEDUC_01.length,raciocinioLogicoConcursos01:RACIOCINIO_LOGICO_CONCURSOS_01.length,raciocinioLogicoConcursos02:RACIOCINIO_LOGICO_CONCURSOS_02.length,raciocinioLogicoConcursos03:RACIOCINIO_LOGICO_CONCURSOS_03.length,raciocinioLogicoConcursos04:RACIOCINIO_LOGICO_CONCURSOS_04.length,raciocinioLogicoConcursos05:RACIOCINIO_LOGICO_CONCURSOS_05.length,raciocinioLogicoConcursos06:RACIOCINIO_LOGICO_CONCURSOS_06.length,raciocinioLogicoConcursos07:RACIOCINIO_LOGICO_CONCURSOS_07.length,raciocinioLogicoConcursos08:RACIOCINIO_LOGICO_CONCURSOS_08.length,raciocinioLogicoConcursos09:RACIOCINIO_LOGICO_CONCURSOS_09.length,total:ALL_QUESTIONS.length};
