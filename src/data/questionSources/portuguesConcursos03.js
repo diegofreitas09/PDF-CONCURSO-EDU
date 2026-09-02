@@ -1,5 +1,10 @@
 const base={discipline:"Língua Portuguesa",source:"Módulo autoral 03 — elaborado a partir de padrões recorrentes identificados em provas de Português do acervo, com foco em concursos",reviewed:true};
-const q=(id,topic,context,statement,options,answer,explanation)=>({...base,id:`pt-concursos-03-${String(id).padStart(2,"0")}`,topic,context,statement,options,answer,explanation});
+const q=(id,topic,context,statement,options,answer,explanation)=>{
+  if(Array.isArray(statement)&&Number.isInteger(options)&&typeof answer==="string"&&explanation===undefined){
+    return {...base,id:`pt-concursos-03-${String(id).padStart(2,"0")}`,topic,context:"",statement:context,options:statement,answer:options,explanation:answer};
+  }
+  return {...base,id:`pt-concursos-03-${String(id).padStart(2,"0")}`,topic,context,statement,options,answer,explanation};
+};
 
 export const PORTUGUES_CONCURSOS_03=[
 q(1,"Interpretação de Texto","Uma administração pública eficiente não se resume à rapidez. Decisões céleres, quando tomadas sem análise suficiente, podem gerar retrabalho e aumentar custos. Eficiência pressupõe alcançar resultados adequados com uso responsável dos recursos disponíveis.","A ideia central do texto é:",["rapidez e eficiência são sempre equivalentes","a análise deve ser eliminada para reduzir custos","eficiência envolve resultado adequado e uso responsável de recursos","o retrabalho é inevitável na administração pública","decisões lentas são sempre mais eficientes"],2,"O texto diferencia rapidez de eficiência e define eficiência pela combinação entre resultado adequado e uso responsável dos recursos."),
