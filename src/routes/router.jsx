@@ -8,6 +8,7 @@ import Dashboard from "../pages/Dashboard";
 import Estudos from "../pages/Estudos";
 import Questoes from "../pages/Questoes";
 import Simulados from "../pages/Simulados";
+import CartaoResposta from "../pages/CartaoResposta";
 import Desempenho from "../pages/Desempenho";
 import Cronograma from "../pages/Cronograma";
 import Biblioteca from "../pages/Biblioteca";
@@ -19,29 +20,20 @@ import Configuracoes from "../pages/Configuracoes";
 
 const router = createHashRouter([
   { path: "/login", Component: Login },
-  {
-    Component: ProtectedRoute,
-    children: [
-      {
-        path: "/",
-        Component: App,
-        children: [
-          { index: true, Component: Dashboard },
-          { path: "estudos", Component: Estudos },
-          { path: "questoes", Component: Questoes },
-          { path: "simulados", Component: Simulados },
-          { path: "desempenho", Component: Desempenho },
-          { path: "cronograma", Component: Cronograma },
-          { path: "biblioteca", Component: Biblioteca },
-          { path: "flashcards", Component: Flashcards },
-          { path: "mapas-mentais", Component: MapasMentais },
-          { path: "corretor-redacao", Component: CorretorRedacao },
-          { path: "assistente-ia", Component: AssistenteIA },
-          { path: "configuracoes", Component: Configuracoes },
-        ],
-      },
-    ],
-  },
+  { Component: ProtectedRoute, children: [{ path: "/", Component: App, children: [
+    { index: true, Component: Dashboard },
+    { path: "estudos", Component: Estudos },
+    { path: "questoes", Component: Questoes },
+    { path: "simulados", Component: Simulados },
+    { path: "cartao-resposta", Component: CartaoResposta },
+    { path: "desempenho", Component: Desempenho },
+    { path: "cronograma", Component: Cronograma },
+    { path: "biblioteca", Component: Biblioteca },
+    { path: "flashcards", Component: Flashcards },
+    { path: "mapas-mentais", Component: MapasMentais },
+    { path: "corretor-redacao", Component: CorretorRedacao },
+    { path: "assistente-ia", Component: AssistenteIA },
+    { path: "configuracoes", Component: Configuracoes },
+  ]}]},
 ]);
-
 export default router;
