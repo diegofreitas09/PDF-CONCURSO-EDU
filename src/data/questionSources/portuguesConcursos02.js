@@ -1,5 +1,10 @@
 const base={discipline:"Língua Portuguesa",source:"Módulo autoral 02 — elaborado a partir de temas recorrentes identificados em provas de Português para concursos presentes no acervo",reviewed:true};
-const q=(id,topic,context,statement,options,answer,explanation)=>({...base,id:`pt-concursos-02-${String(id).padStart(2,"0")}`,topic,context,statement,options,answer,explanation});
+const q=(id,topic,context,statement,options,answer,explanation)=>{
+  if(Array.isArray(statement)&&Number.isInteger(options)&&typeof answer==="string"&&explanation===undefined){
+    return {...base,id:`pt-concursos-02-${String(id).padStart(2,"0")}`,topic,context:"",statement:context,options:statement,answer:options,explanation:answer};
+  }
+  return {...base,id:`pt-concursos-02-${String(id).padStart(2,"0")}`,topic,context,statement,options,answer,explanation};
+};
 
 export const PORTUGUES_CONCURSOS_02=[
 q(1,"Interpretação de Texto","Pesquisas sobre aprendizagem indicam que o descanso adequado favorece processos de consolidação da memória. Isso não significa, porém, que dormir substitua o estudo: o sono atua sobre informações previamente aprendidas e pode ajudar a estabilizá-las.","Com base no texto, assinale a inferência correta.",["Dormir elimina a necessidade de estudar.","A memória se forma apenas durante o sono.","O sono pode contribuir para consolidar conteúdos previamente aprendidos.","O estudo prejudica a consolidação da memória.","A aprendizagem ocorre exclusivamente durante o descanso."],2,"O texto afirma que o sono favorece a consolidação de informações previamente aprendidas, sem substituir o estudo."),
