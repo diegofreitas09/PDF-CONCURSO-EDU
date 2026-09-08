@@ -14,13 +14,17 @@ export function generateAnswerSheetPdf({title="SEDUC/CE 2026 — PROFESSOR",subt
 }
 function gray(d,i){return(d[i]+d[i+1]+d[i+2])/3}
 async function loadBitmap(file){if(typeof createImageBitmap==="function")return createImageBitmap(file);const url=URL.createObjectURL(file);try{const img=await new Promise((ok,fail)=>{const el=new Image();el.onload=()=>ok(el);el.onerror=fail;el.src=url});return img}finally{URL.revokeObjectURL(url)}}
-function markerIn(img,W,H,x0,y0,x1,y1){let sx=0,sy=0,n=0;for(let y=Math.floor(y0*H);y<Math.floor(y1*H);y+=2)for(let x=Math.floor(x0*W);x<Math.floor(x1*W);x+=2){const i=(y*W+x)*4;if(gray(img.data,i)<55){sx+=x;sy+=y;n++}}return n>20?{x:sx/n,y:sy/n,n}:null}
+function markerIn(img,W,H,x0,y0,x1,y1){
+ const xa=Math.floor(x0*W),xb=Math.floor(x1*W),ya=Math.floor(y0*H),yb=Math.floor(y1*H),step=Math.max(2,Math.floor(Math.min(W,H)/420)),r=Math.max(7,Math.floor(Math.min(W,H)*.012));let best=null;
+ for(let cy=ya+r;cy<yb-r;cy+=step*2)for(let cx=xa+r;cx<xb-r;cx+=step*2){let dark=0,total=0;for(let y=cy-r;y<=cy+r;y+=step)for(let x=cx-r;x<=cx+r;x+=step){total++;if(gray(img.data,(y*W+x)*4)<70)dark++}const ratio=dark/Math.max(1,total);if(!best||ratio>best.ratio)best={x:cx,y:cy,ratio}}
+ if(!best||best.ratio<.22)return null;
+ let sx=0,sy=0,n=0;const rr=r*1.45;for(let y=Math.max(0,Math.floor(best.y-rr));y<=Math.min(H-1,Math.ceil(best.y+rr));y++)for(let x=Math.max(0,Math.floor(best.x-rr));x<=Math.min(W-1,Math.ceil(best.x+rr));x++){if(gray(img.data,(y*W+x)*4)<75){sx+=x;sy+=y;n++}}
+ return n>30?{x:sx/n,y:sy/n,n,confidence:best.ratio}:null;
+}
 function mapQuad(tl,tr,bl,br,u,v){return{x:(1-u)*(1-v)*tl.x+u*(1-v)*tr.x+(1-u)*v*bl.x+u*v*br.x,y:(1-u)*(1-v)*tl.y+u*(1-v)*tr.y+(1-u)*v*bl.y+u*v*br.y}}
 export async function readAnswerSheetImage(file,{questions=80}={}){const bitmap=await loadBitmap(file),canvas=document.createElement("canvas"),max=1800,scale=Math.min(1,max/Math.max(bitmap.width,bitmap.height));canvas.width=Math.round(bitmap.width*scale);canvas.height=Math.round(bitmap.height*scale);const ctx=canvas.getContext("2d",{willReadFrequently:true});ctx.drawImage(bitmap,0,0,canvas.width,canvas.height);const img=ctx.getImageData(0,0,canvas.width,canvas.height),W=canvas.width,H=canvas.height;
- const tl=markerIn(img,W,H,0,.0,.18,.18),tr=markerIn(img,W,H,.82,0,1,.18),bl=markerIn(img,W,H,0,.82,.18,1),br=markerIn(img,W,H,.82,.82,1,1);if(!tl||!tr||!bl||!br)throw new Error("Não foi possível localizar os quatro marcadores pretos. Fotografe a folha inteira, sem cortar os cantos.");
- // Coordenadas normalizadas em relação aos centros dos marcadores impressos (9 mm/201 mm horizontal; 9 mm/288 mm vertical).
- const markerLeft=9/210,markerRight=201/210,markerTop=9/297,markerBottom=288/297;
- const norm=(x,y)=>({u:(x/210-markerLeft)/(markerRight-markerLeft),v:(y/297-markerTop)/(markerBottom-markerTop)}),colX=[18,67,116,165],startY=70,rowH=9.35,answers=[];
+ const tl=markerIn(img,W,H,0,0,.20,.20),tr=markerIn(img,W,H,.80,0,1,.20),bl=markerIn(img,W,H,0,.80,.20,1),br=markerIn(img,W,H,.80,.80,1,1);if(!tl||!tr||!bl||!br)throw new Error("Não foi possível localizar os quatro marcadores pretos. Fotografe a folha inteira, sem cortar os cantos, em fundo claro.");
+ const markerLeft=9/210,markerRight=201/210,markerTop=9/297,markerBottom=288/297;const norm=(x,y)=>({u:(x/210-markerLeft)/(markerRight-markerLeft),v:(y/297-markerTop)/(markerBottom-markerTop)}),colX=[18,67,116,165],startY=70,rowH=9.35,answers=[];
  for(let q=0;q<questions;q++){const c=Math.floor(q/20),r=q%20,scores=[];for(let a=0;a<4;a++){const p=norm(colX[c]+15+a*7.1,startY+r*rowH),center=mapQuad(tl,tr,bl,br,p.u,p.v),rad=Math.max(4,Math.min(W,H)*.0065);let dark=0,total=0;for(let yy=Math.floor(center.y-rad);yy<=center.y+rad;yy++)for(let xx=Math.floor(center.x-rad);xx<=center.x+rad;xx++){if(xx<0||yy<0||xx>=W||yy>=H)continue;const dx=xx-center.x,dy=yy-center.y;if(dx*dx+dy*dy>rad*rad*.58)continue;total++;if(gray(img.data,(yy*W+xx)*4)<135)dark++}scores.push(total?dark/total:0)}const ranked=scores.map((s,i)=>({s,i})).sort((a,b)=>b.s-a.s),best=ranked[0],second=ranked[1];let status="blank",selected=null;if(best.s>=.30){if(second.s>=.27&&best.s-second.s<.12)status="multiple";else{selected=best.i;status=best.s<.42?"uncertain":"marked"}}answers.push({question:q+1,selected,status,scores})}
- return{answers,preview:canvas.toDataURL("image/jpeg",.82),markers:{tl,tr,bl,br}};
+ return{answers,preview:canvas.toDataURL("image/jpeg",.82),markers:{tl,tr,bl,br},markerConfidence:[tl,tr,bl,br].map(m=>Math.round((m.confidence||0)*100))};
 }
