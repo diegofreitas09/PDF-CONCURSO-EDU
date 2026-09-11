@@ -1,4 +1,5 @@
 import React from "react";
+import RichText from"./RichText";
 
 function resolveSrc(src=""){
   if(!src)return"";
@@ -10,11 +11,14 @@ function resolveSrc(src=""){
 function ImageMedia({media}){
   const src=resolveSrc(media.src||media.url||"");
   if(!src)return null;
-  return <figure className="question-media-card question-media-image">
-    <img src={src} alt={media.alt||"Imagem de apoio da questão"} loading="lazy"/>
+  return <figure className={`question-media-card question-media-image ${media.originalCrop?"question-media-original-crop":""}`}>
+    {media.title&&<div className="question-media-title">{media.title}</div>}
+    <img src={src} alt={media.alt||"Imagem de apoio da questão"} loading="lazy" decoding="async"/>
     {(media.caption||media.credit)&&<figcaption>{media.caption}{media.credit?` · ${media.credit}`:""}</figcaption>}
   </figure>;
 }
+
+function FormulaMedia({media}){const value=media.latex||media.value||media.text||"";if(!value)return null;return <figure className="question-media-card question-media-formula">{media.title&&<div className="question-media-title">{media.title}</div>}<div className="question-formula-box"><RichText text={`$$${value}$$`}/></div>{media.caption&&<figcaption>{media.caption}</figcaption>}</figure>}
 
 function BarChart({media}){
   const data=Array.isArray(media.data)?media.data:[];
@@ -37,7 +41,7 @@ function TableMedia({media}){
   const rows=Array.isArray(media.rows)?media.rows:[];
   return <figure className="question-media-card question-media-table">
     {media.title&&<div className="question-media-title">{media.title}</div>}
-    <div className="question-table-wrap"><table><thead><tr>{headers.map((h,i)=><th key={`${h}-${i}`}>{h}</th>)}</tr></thead><tbody>{rows.map((row,ri)=><tr key={ri}>{row.map((cell,ci)=><td key={`${ri}-${ci}`}>{cell}</td>)}</tr>)}</tbody></table></div>
+    <div className="question-table-wrap"><table><thead><tr>{headers.map((h,i)=><th key={`${h}-${i}`}><RichText text={h}/></th>)}</tr></thead><tbody>{rows.map((row,ri)=><tr key={ri}>{row.map((cell,ci)=><td key={`${ri}-${ci}`}><RichText text={cell}/></td>)}</tr>)}</tbody></table></div>
     {media.caption&&<figcaption>{media.caption}</figcaption>}
   </figure>;
 }
@@ -46,7 +50,7 @@ function StatementsMedia({media}){
   const items=Array.isArray(media.items)?media.items:[];
   return <figure className="question-media-card question-media-statements">
     {media.title&&<div className="question-media-title">{media.title}</div>}
-    <div className="question-statement-grid">{items.map((item,i)=><div className="question-statement-row" key={`${item.key||i}`}><strong>{item.key||String(i+1).padStart(2,"0")}</strong><span>{item.text}</span></div>)}</div>
+    <div className="question-statement-grid">{items.map((item,i)=><div className="question-statement-row" key={`${item.key||i}`}><strong>{item.key||String(i+1).padStart(2,"0")}</strong><span><RichText text={item.text}/></span></div>)}</div>
     {media.caption&&<figcaption>{media.caption}</figcaption>}
   </figure>;
 }
@@ -55,7 +59,7 @@ function FlowMedia({media}){
   const nodes=Array.isArray(media.nodes)?media.nodes:[];
   return <figure className="question-media-card question-media-flow">
     {media.title&&<div className="question-media-title">{media.title}</div>}
-    <div className="question-flow-row">{nodes.map((node,i)=><React.Fragment key={`${node}-${i}`}><div className="question-flow-node">{node}</div>{i<nodes.length-1&&<div className="question-flow-arrow" aria-hidden="true">→</div>}</React.Fragment>)}</div>
+    <div className="question-flow-row">{nodes.map((node,i)=><React.Fragment key={`${node}-${i}`}><div className="question-flow-node"><RichText text={node}/></div>{i<nodes.length-1&&<div className="question-flow-arrow" aria-hidden="true">→</div>}</React.Fragment>)}</div>
     {media.caption&&<figcaption>{media.caption}</figcaption>}
   </figure>;
 }
@@ -67,8 +71,9 @@ export default function QuestionMedia({media}){
   return <div className="question-media-stack">{items.map((item,i)=>{
     if(!item)return null;
     const type=item.type||"image";
-    if(type==="image")return <ImageMedia media={item} key={i}/>;
-    if(type==="bar-chart")return <BarChart media={item} key={i}/>;
+    if(type==="image"||type==="crop"||type==="source-crop")return <ImageMedia media={item} key={i}/>;
+    if(type==="formula"||type==="latex")return <FormulaMedia media={item} key={i}/>;
+    if(type==="bar-chart"||type==="bar")return <BarChart media={item} key={i}/>;
     if(type==="table")return <TableMedia media={item} key={i}/>;
     if(type==="statements"||type==="key")return <StatementsMedia media={item} key={i}/>;
     if(type==="flow")return <FlowMedia media={item} key={i}/>;
