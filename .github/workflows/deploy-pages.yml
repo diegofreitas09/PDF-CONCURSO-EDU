@@ -26,9 +26,6 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Gerar lote UECE auditado
-        run: python tools/generate_uece_quimica.py
-
       - name: Verificar integracao das questoes
         run: python scripts/verificar_integracao_questoes.py
 
