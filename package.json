@@ -5,7 +5,6 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "python tools/generate_uece_quimica.py",
     "build": "vite build",
     "preview": "vite preview"
   },
