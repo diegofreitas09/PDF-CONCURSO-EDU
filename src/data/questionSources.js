@@ -33,7 +33,7 @@ import { UECE_QUIMICA_ATOMISTICA_LOTE_09 } from "./questionSources/ueceQuimicaAt
 import { UECE_QUIMICA_ATOMISTICA_LOTE_10B } from "./questionSources/ueceQuimicaAtomisticaLote10b.js";
 import { UECE_QUIMICA_BIOQUIMICA_LOTE_01 } from "./questionSources/ueceQuimicaBioquimicaLote01.js";
 import { UECE_QUIMICA_BIOQUIMICA_VISUAIS_02 } from "./questionSources/ueceQuimicaBioquimicaVisuais02.js";
-import { UECE_QUIMICA_CINETICA_LOTE_15 } from "./questionSources/ueceQuimicaCinetICA_Lote15.js";
+import { UECE_QUIMICA_CINETICA_LOTE_15 } from "./questionSources/ueceQuimicaCineticaLote15.js";
 import { UECE_QUIMICA_AMBIENTAL_LOTE_10 } from "./questionSources/ueceQuimicaAmbientalLote10.js";
 import { UECE_QUIMICA_PROPRIEDADES_PERIODICAS_LOTE_18 } from "./questionSources/ueceQuimicaPropriedadesPeriodicasLote18.js";
 import { UECE_QUIMICA_COLOIDES_LOTE_06 } from "./questionSources/ueceQuimicaColoidesLote06.js";
