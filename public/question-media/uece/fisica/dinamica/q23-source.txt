@@ -1,0 +1,1 @@
+Imagem binária armazenada via Git blob no próximo commit.
