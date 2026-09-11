@@ -33,5 +33,22 @@ export const UECE_QUIMICA_BIOQUIMICA_LOTE_01 = [
     source: "UECE 2015.1 2ª Fase",
     origin: "Apostila UECE por Assunto 11ª edição — p. 185",
     reviewed: true
+  },
+  {
+    id: "UECE-QUI-BIO-003",
+    discipline: "Química",
+    topic: "Bioquímica",
+    statement: "(UECE 2016.1 1ª Fase) O Prêmio Nobel de Química de 2015 foi para três pesquisadores que descobriram mecanismos biomoleculares naturais que reparam erros no DNA (ácido desoxirribonucleico), que contém as informações para o desenvolvimento e o funcionamento dos seres vivos. O DNA é relativamente instável e sua composição pode ser danificada por diversos fatores. Os pesquisadores Lindahl, Sancar e Modrich descobriram mecanismos que existem em praticamente todos os seres vivos e servem como ‘caixas de ferramentas’ naturais para corrigir esses defeitos que surgem espontaneamente. Com relação ao DNA, assinale a afirmação correta.",
+    options: [
+      "Sua cadeia principal é formada por bases halogenadas e resíduos de açúcar dispostos alternadamente.",
+      "É um longo polímero de unidades simples (monômeros) de nucleotídeos, cuja cadeia principal é formada por moléculas de açúcares e fosfato.",
+      "Os três filamentos que compõem a sua estrutura enrolam-se, um sobre o outro, formando uma tripla hélice, semelhante a um espiral de caderno, podendo ter milhares de nucleotídeos.",
+      "É um composto orgânico constituído por uma desoxirribose e um grupo nitrogenado."
+    ],
+    answer: 1,
+    explanation: "Gabarito oficial da apostila: B. O DNA é um polímero de nucleotídeos; seu esqueleto principal é constituído pela alternância entre açúcar (desoxirribose) e grupos fosfato. Item transcrito integralmente e conferido no material-fonte.",
+    source: "UECE 2016.1 1ª Fase",
+    origin: "Apostila UECE por Assunto 11ª edição — p. 185-186",
+    reviewed: true
   }
 ];
