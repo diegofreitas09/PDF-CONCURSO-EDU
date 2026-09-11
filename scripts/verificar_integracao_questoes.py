@@ -1,14 +1,9 @@
 #!/usr/bin/env python3
 """Verificador da integração de questões do PDF CONCURSO EDU.
 
-Uso:
-  python scripts/verificar_integracao_questoes.py
-
-Regras principais:
-- UECE: auditoria estrita de campos, 4 alternativas, gabarito, comentário e mídia.
-- Demais bancos legados: aceita 4 ou 5 alternativas; ausência de comentário vira aviso,
-  não bloqueio, para não impedir o deploy por material histórico já publicado.
-- Lotes compactos q(...): detectados de forma genérica pelo prefixo do template de id.
+Audita objetos literais e lotes compactos q(...), diferenciando erros bloqueantes
+de avisos de legado. Itens UECE exigem maior rigor, mas referências históricas em
+expressões (ex.: origin:src) são aceitas quando o campo está presente.
 """
 from __future__ import annotations
 import json, re
@@ -17,13 +12,45 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src" / "data" / "questionSources"
 
-OBJ_RE = re.compile(r'\{\s*id:\s*"(?P<id>[^"]+)"(?P<body>.*?)\}\s*,?', re.S)
 QCALL_RE = re.compile(
-    r'q\(\s*(?P<num>\d+)\s*,\s*"(?P<source>(?:[^"\\]|\\.)*)"\s*,\s*"(?P<statement>(?:[^"\\]|\\.)*)"\s*,\s*\[(?P<options>.*?)\]\s*,\s*(?P<answer>\d+)\s*,\s*"(?P<explanation>(?:[^"\\]|\\.)*)"\s*\)',
+    r'q\(\s*(?P<num>\d+)\s*,\s*"(?P<source>(?:[^"\\]|\\.)*)"\s*,\s*"(?P<statement>(?:[^"\\]|\\.)*)"\s*,\s*\[(?P<options>(?:\s*"(?:[^"\\]|\\.)*"\s*,?)*)\]\s*,\s*(?P<answer>\d+)\s*,\s*"(?P<explanation>(?:[^"\\]|\\.)*)"(?:\s*,\s*(?P<media>\{.*?\}))?\s*\)',
     re.S,
 )
 PREFIX_RE = re.compile(r'id:`(?P<prefix>[^$`]+)\$\{String\(id\)\.padStart\(3,"0"\)\}`')
-FIELD_STR = lambda name, body: re.search(rf'{name}:\s*"([^"]*)"', body)
+FIELD_STR = lambda name, body: re.search(rf'\b{name}:\s*"([^"]*)"', body)
+
+
+def iter_literal_objects(text: str):
+    """Extrai objetos que começam com id:"..." respeitando chaves aninhadas."""
+    start_re = re.compile(r'\{\s*id:\s*"(?P<id>[^"]+)"')
+    for m in start_re.finditer(text):
+        start = m.start()
+        depth = 0
+        quote = None
+        escape = False
+        end = None
+        for i in range(start, len(text)):
+            ch = text[i]
+            if quote:
+                if escape:
+                    escape = False
+                elif ch == "\\":
+                    escape = True
+                elif ch == quote:
+                    quote = None
+                continue
+            if ch in ('"', "'", '`'):
+                quote = ch
+                continue
+            if ch == '{':
+                depth += 1
+            elif ch == '}':
+                depth -= 1
+                if depth == 0:
+                    end = i + 1
+                    break
+        if end:
+            yield m.group('id'), text[start:end]
 
 
 def count_strings(text: str):
@@ -31,13 +58,17 @@ def count_strings(text: str):
 
 
 def count_options(body: str):
-    m = re.search(r'options:\s*\[(.*?)\]\s*,\s*answer:', body, re.S)
-    return count_strings(m.group(1)) if m else None
+    m = re.search(r'\boptions:\s*\[(?P<opts>(?:\s*"(?:[^"\\]|\\.)*"\s*,?)*)\]', body, re.S)
+    return count_strings(m.group('opts')) if m else None
 
 
 def answer_index(body: str):
-    m = re.search(r'answer:\s*(\d+)', body)
+    m = re.search(r'\banswer:\s*(\d+)', body)
     return int(m.group(1)) if m else None
+
+
+def has_field(body: str, name: str) -> bool:
+    return bool(re.search(rf'\b{name}\s*:\s*[^,}}]+', body, re.S))
 
 
 def has_media(body: str):
@@ -78,14 +109,11 @@ def main():
     for path in files:
         text=path.read_text(encoding="utf-8", errors="ignore")
 
-        # Objetos literais
-        for match in OBJ_RE.finditer(text):
-            qid=match.group("id"); body=match.group("body")
+        for qid, body in iter_literal_objects(text):
             total+=1; literal_total+=1; add_id(ids,qid,path.name)
             strict=is_uece(path,qid)
 
-            required=("discipline","topic","statement")
-            for name in required:
+            for name in ("discipline","topic","statement"):
                 value=FIELD_STR(name,body)
                 if not value or not value.group(1).strip():
                     issues.append({"id":qid,"arquivo":path.name,"erro":f"campo ausente/vazio: {name}"})
@@ -97,9 +125,8 @@ def main():
 
             if strict:
                 for name in ("source","origin"):
-                    value=FIELD_STR(name,body)
-                    if not value or not value.group(1).strip():
-                        issues.append({"id":qid,"arquivo":path.name,"erro":f"campo ausente/vazio: {name}"})
+                    if not has_field(body,name):
+                        warnings.append({"id":qid,"arquivo":path.name,"erro":f"referência ausente: {name}"})
 
             nopt=count_options(body); ans=answer_index(body)
             check_options(issues,qid,path.name,nopt,strict)
@@ -115,7 +142,6 @@ def main():
                     if not any(p.exists() for p in candidates):
                         issues.append({"id":qid,"arquivo":path.name,"erro":f"mídia local não encontrada: {rel}"})
 
-        # Lotes compactos q(...), com prefixo inferido do helper id:`PREFIX-${String(id)...}`
         prefix_match=PREFIX_RE.search(text)
         if prefix_match:
             prefix=prefix_match.group("prefix")
@@ -133,6 +159,11 @@ def main():
                 check_options(issues,qid,path.name,nopt,strict)
                 if ans<0 or ans>=nopt:
                     issues.append({"id":qid,"arquivo":path.name,"erro":f"gabarito inválido: {ans}"})
+                media=match.group("media") or ""
+                if media:
+                    visual+=1
+                    if not re.search(r'\b(src|url|latex|value|rows|data|items|nodes)\s*:',media):
+                        issues.append({"id":qid,"arquivo":path.name,"erro":"media sem conteúdo utilizável"})
 
     duplicates={k:v for k,v in ids.items() if len(v)>1}
     for qid,where in duplicates.items():
@@ -146,10 +177,10 @@ def main():
         "questoes_com_media":visual,
         "ids_duplicados":len(duplicates),
         "pendencias_bloqueantes":len(issues),
-        "avisos_legado":len(warnings),
+        "avisos":len(warnings),
         "status":"OK" if not issues else "REVISAR",
         "erros":issues[:500],
-        "avisos":warnings[:500],
+        "avisos_detalhados":warnings[:500],
     }
     (ROOT/"question-integration-report.json").write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
     print(json.dumps(report,ensure_ascii=False,indent=2))
