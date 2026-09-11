@@ -16,5 +16,22 @@ export const UECE_QUIMICA_BIOQUIMICA_LOTE_01 = [
     source: "UECE 2015.1 2ª Fase",
     origin: "Apostila UECE por Assunto 11ª edição — p. 185",
     reviewed: true
+  },
+  {
+    id: "UECE-QUI-BIO-002",
+    discipline: "Química",
+    topic: "Bioquímica",
+    statement: "(UECE 2015.1 2ª Fase) Pesquisadores estão testando tratamentos para a calvície, cultivando cabelo em uma placa de Petri. Duas moléculas distintas parecem promissoras para possíveis tratamentos para a perda capilar: um peptídeo de levedura e um antioxidante chamado isoflavona. Com relação a esse tratamento, assinale a opção correta.",
+    options: [
+      "Os peptídeos são biomoléculas formadas pela ligação de dois ou mais aminoácidos através de ligações peptídicas estabelecidas entre um grupo amina de um aminoácido, e um grupo carboxilo do outro aminoácido.",
+      "Um antioxidante é uma molécula capaz de inibir a oxidação de outras moléculas. As reações de oxidação evitam a formação de radicais livres.",
+      "Uma placa de Petri é um recipiente retangular, achatado, de vidro ou plástico, que os profissionais de laboratório utilizam para desenvolver meios de cultura bacteriológicos e para reações em escala reduzida.",
+      "Os peptídeos são resultantes do processamento de aminoácidos e podem possuir na sua constituição duas ou mais proteínas."
+    ],
+    answer: 0,
+    explanation: "Gabarito oficial da apostila: A. Peptídeos são formados pela união de dois ou mais aminoácidos por ligações peptídicas, estabelecidas entre o grupo amino de um aminoácido e o grupo carboxila de outro. Item transcrito integralmente e conferido no material-fonte.",
+    source: "UECE 2015.1 2ª Fase",
+    origin: "Apostila UECE por Assunto 11ª edição — p. 185",
+    reviewed: true
   }
 ];
