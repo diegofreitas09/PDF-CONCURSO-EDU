@@ -1,0 +1,34 @@
+// UECE por Assunto — Física / Análise Dimensional (27 itens auditados)
+// Enunciados e gabaritos conferidos na apostila enviada pelo usuário.
+const src="Apostila UECE por Assunto 11ª edição";
+const exp=(letter)=>`Gabarito conferido no quadro de respostas da apostila: ${letter}. Resolva pela homogeneidade dimensional: escreva cada grandeza em termos das dimensões fundamentais, compare os expoentes e verifique a compatibilidade das unidades.`;
+const q=(id,year,statement,options,answer)=>({id:`UECE-FIS-AD-${String(id).padStart(3,"0")}`,discipline:"Física",topic:"Análise dimensional",statement:`(${year}) ${statement}`,options,answer,explanation:exp(String.fromCharCode(65+answer)),source:year,origin:src,reviewed:true});
+export const UECE_FISICA_ANALISE_DIMENSIONAL_LOTE_27=[
+q(1,"UECE 2017.1 2ª Fase","Em um sistema massa-mola, a energia potencial é função do coeficiente elástico k e da deformação da mola. Em termos de unidade de energia e comprimento, a unidade de medida de k é",["J/m².","J/m.","J·m.","J·m²."],0),
+q(2,"UECE 2018.2 1ª Fase","Suponha que o consumo c de diesel de um caminhão, em m³ de combustível por metro viajado, seja proporcional à massa M do veículo, de modo que c = βM. No Sistema Internacional, β tem unidade de",["km/L.","m²/kg.","L/km.","m/kg."],1),
+q(3,"UECE 2018.1 1ª Fase","Em um tanque, a altura h em metros e a vazão q em m³/s relacionam-se por h = Rq. A unidade de medida de R é",["s/m².","s/m³.","m³/s.","m/s."],0),
+q(4,"UECE 2018.1 2ª Fase","Em um movimento oscilatório, uma partícula está sujeita a uma força proporcional a cos(ωt²). A unidade de medida de ω no SI é",["s.","s⁻¹.","s⁻².","s²."],2),
+q(5,"UECE 2018.1 2ª Fase","Em um gás ideal, o produto da pressão pelo volume dividido pela temperatura tem, no Sistema Internacional, unidade de medida de",["Pa/K.","N·m/K.","m³/K.","Pa²/m."],1),
+q(6,"UECE 2018.2 2ª Fase","Considere a energia potencial gravitacional próxima à superfície da Terra. Se a unidade de comprimento fosse o centímetro, o valor numérico da energia potencial seria multiplicado por um fator de",["10.","100.","1.000.","10.000."],3),
+q(7,"UECE 2018.2 2ª Fase","Em um sistema oscilante, a corrente elétrica é descrita por x = α·cos(b·t). As unidades de α e b são, respectivamente",["Hz e ampère.","ampère e Hz.","ampère e segundo.","segundo e ampère."],1),
+q(8,"UECE 2019.1 2ª Fase","Para um pêndulo simples, admita [T] = [L]^a [g]^b [M]^c. Para haver homogeneidade dimensional, os expoentes a, b e c devem ser",["0, 1 e 1.","1, -1 e 0.","1, 1 e 1.","1/2, -1/2 e 0."],3),
+q(9,"UECE 2019.2 1ª Fase","Um acelerômetro mede, entre outras informações, o ângulo entre a normal à tela e o vetor força peso. Do ponto de vista dimensional, esse ângulo",["é adimensional.","tem unidade m/s².","tem unidade m/s.","é um vetor."],0),
+q(10,"UECE 2019.1 1ª Fase","Um gás ideal sofre compressão pela realização de trabalho sobre o recipiente. Esse trabalho tem a mesma unidade de medida do",["quociente entre pressão e volume.","produto de pressão por temperatura.","quociente entre temperatura e pressão.","produto de pressão por volume."],3),
+q(11,"UECE 2019.1 1ª Fase","Assinale a opção que apresenta a mesma unidade de medida de energia cinética.",["(momento linear)²/massa.","momento linear/massa.","massa × comprimento.","massa × aceleração."],0),
+q(12,"UECE 2019.2 2ª Fase","Em um sistema de unidades hipotético, p é unidade de momento linear e m é unidade de massa, ambas fundamentais. Nesse sistema, a unidade de energia potencial seria",["p.","p²/m.","m.","p/m."],1),
+q(13,"UECE 2019.1 2ª Fase","Na lei da gravitação universal, a unidade da constante gravitacional G é",["N·m/kg.","N.","m².","N·m²/kg²."],3),
+q(14,"UECE 2020.1 2ª Fase","Na conversão entre múltiplos de uma unidade, como Hz para MHz ou kg para g, o fator de conversão",["é adimensional.","tem a mesma dimensão da unidade em que aparece como prefixo.","tem dimensão de frequência multiplicada por massa.","não pode ter unidade determinada."],0),
+q(15,"UECE 2020.2 1ª Fase","A concentração de certos poluentes é dada em μg/m³. Supondo a velocidade do som diretamente proporcional a essa concentração, a constante de proporcionalidade deve ter, no SI, unidade equivalente a",["m³/μg.","(kg·s)/m⁴.","m⁴/(kg·s).","m/(kg·s)."],2),
+q(16,"UECE 2021.1 1ª Fase","O fluxo respiratório φ, em volume por tempo, relaciona-se à pressão P e à velocidade v por φ = kPv. A dimensão de k no SI é",["m³s²/kg.","m²s³/kg.","ms³/kg².","m²s/kg²."],0),
+q(19,"UECE 2022.1 2ª Fase","A força dos ventos F depende de um coeficiente aerodinâmico adimensional K, da pressão P e da área A. A expressão dimensionalmente correta é",["F = KP/A.","F = √(KPA).","F = KP²A.","F = KPA."],3),
+q(20,"UECE 2022.2 1ª Fase","Adotando como fundamentais a velocidade da luz c, a constante gravitacional G e a constante de Planck h, a combinação Gh/c³ apresenta dimensão de",["massa.","área.","tempo.","comprimento."],1),
+q(21,"UECE 2022.2 2ª Fase","Na equação de van der Waals (P − A/V²)(V − B)=RT, a constante A tem dimensão de",["L⁶.","ML⁵/T².","M/(T²L³).","L³."],1),
+q(22,"UECE 2023.1 1ª Fase","Em um novo sistema, a unidade padrão de comprimento é 5 cm e a unidade padrão de massa é 20 g. Um objeto de densidade 8 g/cm³ terá valor numérico, no novo sistema, igual a",["4.","50.","8.","100."],1),
+q(23,"UECE 2023.1 2ª Fase","O período T de pulsação de bolhas em explosões subaquáticas é dado por P^X D^Y E^Z, em que P é pressão, D densidade e E energia. O produto XYZ resulta em",["5/36.","1.","−5/36.","−1/36."],2),
+q(24,"UECE 2023.2 1ª Fase","Uma força F(x,t) é descrita por Ax + Bt². A razão B/A tem a mesma dimensão da grandeza",["força.","aceleração.","energia.","velocidade."],1),
+q(25,"UECE 2023.2 2ª Fase","O açude Castanhão tem capacidade de 6.700 hm³ e encontra-se com aproximadamente 20% da capacidade. A ordem de grandeza do volume de água, em litros, é",["10⁸.","10¹².","10¹⁰.","10¹¹."],1),
+q(26,"UECE 2023.2 2ª Fase","Na lei de Stokes F = 6πηrv, tomando velocidade V, aceleração A e força F como grandezas fundamentais, a dimensão da viscosidade η será",["FA³/V.","FA/V³.","FA²/V².","FA³/V³."],1),
+q(27,"UECE 2024.2 2ª Fase","Um estádio dispõe de aproximadamente 20.000 m² para assentos, e cada pessoa necessita em média de 0,5 m². A ordem de grandeza do número de pessoas acomodadas é",["10¹.","10⁵.","10⁷.","10²."],1),
+q(28,"UECE 2025.1 1ª Fase","Adotando c, G e h como grandezas fundamentais, a grandeza massa ao quadrado teria dimensão",["G²/(h²c²).","hc/G.","h²c/G².","h²G²c²."],1),
+q(29,"UECE 2025.2 1ª Fase","Sobre duas grandezas físicas A e B de dimensões diferentes, assinale a relação dimensionalmente correta.",["A soma algébrica de A com B é sempre uma grandeza física.","Força × tempo tem dimensão de trabalho.","Campo elétrico/carga tem dimensão de potencial elétrico.","Pressão × volume tem dimensão de energia."],3)
+];
