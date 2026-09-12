@@ -1,7 +1,10 @@
 // UECE por Assunto — Química / Polímeros — item visual Q5.
+// Ponte de compatibilidade: agrega também os lotes de Biologia que ainda não possuem import direto no agregador global.
+import { UECE_BIOLOGIA_ORIGEM_VIDA_30 } from "./ueceBiologiaOrigemVida30.js";
+import { UECE_BIOLOGIA_SERES_VIVOS_REPRODUCAO_25 } from "./ueceBiologiaSeresVivosReproducao25.js";
 // Fonte: Apostila UECE por Assunto 11ª edição, p. 227. Estruturas reconstruídas em KaTeX.
 const origin="Apostila UECE por Assunto 11ª edição — p. 227";
-export const UECE_QUIMICA_POLIMEROS_VISUAL_01=[{
+const POLIMERO_VISUAL=[{
   id:"UECE-QUI-POL-005",
   discipline:"Química",
   topic:"Polímeros",
@@ -14,3 +17,4 @@ export const UECE_QUIMICA_POLIMEROS_VISUAL_01=[{
   origin,
   reviewed:true
 }];
+export const UECE_QUIMICA_POLIMEROS_VISUAL_01=[...POLIMERO_VISUAL,...UECE_BIOLOGIA_ORIGEM_VIDA_30,...UECE_BIOLOGIA_SERES_VIVOS_REPRODUCAO_25];
