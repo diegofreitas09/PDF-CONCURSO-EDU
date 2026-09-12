@@ -1,7 +1,8 @@
-// UECE por Assunto — Química / Atomística — 9 itens íntegros do início do bloco; questão 2 reservada ao fluxo visual.
+// UECE por Assunto — Química / Atomística — bloco inicial com complemento visual Q2.
+import { UECE_QUIMICA_ATOMISTICA_VISUAL_02 } from "./ueceQuimicaAtomisticaVisual02.js";
 const src="Apostila UECE por Assunto 11ª edição";
 const q=(id,source,statement,options,answer,explanation)=>({id:`UECE-QUI-ATO-${String(id).padStart(3,"0")}`,discipline:"Química",topic:"Atomística",statement:`(${source}) ${statement}`,options,answer,explanation:`Gabarito: ${String.fromCharCode(65+answer)}. ${explanation}`,source,origin:src,reviewed:true});
-export const UECE_QUIMICA_ATOMISTICA_LOTE_09=[
+const UECE_QUIMICA_ATOMISTICA_TEXTUAIS_09=[
 q(1,"UECE 2017.1 2ª Fase","Na distribuição eletrônica do ⁸⁸₃₈Sr, o 17º par eletrônico possui quais valores dos números quânticos principal, secundário, magnético e spin?",["4, 2, 0, -1/2 e +1/2.","4, 1, +1, -1/2 e +1/2.","4, 1, 0, -1/2 e +1/2.","4, 2, -1, -1/2 e +1/2."],2,"A configuração eletrônica do Sr leva o 17º par ao subnível 4p, com n=4 e l=1; na convenção usada pela prova, m=0 e spins opostos."),
 q(3,"UECE 2017.2 1ª Fase","A massa atômica de um elemento é calculada a partir da",["média aritmética das massas atômicas de seus isótopos.","média geométrica das massas atômicas de seus isótopos.","média ponderada das massas atômicas de seus isótopos.","soma de prótons e nêutrons do isótopo mais abundante."],2,"A massa atômica tabelada é a média ponderada das massas isotópicas pelas abundâncias naturais."),
 q(4,"UECE 2018.1 2ª Fase","O movimento quantizado de um elétron entre estados de energia, comparado a uma bola que só pode ocupar degraus e não posições intermediárias, aplica-se ao modelo atômico proposto por",["Sommerfeld.","Rutherford.","Heisenberg.","Bohr."],3,"Bohr propôs níveis de energia quantizados para os elétrons."),
@@ -12,3 +13,4 @@ q(8,"UECE 2018.2 2ª Fase","A radiação ultravioleta é mais perigosa que a luz
 q(9,"UECE 2018.2 2ª Fase","Sobre o potássio, é correto afirmar que",["na tabela periódica faz parte do grupo 1 e está situado no terceiro período.","é menos eletronegativo que o césio.","seu raio atômico é maior que o raio de seu íon mais provável.","seu elétron diferencial pode ser representado por 3, 1, 0, +1/2."],2,"O K forma preferencialmente K+ ao perder o elétron 4s; o cátion fica menor que o átomo neutro, logo o raio atômico é maior."),
 q(10,"UECE 2019.1 2ª Fase","A descoberta de uma quantidade nuclear que aumenta regularmente de elemento para elemento, permitindo definir o número atômico e reorganizar a lei periódica, é atribuída a",["Ernest Rutherford.","Niels Bohr.","Henry Moseley.","Dmitri Mendeleiev."],2,"Moseley relacionou os espectros de raios X à carga nuclear e estabeleceu o número atômico como base da periodicidade.")
 ];
+export const UECE_QUIMICA_ATOMISTICA_LOTE_09=[...UECE_QUIMICA_ATOMISTICA_TEXTUAIS_09,...UECE_QUIMICA_ATOMISTICA_VISUAL_02];
