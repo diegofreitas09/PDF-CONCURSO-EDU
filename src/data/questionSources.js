@@ -46,7 +46,7 @@ import { UECE_QUIMICA_FORCAS_INTERMOLECULARES_LOTE_09 } from "./questionSources/
 import { UECE_QUIMICA_GASES_LOTE_24 } from "./questionSources/ueceQuimicaGasesLote24.js";
 import { UECE_QUIMICA_ISOMERIA_TEXTUAIS_07 } from "./questionSources/ueceQuimicaIsomeriaTextuais07.js";
 import { UECE_QUIMICA_MATERIAIS_LABORATORIO_13 } from "./questionSources/ueceQuimicaMateriaisLaboratorio13.js";
-import { UECE_QUIMICA_LEIS_PONDERAIS_11 } from "./questionSources/ueceQuimicaLeisPonderAIS11.js";
+import { UECE_QUIMICA_LEIS_PONDERAIS_11 } from "./questionSources/ueceQuimicaLeisPonderais11.js";
 import { UECE_QUIMICA_LIGACOES_TEXTUAIS_16 } from "./questionSources/ueceQuimicaLigacoesTextuais16.js";
 import { UECE_QUIMICA_METODOS_SEPARACAO_09 } from "./questionSources/ueceQuimicaMetodosSeparacao09.js";
 import { UECE_QUIMICA_POLIMEROS_TEXTUAIS_04 } from "./questionSources/ueceQuimicaPolimerosTextuais04.js";
