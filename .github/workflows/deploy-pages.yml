@@ -29,6 +29,9 @@ jobs:
       - name: Verificar integracao das questoes
         run: python scripts/verificar_integracao_questoes.py
 
+      - name: Verificar midias das questoes
+        run: python scripts/verificar_midias_questoes.py
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
