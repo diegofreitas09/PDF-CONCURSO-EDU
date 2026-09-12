@@ -1,9 +1,11 @@
-// UECE por Assunto — Química / Química e Reações Orgânicas — terceiro lote textual íntegro (16 itens).
-// Fonte: Apostila UECE por Assunto 11ª edição, pp. 245–256. Gabaritos conferidos na tabela oficial da p. 264.
-// Foram excluídos deste lote itens que dependem de estruturas/desenhos não preservados no texto extraído.
+import { UECE_QUIMICA_ORGANICA_TEXTUAIS_07E } from "./ueceQuimicaOrganicaTextuais07e.js";
+// UECE por Assunto — Química / Química e Reações Orgânicas — lotes textuais íntegros (23 itens).
+// Fonte: Apostila UECE por Assunto 11ª edição, pp. 240–256. Gabaritos conferidos na tabela oficial da p. 264.
+// Foram excluídos itens que dependem de estruturas/desenhos não preservados no texto extraído.
 const ORIGIN="Apostila UECE por Assunto 11ª edição — pp. 245–256";
 const q=(id,source,statement,options,answer,explanation)=>({id:`UECE-QUI-ORG-${String(id).padStart(3,"0")}`,discipline:"Química",topic:"Química e Reações Orgânicas",statement:`(${source}) ${statement}`,options,answer,explanation:`Gabarito: ${String.fromCharCode(65+answer)}. ${explanation}`,source,origin:ORIGIN,reviewed:true});
 export const UECE_QUIMICA_ORGANICA_TEXTUAIS_16C=[
+...UECE_QUIMICA_ORGANICA_TEXTUAIS_07E,
 q(42,"UECE 2020.1 2ª Fase","As funções orgânicas são determinadas pelas estruturas e agrupam compostos orgânicos com características semelhantes. Compostos oxinitrogenados pertencem às funções de",["aminas.","nitrilas.","amidas.","isonitrilos."],2,"Amidas possuem simultaneamente oxigênio e nitrogênio no grupo funcional."),
 q(45,"UECE 2020.2 2ª Fase","Os compostos orgânicos são formados por átomos de carbono cujas estruturas agrupam as substâncias com características semelhantes e, portanto, pertencem a grupos identificados pelas funções orgânicas. No que diz respeito a funções orgânicas, assinale a afirmação verdadeira.",["O grupo funcional dos ácidos carboxílicos é denominado carbonila.","Ésteres orgânicos são compostos em que o oxigênio está diretamente ligado a duas cadeias carbônicas.","Amidas são compostos derivados teoricamente do NH3 pela substituição de um hidrogênio por um grupo acila.","Álcoois são compostos orgânicos que contêm um ou mais grupos oxidrila ligados diretamente a átomos de carbono insaturados."],2,"Amidas podem ser vistas como derivados da amônia em que hidrogênios são substituídos por grupos acila."),
 q(47,"UECE 2020.2 2ª Fase","Considerando a fórmula estrutural do composto orgânico 2,4,4-trimetilheptano, é correto dizer que o número de átomos de carbonos secundários é",["5.","2.","4.","3."],3,"Na cadeia do 2,4,4-trimetilheptano há três carbonos ligados a exatamente dois outros carbonos; portanto são três carbonos secundários."),
