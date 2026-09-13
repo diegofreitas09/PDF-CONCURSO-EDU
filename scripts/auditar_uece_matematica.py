@@ -2,8 +2,9 @@
 """Auditoria de identidade das questões UECE de Matemática.
 
 Valida IDs e, principalmente, duplicidades da questão-fonte usando
-(tópico canônico, sourceQuestion). Isso evita inflar o banco ao reinserir
-uma mesma questão com outro UECE-MAT-XXX.
+(tópico canônico, sourceQuestion). Considera também a camada explícita de
+referências recuperadas dos lotes legados, sem inventar página individual
+quando a fonte só foi confirmada por intervalo de páginas.
 """
 from __future__ import annotations
 import json, re, unicodedata
@@ -11,11 +12,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src" / "data" / "questionSources"
+REFS = SRC / "ueceMatematicaReferenciasLegadas.js"
 
-# Reinserções confirmadas pela auditoria de 2026-09-13.
-# Permanecem nos arquivos históricos para rastreabilidade, mas não fazem parte
-# do banco efetivo e não entram na contagem de identidade.
 RETIRED_IDS = {
+    "UECE-MAT-209", "UECE-MAT-210", "UECE-MAT-211", "UECE-MAT-212", "UECE-MAT-213", "UECE-MAT-214", "UECE-MAT-215",
+    "UECE-MAT-217", "UECE-MAT-218", "UECE-MAT-219", "UECE-MAT-220", "UECE-MAT-221", "UECE-MAT-222", "UECE-MAT-223", "UECE-MAT-224", "UECE-MAT-225", "UECE-MAT-226", "UECE-MAT-227",
     "UECE-MAT-509", "UECE-MAT-510", "UECE-MAT-511",
     "UECE-MAT-541", "UECE-MAT-542", "UECE-MAT-543", "UECE-MAT-544", "UECE-MAT-545", "UECE-MAT-546", "UECE-MAT-547", "UECE-MAT-548",
     "UECE-MAT-550", "UECE-MAT-551", "UECE-MAT-552", "UECE-MAT-553", "UECE-MAT-554", "UECE-MAT-555", "UECE-MAT-556", "UECE-MAT-557", "UECE-MAT-558", "UECE-MAT-559", "UECE-MAT-560",
@@ -31,28 +32,17 @@ def norm(s: str) -> str:
 def canonical_topic(topic: str) -> str:
     t = norm(topic)
     rules = [
-        ("aritmetica", "ARITMETICA"),
-        ("analise combinatoria", "ANALISE_COMBINATORIA"),
-        ("conjuntos", "CONJUNTOS"),
-        ("funcao e equacao do 1", "FUNCAO_1_GRAU"),
-        ("funcao e equacao do 2", "FUNCAO_2_GRAU"),
-        ("funcoes", "FUNCOES"),
-        ("geometria analitica", "GEOMETRIA_ANALITICA"),
-        ("geometria espacial", "GEOMETRIA_ESPACIAL"),
-        ("geometria plana", "GEOMETRIA_PLANA"),
-        ("progressao aritmetica", "PA"),
-        ("progressao geometrica", "PG"),
-        ("matematica financeira", "MATEMATICA_FINANCEIRA"),
-        ("razao", "RAZAO_PROPORCAO"),
-        ("operacoes basicas", "OPERACOES_BASICAS"),
-        ("sistemas e sequencias", "SISTEMAS_SEQUENCIAS"),
-        ("logarit", "LOGARITMO"),
-        ("polinom", "POLINOMIOS_COMPLEXOS"),
-        ("trigonom", "TRIGONOMETRIA"),
-        ("matrizes", "MATRIZES_DETERMINANTES"),
-        ("expressao algebrica", "EXPRESSAO_ALGEBRICA"),
-        ("inequacao", "INEQUACAO_IRRACIONAIS"),
-        ("produtos notaveis", "PRODUTOS_NOTAVEIS"),
+        ("aritmetica", "ARITMETICA"), ("analise combinatoria", "ANALISE_COMBINATORIA"),
+        ("conjuntos", "CONJUNTOS"), ("funcao e equacao do 1", "FUNCAO_1_GRAU"),
+        ("funcao e equacao do 2", "FUNCAO_2_GRAU"), ("funcoes", "FUNCOES"),
+        ("geometria analitica", "GEOMETRIA_ANALITICA"), ("geometria espacial", "GEOMETRIA_ESPACIAL"),
+        ("geometria plana", "GEOMETRIA_PLANA"), ("progressao aritmetica", "PA"),
+        ("progressao geometrica", "PG"), ("matematica financeira", "MATEMATICA_FINANCEIRA"),
+        ("razao", "RAZAO_PROPORCAO"), ("operacoes basicas", "OPERACOES_BASICAS"),
+        ("sistemas e sequencias", "SISTEMAS_SEQUENCIAS"), ("logarit", "LOGARITMO"),
+        ("polinom", "POLINOMIOS_COMPLEXOS"), ("trigonom", "TRIGONOMETRIA"),
+        ("matrizes", "MATRIZES_DETERMINANTES"), ("expressao algebrica", "EXPRESSAO_ALGEBRICA"),
+        ("inequacao", "INEQUACAO_IRRACIONAIS"), ("produtos notaveis", "PRODUTOS_NOTAVEIS"),
     ]
     for token, label in rules:
         if token in t:
@@ -90,26 +80,40 @@ def field_int(body: str, name: str):
     return int(m.group(1)) if m else None
 
 
+def load_reference_overrides():
+    if not REFS.exists(): return {}
+    text = REFS.read_text(encoding='utf-8', errors='ignore')
+    out = {}
+    pattern = re.compile(r'"(?P<id>UECE-MAT-\d+)"\s*:\s*\{(?P<body>[^}]*)\}')
+    for m in pattern.finditer(text):
+        body = m.group('body')
+        out[m.group('id')] = {
+            'sourceQuestion': field_int(body, 'sourceQuestion'),
+            'sourcePage': field_int(body, 'sourcePage'),
+            'origin': field_str(body, 'origin'),
+        }
+    return out
+
+
 def main():
-    records=[]
-    retired_seen=[]
+    overrides = load_reference_overrides()
+    records=[]; retired_seen=[]
     for path in sorted(SRC.glob('ueceMatematica*.js')):
+        if path == REFS: continue
         text=path.read_text(encoding='utf-8', errors='ignore')
         for qid, body in iter_objects(text):
             if qid in RETIRED_IDS:
                 retired_seen.append({'id': qid, 'file': path.name})
                 continue
+            ov = overrides.get(qid, {})
             records.append({
-                'id': qid,
-                'file': path.name,
-                'topic': field_str(body,'topic'),
-                'sourcePage': field_int(body,'sourcePage'),
-                'sourceQuestion': field_int(body,'sourceQuestion'),
+                'id': qid, 'file': path.name, 'topic': field_str(body,'topic'),
+                'sourcePage': field_int(body,'sourcePage') or ov.get('sourcePage'),
+                'sourceQuestion': field_int(body,'sourceQuestion') or ov.get('sourceQuestion'),
+                'origin': field_str(body,'origin') or ov.get('origin'),
             })
 
-    by_id={}
-    by_source={}
-    missing_source=[]
+    by_id={}; by_source={}; missing_source=[]; missing_origin=[]
     for r in records:
         by_id.setdefault(r['id'],[]).append(r)
         if r['topic'] and r['sourceQuestion'] is not None:
@@ -117,30 +121,27 @@ def main():
             by_source.setdefault(key,[]).append(r)
         else:
             missing_source.append(r)
+        if not r.get('origin'):
+            missing_origin.append(r)
 
     dup_ids={k:v for k,v in by_id.items() if len(v)>1}
     dup_source={f'{k[0]}#{k[1]}':v for k,v in by_source.items() if len(v)>1}
-    unique_source=len(by_source)
     status = 'OK' if not dup_ids and not dup_source and not missing_source else 'REVISAR'
-
     report={
-        'arquivos_matematica': len(list(SRC.glob('ueceMatematica*.js'))),
+        'arquivos_matematica': len(list(SRC.glob('ueceMatematica*.js')))-1,
         'registros_ativos_uece_mat': len(records),
         'ids_aposentados_por_duplicidade': len(retired_seen),
         'ids_unicos_ativos': len(by_id),
-        'fontes_unicas_topic_sourceQuestion': unique_source,
-        'ids_duplicados': len(dup_ids),
-        'fontes_duplicadas': len(dup_source),
+        'fontes_unicas_topic_sourceQuestion': len(by_source),
+        'ids_duplicados': len(dup_ids), 'fontes_duplicadas': len(dup_source),
         'sem_referencia_topic_sourceQuestion': len(missing_source),
-        'duplicidades_id': dup_ids,
-        'duplicidades_fonte': dup_source,
-        'ids_aposentados': retired_seen,
-        'sem_referencia': missing_source,
+        'sem_origin': len(missing_origin),
+        'duplicidades_id': dup_ids, 'duplicidades_fonte': dup_source,
+        'ids_aposentados': retired_seen, 'sem_referencia': missing_source,
         'status': status,
     }
     (ROOT/'uece-matematica-audit.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
     print(json.dumps(report,ensure_ascii=False,indent=2))
-    raise SystemExit(0 if report['status']=='OK' else 1)
+    raise SystemExit(0 if status=='OK' else 1)
 
-if __name__=='__main__':
-    main()
+if __name__=='__main__': main()
