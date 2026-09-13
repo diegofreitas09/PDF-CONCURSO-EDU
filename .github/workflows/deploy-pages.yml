@@ -44,6 +44,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Auditar lote UECE Fisica
+        run: node scripts/verificar_uece_fisica.mjs
+
       - name: Build
         run: npm run build
 
