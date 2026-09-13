@@ -29,6 +29,9 @@ jobs:
       - name: Verificar integracao das questoes
         run: python scripts/verificar_integracao_questoes.py
 
+      - name: Auditar identidade UECE Matematica
+        run: python scripts/auditar_uece_matematica.py
+
       - name: Verificar midias das questoes
         run: python scripts/verificar_midias_questoes.py
 
