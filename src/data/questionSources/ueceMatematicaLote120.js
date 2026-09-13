@@ -91,7 +91,16 @@ export const UECE_MATEMATICA_LOTE_486_BASE = [
   ...UECE_MATEMATICA_486_486,
 ];
 
-export const UECE_MATEMATICA_LOTE_586 = [
+// IDs reinseridos posteriormente, já existentes em lotes anteriores sob IDs canônicos.
+// Mantemos os arquivos históricos para rastreabilidade, mas estes IDs ficam fora do banco efetivo.
+export const UECE_MATEMATICA_IDS_APOSENTADOS = new Set([
+  "UECE-MAT-509", "UECE-MAT-510", "UECE-MAT-511",
+  "UECE-MAT-541", "UECE-MAT-542", "UECE-MAT-543", "UECE-MAT-544", "UECE-MAT-545", "UECE-MAT-546", "UECE-MAT-547", "UECE-MAT-548",
+  "UECE-MAT-550", "UECE-MAT-551", "UECE-MAT-552", "UECE-MAT-553", "UECE-MAT-554", "UECE-MAT-555", "UECE-MAT-556", "UECE-MAT-557", "UECE-MAT-558", "UECE-MAT-559", "UECE-MAT-560",
+  "UECE-MAT-562", "UECE-MAT-563", "UECE-MAT-564", "UECE-MAT-565", "UECE-MAT-566", "UECE-MAT-567", "UECE-MAT-568", "UECE-MAT-569", "UECE-MAT-570", "UECE-MAT-571", "UECE-MAT-572", "UECE-MAT-573", "UECE-MAT-574", "UECE-MAT-575", "UECE-MAT-576", "UECE-MAT-577", "UECE-MAT-578", "UECE-MAT-579", "UECE-MAT-580", "UECE-MAT-581", "UECE-MAT-582", "UECE-MAT-583", "UECE-MAT-584",
+]);
+
+const UECE_MATEMATICA_LOTE_586_BRUTO = [
   ...UECE_MATEMATICA_LOTE_486_BASE,
   ...UECE_MATEMATICA_487_511,
   ...UECE_MATEMATICA_512_536,
@@ -99,8 +108,10 @@ export const UECE_MATEMATICA_LOTE_586 = [
   ...UECE_MATEMATICA_562_586,
 ];
 
-// Compatibilidade: o banco principal ainda importa o nome histórico LOTE_486.
-// Mantemos o alias apontando para o lote mais recente para que os 586 itens fiquem efetivamente conectados.
+export const UECE_MATEMATICA_LOTE_586 = UECE_MATEMATICA_LOTE_586_BRUTO.filter(q => !UECE_MATEMATICA_IDS_APOSENTADOS.has(q.id));
+
+// Compatibilidade: o banco principal ainda importa nomes históricos.
+// Todos os aliases apontam para a coleção efetiva, já sem as 45 reinserções conhecidas.
 export const UECE_MATEMATICA_LOTE_486 = UECE_MATEMATICA_LOTE_586;
 export const UECE_MATEMATICA_LOTE_295 = UECE_MATEMATICA_LOTE_586;
 export const UECE_MATEMATICA_LOTE_198 = UECE_MATEMATICA_LOTE_586;
