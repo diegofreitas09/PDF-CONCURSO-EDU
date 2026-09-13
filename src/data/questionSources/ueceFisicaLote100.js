@@ -80,9 +80,6 @@ export const UECE_FISICA_LOTE_101_200=[
   ...CAPACITORES_INICIO
 ];
 
-// Lote 201–300: continua Capacitores a partir da questão-fonte 7 e atravessa os assuntos
-// seguintes sem incluir itens incompletos. Em Estática/Eletrostática/Trabalho, a questão 24
-// não possui registro íntegro no banco auditado e permanece fora, sem reconstrução.
 const CAPACITORES_RESTANTE=CAPACITORES.filter(q=>sourceNumber(q)>6);
 const ENERGIA=orderedUnique(UECE_FISICA_ENERGIA_LOTE_17).map(enrich);
 const ESTATICA_ELETROSTATICA_TRABALHO=orderedUnique([
@@ -101,9 +98,9 @@ export const UECE_FISICA_LOTE_201_300=[
   ...HIDROSTATICA_INICIO
 ];
 
-// Lote 301–400: completa os itens íntegros restantes de Hidrostática e segue a ordem
-// da apostila por Magnetismo, Ondulatória/Acústica e Óptica. Questões reservadas ao fluxo
-// visual/incompletas permanecem fora; não há reconstrução artificial para completar o lote.
+// Lote 301–400: completa Hidrostática e segue Magnetismo, Ondulatória/Acústica e Óptica.
+// O arquivo auditado de Hidrostática contém 32 itens íntegros numerados até 35, pois 3, 4 e 9
+// ficam reservados ao fluxo visual. Como cinco já estavam em 201–300, restam 27 neste lote.
 const HIDROSTATICA_RESTANTE=HIDROSTATICA.slice(5);
 const MAGNETISMO=orderedUnique(UECE_FISICA_MAGNETISMO_LOTE_22).map(enrich);
 const ONDULATORIA_ACUSTICA=orderedUnique(UECE_FISICA_ONDULATORIA_ACUSTICA_LOTE_27).map(enrich);
@@ -112,7 +109,7 @@ const OPTICA=orderedUnique([
   ...UECE_FISICA_OPTICA_LOTE_09,
   ...UECE_FISICA_OPTICA_LOTE_23
 ]).map(enrich);
-const OPTICA_INICIO=OPTICA.slice(0,27);
+const OPTICA_INICIO=OPTICA.slice(0,24);
 
 export const UECE_FISICA_LOTE_301_400=[
   ...HIDROSTATICA_RESTANTE,
@@ -121,7 +118,6 @@ export const UECE_FISICA_LOTE_301_400=[
   ...OPTICA_INICIO
 ];
 
-// Alias histórico consumido pelo verificador e mantido por compatibilidade.
 export const UECE_FISICA_LOTE_100=[
   ...UECE_FISICA_LOTE_001_100,
   ...UECE_FISICA_LOTE_101_200,
