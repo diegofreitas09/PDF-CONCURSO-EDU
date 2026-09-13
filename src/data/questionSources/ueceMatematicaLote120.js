@@ -76,7 +76,7 @@ export const UECE_MATEMATICA_LOTE_386 = [
   ...UECE_MATEMATICA_LACUNAS_372_386,
 ];
 
-export const UECE_MATEMATICA_LOTE_486 = [
+export const UECE_MATEMATICA_LOTE_486_BASE = [
   ...UECE_MATEMATICA_LOTE_386,
   ...UECE_MATEMATICA_387_396,
   ...UECE_MATEMATICA_397_406,
@@ -92,13 +92,16 @@ export const UECE_MATEMATICA_LOTE_486 = [
 ];
 
 export const UECE_MATEMATICA_LOTE_586 = [
-  ...UECE_MATEMATICA_LOTE_486,
+  ...UECE_MATEMATICA_LOTE_486_BASE,
   ...UECE_MATEMATICA_487_511,
   ...UECE_MATEMATICA_512_536,
   ...UECE_MATEMATICA_537_561,
   ...UECE_MATEMATICA_562_586,
 ];
 
+// Compatibilidade: o banco principal ainda importa o nome histórico LOTE_486.
+// Mantemos o alias apontando para o lote mais recente para que os 586 itens fiquem efetivamente conectados.
+export const UECE_MATEMATICA_LOTE_486 = UECE_MATEMATICA_LOTE_586;
 export const UECE_MATEMATICA_LOTE_295 = UECE_MATEMATICA_LOTE_586;
 export const UECE_MATEMATICA_LOTE_198 = UECE_MATEMATICA_LOTE_586;
 export const UECE_MATEMATICA_LOTE_188 = UECE_MATEMATICA_LOTE_586;
