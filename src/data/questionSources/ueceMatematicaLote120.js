@@ -8,6 +8,7 @@ import { UECE_MATEMATICA_COMPLEMENTO_111_121 } from "./ueceMatematicaComplemento
 import { UECE_MATEMATICA_POLINOMIOS_COMPLEXOS_122_131 } from "./ueceMatematicaPolinomiosComplexos122a131.js";
 import { UECE_MATEMATICA_POLINOMIOS_COMPLEXOS_132_139 } from "./ueceMatematicaPolinomiosComplexos132a139.js";
 import { UECE_MATEMATICA_POLINOMIOS_COMPLEXOS_140_152 } from "./ueceMatematicaPolinomiosComplexos140a152.js";
+import { UECE_MATEMATICA_POLINOMIOS_COMPLEXOS_153_168 } from "./ueceMatematicaPolinomiosComplexos153a168.js";
 
 // UECE por Assunto - Matemática auditada: primeiros 100 itens.
 export const UECE_MATEMATICA_LOTE_100 = [
@@ -18,14 +19,16 @@ export const UECE_MATEMATICA_LOTE_100 = [
   ...UECE_MATEMATICA_COMPLEMENTO_81_100,
 ];
 
-export const UECE_MATEMATICA_LOTE_152 = [
+export const UECE_MATEMATICA_LOTE_168 = [
   ...UECE_MATEMATICA_LOTE_100,
   ...UECE_MATEMATICA_COMPLEMENTO_101_110,
   ...UECE_MATEMATICA_COMPLEMENTO_111_121,
   ...UECE_MATEMATICA_POLINOMIOS_COMPLEXOS_122_131,
   ...UECE_MATEMATICA_POLINOMIOS_COMPLEXOS_132_139,
   ...UECE_MATEMATICA_POLINOMIOS_COMPLEXOS_140_152,
+  ...UECE_MATEMATICA_POLINOMIOS_COMPLEXOS_153_168,
 ];
 
-// Alias preservado porque o agregador legado ainda importa este nome.
-export const UECE_MATEMATICA_LOTE_20 = UECE_MATEMATICA_LOTE_152;
+// Aliases preservados porque o agregador legado ainda importa estes nomes.
+export const UECE_MATEMATICA_LOTE_152 = UECE_MATEMATICA_LOTE_168;
+export const UECE_MATEMATICA_LOTE_20 = UECE_MATEMATICA_LOTE_168;
