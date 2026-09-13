@@ -1,4 +1,4 @@
-import { UECE_FISICA_LOTE_100, UECE_FISICA_LOTE_001_100, UECE_FISICA_LOTE_101_200, UECE_FISICA_LOTE_201_300, UECE_FISICA_LOTE_100_AUDIT } from "../src/data/questionSources/ueceFisicaLote100.js";
+import { UECE_FISICA_LOTE_100, UECE_FISICA_LOTE_001_100, UECE_FISICA_LOTE_101_200, UECE_FISICA_LOTE_201_300, UECE_FISICA_LOTE_301_400, UECE_FISICA_LOTE_100_AUDIT } from "../src/data/questionSources/ueceFisicaLote100.js";
 
 const fail=(message)=>{console.error(`❌ UECE Física: ${message}`);process.exit(1)};
 const all=UECE_FISICA_LOTE_100;
@@ -10,9 +10,10 @@ const uniqueSources=new Set(sourceKeys);
 if(UECE_FISICA_LOTE_001_100.length!==100)fail(`lote 001–100 possui ${UECE_FISICA_LOTE_001_100.length}; esperado 100`);
 if(UECE_FISICA_LOTE_101_200.length!==100)fail(`lote 101–200 possui ${UECE_FISICA_LOTE_101_200.length}; esperado 100`);
 if(UECE_FISICA_LOTE_201_300.length!==100)fail(`lote 201–300 possui ${UECE_FISICA_LOTE_201_300.length}; esperado 100`);
-if(all.length!==300)fail(`coleção possui ${all.length} itens; esperado 300`);
-if(uniqueIds.size!==300)fail(`IDs únicos: ${uniqueIds.size}/300`);
-if(uniqueSources.size!==300)fail(`identidades de fonte únicas: ${uniqueSources.size}/300`);
+if(UECE_FISICA_LOTE_301_400.length!==100)fail(`lote 301–400 possui ${UECE_FISICA_LOTE_301_400.length}; esperado 100`);
+if(all.length!==400)fail(`coleção possui ${all.length} itens; esperado 400`);
+if(uniqueIds.size!==400)fail(`IDs únicos: ${uniqueIds.size}/400`);
+if(uniqueSources.size!==400)fail(`identidades de fonte únicas: ${uniqueSources.size}/400`);
 if(UECE_FISICA_LOTE_100_AUDIT.missingRequired.length)fail(`campos obrigatórios ausentes em ${UECE_FISICA_LOTE_100_AUDIT.missingRequired.join(", ")}`);
 
 for(const q of all){
@@ -34,7 +35,10 @@ if(topics["Física elétrica e capacitores"]!==25)fail(`Capacitores: ${topics["F
 if(topics["Energia"]!==17)fail(`Energia: ${topics["Energia"]||0}/17`);
 if(topics["Estática, eletrostática e trabalho"]!==41)fail(`Estática/eletrostática/trabalho: ${topics["Estática, eletrostática e trabalho"]||0}/41`);
 if(topics["Gravitação"]!==18)fail(`Gravitação: ${topics["Gravitação"]||0}/18`);
-if(topics["Hidrostática"]!==5)fail(`Hidrostática parcial: ${topics["Hidrostática"]||0}/5`);
+if(topics["Hidrostática"]!==29)fail(`Hidrostática íntegra: ${topics["Hidrostática"]||0}/29`);
+if(topics["Magnetismo e Eletromagnetismo"]!==22)fail(`Magnetismo íntegro: ${topics["Magnetismo e Eletromagnetismo"]||0}/22`);
+if(topics["Ondulatória e Acústica"]!==27)fail(`Ondulatória/Acústica íntegra: ${topics["Ondulatória e Acústica"]||0}/27`);
+if(topics["Óptica"]!==27)fail(`Óptica parcial íntegra: ${topics["Óptica"]||0}/27`);
 
-console.log(`✅ UECE Física: 300/300 | lote 201–300 100/100 | IDs únicos ${uniqueIds.size} | fontes únicas ${uniqueSources.size} | mídias ${UECE_FISICA_LOTE_100_AUDIT.withMedia}`);
-console.log(`   Composição 201–300: Capacitores ${UECE_FISICA_LOTE_100_AUDIT.capacitoresRestante} | Energia ${UECE_FISICA_LOTE_100_AUDIT.energia} | Estática/Eletrostática/Trabalho ${UECE_FISICA_LOTE_100_AUDIT.estaticaEletrostaticaTrabalho} | Gravitação ${UECE_FISICA_LOTE_100_AUDIT.gravitacao} | Hidrostática ${UECE_FISICA_LOTE_100_AUDIT.hidrostaticaInicio}`);
+console.log(`✅ UECE Física: 400/400 | lote 301–400 100/100 | IDs únicos ${uniqueIds.size} | fontes únicas ${uniqueSources.size} | mídias ${UECE_FISICA_LOTE_100_AUDIT.withMedia}`);
+console.log(`   Composição 301–400: Hidrostática ${UECE_FISICA_LOTE_100_AUDIT.hidrostaticaRestante} | Magnetismo ${UECE_FISICA_LOTE_100_AUDIT.magnetismo} | Ondulatória/Acústica ${UECE_FISICA_LOTE_100_AUDIT.ondulatoriaAcustica} | Óptica ${UECE_FISICA_LOTE_100_AUDIT.opticaInicio}`);
