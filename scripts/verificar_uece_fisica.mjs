@@ -35,10 +35,10 @@ if(topics["Física elétrica e capacitores"]!==25)fail(`Capacitores: ${topics["F
 if(topics["Energia"]!==17)fail(`Energia: ${topics["Energia"]||0}/17`);
 if(topics["Estática, eletrostática e trabalho"]!==41)fail(`Estática/eletrostática/trabalho: ${topics["Estática, eletrostática e trabalho"]||0}/41`);
 if(topics["Gravitação"]!==18)fail(`Gravitação: ${topics["Gravitação"]||0}/18`);
-if(topics["Hidrostática"]!==29)fail(`Hidrostática íntegra: ${topics["Hidrostática"]||0}/29`);
+if(topics["Hidrostática"]!==32)fail(`Hidrostática íntegra: ${topics["Hidrostática"]||0}/32`);
 if(topics["Magnetismo e Eletromagnetismo"]!==22)fail(`Magnetismo íntegro: ${topics["Magnetismo e Eletromagnetismo"]||0}/22`);
 if(topics["Ondulatória e Acústica"]!==27)fail(`Ondulatória/Acústica íntegra: ${topics["Ondulatória e Acústica"]||0}/27`);
-if(topics["Óptica"]!==27)fail(`Óptica parcial íntegra: ${topics["Óptica"]||0}/27`);
+if(topics["Óptica"]!==24)fail(`Óptica parcial íntegra: ${topics["Óptica"]||0}/24`);
 
 console.log(`✅ UECE Física: 400/400 | lote 301–400 100/100 | IDs únicos ${uniqueIds.size} | fontes únicas ${uniqueSources.size} | mídias ${UECE_FISICA_LOTE_100_AUDIT.withMedia}`);
 console.log(`   Composição 301–400: Hidrostática ${UECE_FISICA_LOTE_100_AUDIT.hidrostaticaRestante} | Magnetismo ${UECE_FISICA_LOTE_100_AUDIT.magnetismo} | Ondulatória/Acústica ${UECE_FISICA_LOTE_100_AUDIT.ondulatoriaAcustica} | Óptica ${UECE_FISICA_LOTE_100_AUDIT.opticaInicio}`);
