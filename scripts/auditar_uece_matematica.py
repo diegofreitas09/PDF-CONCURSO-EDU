@@ -12,6 +12,16 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src" / "data" / "questionSources"
 
+# Reinserções confirmadas pela auditoria de 2026-09-13.
+# Permanecem nos arquivos históricos para rastreabilidade, mas não fazem parte
+# do banco efetivo e não entram na contagem de identidade.
+RETIRED_IDS = {
+    "UECE-MAT-509", "UECE-MAT-510", "UECE-MAT-511",
+    "UECE-MAT-541", "UECE-MAT-542", "UECE-MAT-543", "UECE-MAT-544", "UECE-MAT-545", "UECE-MAT-546", "UECE-MAT-547", "UECE-MAT-548",
+    "UECE-MAT-550", "UECE-MAT-551", "UECE-MAT-552", "UECE-MAT-553", "UECE-MAT-554", "UECE-MAT-555", "UECE-MAT-556", "UECE-MAT-557", "UECE-MAT-558", "UECE-MAT-559", "UECE-MAT-560",
+    "UECE-MAT-562", "UECE-MAT-563", "UECE-MAT-564", "UECE-MAT-565", "UECE-MAT-566", "UECE-MAT-567", "UECE-MAT-568", "UECE-MAT-569", "UECE-MAT-570", "UECE-MAT-571", "UECE-MAT-572", "UECE-MAT-573", "UECE-MAT-574", "UECE-MAT-575", "UECE-MAT-576", "UECE-MAT-577", "UECE-MAT-578", "UECE-MAT-579", "UECE-MAT-580", "UECE-MAT-581", "UECE-MAT-582", "UECE-MAT-583", "UECE-MAT-584",
+}
+
 
 def norm(s: str) -> str:
     s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode().lower()
@@ -82,9 +92,13 @@ def field_int(body: str, name: str):
 
 def main():
     records=[]
+    retired_seen=[]
     for path in sorted(SRC.glob('ueceMatematica*.js')):
         text=path.read_text(encoding='utf-8', errors='ignore')
         for qid, body in iter_objects(text):
+            if qid in RETIRED_IDS:
+                retired_seen.append({'id': qid, 'file': path.name})
+                continue
             records.append({
                 'id': qid,
                 'file': path.name,
@@ -107,19 +121,22 @@ def main():
     dup_ids={k:v for k,v in by_id.items() if len(v)>1}
     dup_source={f'{k[0]}#{k[1]}':v for k,v in by_source.items() if len(v)>1}
     unique_source=len(by_source)
+    status = 'OK' if not dup_ids and not dup_source and not missing_source else 'REVISAR'
 
     report={
         'arquivos_matematica': len(list(SRC.glob('ueceMatematica*.js'))),
-        'registros_literais_uece_mat': len(records),
-        'ids_unicos': len(by_id),
+        'registros_ativos_uece_mat': len(records),
+        'ids_aposentados_por_duplicidade': len(retired_seen),
+        'ids_unicos_ativos': len(by_id),
         'fontes_unicas_topic_sourceQuestion': unique_source,
         'ids_duplicados': len(dup_ids),
         'fontes_duplicadas': len(dup_source),
         'sem_referencia_topic_sourceQuestion': len(missing_source),
         'duplicidades_id': dup_ids,
         'duplicidades_fonte': dup_source,
+        'ids_aposentados': retired_seen,
         'sem_referencia': missing_source,
-        'status': 'OK' if not dup_ids and not dup_source else 'REVISAR',
+        'status': status,
     }
     (ROOT/'uece-matematica-audit.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
     print(json.dumps(report,ensure_ascii=False,indent=2))
