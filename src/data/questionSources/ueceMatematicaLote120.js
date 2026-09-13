@@ -38,6 +38,7 @@ import { UECE_MATEMATICA_487_511 } from "./ueceMatematica487a511.js";
 import { UECE_MATEMATICA_512_536 } from "./ueceMatematica512a536.js";
 import { UECE_MATEMATICA_537_561 } from "./ueceMatematica537a561.js";
 import { UECE_MATEMATICA_562_586 } from "./ueceMatematica562a586.js";
+import { UECE_MATEMATICA_REFERENCIAS_LEGADAS } from "./ueceMatematicaReferenciasLegadas.js";
 
 export const UECE_MATEMATICA_LOTE_100 = [
   ...UECE_MATEMATICA_BASE_20,
@@ -91,9 +92,11 @@ export const UECE_MATEMATICA_LOTE_486_BASE = [
   ...UECE_MATEMATICA_486_486,
 ];
 
-// IDs reinseridos posteriormente, já existentes em lotes anteriores sob IDs canônicos.
-// Mantemos os arquivos históricos para rastreabilidade, mas estes IDs ficam fora do banco efetivo.
+// Reinserções confirmadas pela auditoria de identidade da questão-fonte.
+// Permanecem nos arquivos históricos para rastreabilidade, mas ficam fora do banco efetivo.
 export const UECE_MATEMATICA_IDS_APOSENTADOS = new Set([
+  "UECE-MAT-209", "UECE-MAT-210", "UECE-MAT-211", "UECE-MAT-212", "UECE-MAT-213", "UECE-MAT-214", "UECE-MAT-215",
+  "UECE-MAT-217", "UECE-MAT-218", "UECE-MAT-219", "UECE-MAT-220", "UECE-MAT-221", "UECE-MAT-222", "UECE-MAT-223", "UECE-MAT-224", "UECE-MAT-225", "UECE-MAT-226", "UECE-MAT-227",
   "UECE-MAT-509", "UECE-MAT-510", "UECE-MAT-511",
   "UECE-MAT-541", "UECE-MAT-542", "UECE-MAT-543", "UECE-MAT-544", "UECE-MAT-545", "UECE-MAT-546", "UECE-MAT-547", "UECE-MAT-548",
   "UECE-MAT-550", "UECE-MAT-551", "UECE-MAT-552", "UECE-MAT-553", "UECE-MAT-554", "UECE-MAT-555", "UECE-MAT-556", "UECE-MAT-557", "UECE-MAT-558", "UECE-MAT-559", "UECE-MAT-560",
@@ -108,10 +111,12 @@ const UECE_MATEMATICA_LOTE_586_BRUTO = [
   ...UECE_MATEMATICA_562_586,
 ];
 
-export const UECE_MATEMATICA_LOTE_586 = UECE_MATEMATICA_LOTE_586_BRUTO.filter(q => !UECE_MATEMATICA_IDS_APOSENTADOS.has(q.id));
+export const UECE_MATEMATICA_LOTE_586 = UECE_MATEMATICA_LOTE_586_BRUTO
+  .filter(q => !UECE_MATEMATICA_IDS_APOSENTADOS.has(q.id))
+  .map(q => UECE_MATEMATICA_REFERENCIAS_LEGADAS[q.id] ? {...q, ...UECE_MATEMATICA_REFERENCIAS_LEGADAS[q.id]} : q);
 
 // Compatibilidade: o banco principal ainda importa nomes históricos.
-// Todos os aliases apontam para a coleção efetiva, já sem as 45 reinserções conhecidas.
+// Todos os aliases apontam para a coleção efetiva, sem reinserções e com referências recuperadas.
 export const UECE_MATEMATICA_LOTE_486 = UECE_MATEMATICA_LOTE_586;
 export const UECE_MATEMATICA_LOTE_295 = UECE_MATEMATICA_LOTE_586;
 export const UECE_MATEMATICA_LOTE_198 = UECE_MATEMATICA_LOTE_586;
