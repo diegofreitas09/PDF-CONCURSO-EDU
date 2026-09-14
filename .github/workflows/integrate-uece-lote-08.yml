@@ -21,15 +21,22 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
-          import base64
+          import base64,lzma
+          parts=[]
           for i in range(1,9):
-              s=Path(f'scripts/uece_lote08_rebuild_{i}.b64').read_text().strip()
-              p=s+'='*((4-len(s)%4)%4)
+              s=Path(f'scripts/uece_lote08_rebuild_{i}.b64').read_text().strip(); parts.append(s)
+              p=s+'='*((4-len(s)%4)%4); b=base64.b64decode(p,validate=True)
+              print(i,'chars',len(s),'mod4',len(s)%4,'head',s[:12],'tail',s[-12:],'bytes',len(b),'magic',b[:6].hex())
+          enc=''.join(parts); blob=base64.b64decode(enc,validate=True)
+          dec=lzma.LZMADecompressor(); out=0
+          for pos in range(0,len(blob),64):
               try:
-                  b=base64.b64decode(p,validate=True)
-                  print(i,'chars',len(s),'mod4',len(s)%4,'head',s[:12],'tail',s[-12:],'bytes',len(b),'magic',b[:6].hex())
+                  out += len(dec.decompress(blob[pos:pos+64]))
               except Exception as e:
-                  print(i,'ERRO',e,'chars',len(s),'mod4',len(s)%4,'head',s[:12],'tail',s[-12:])
+                  print('XZ_FAIL_RANGE',pos,pos+64,'OUT',out,'ERR',repr(e),'B64_AROUND',enc[max(0,pos*4//3-32):pos*4//3+96])
+                  break
+          else:
+              print('XZ_STREAM_OK','OUT',out,'EOF',dec.eof)
           PY
       - name: Gerar e conectar lote
         run: python scripts/integrar_uece_lote_08.py
