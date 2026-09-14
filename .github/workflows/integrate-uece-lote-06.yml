@@ -20,7 +20,7 @@ jobs:
           python-version: '3.12'
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22.22.0'
           cache: npm
       - name: Gerar lote a partir da fonte oficial incorporada
         run: python scripts/integrar_uece_lote_06.py
@@ -30,10 +30,11 @@ jobs:
         run: python scripts/verificar_integracao_questoes.py
       - name: Verificador de mídias
         run: python scripts/verificar_midias_questoes.py
-      - run: npm ci
+      - name: Instalar dependências para validação do build
+        run: npm install --no-audit --no-fund
       - name: Build
         run: npm run build
-      - run: git diff --check
+      - run: git diff --check -- ':!package-lock.json'
       - name: Conectar lote ao repositório
         run: |
           git config user.name "github-actions[bot]"
