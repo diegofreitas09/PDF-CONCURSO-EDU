@@ -7,7 +7,8 @@ for i in range(1,9):
  if not p.exists(): sys.exit(f'fragmento ausente: {p}')
  parts.append(p.read_text().strip())
 try:
- comp=b''.join(base64.b64decode(part,validate=True) for part in parts)
+ encoded=''.join(parts)
+ comp=base64.b64decode(encoded,validate=True)
  raw=lzma.decompress(comp); text=raw.decode()
 except Exception as e: sys.exit(f'falha reconstrução: {e}')
 sha=hashlib.sha256(raw).hexdigest(); expected='958c1a7d13720dd9b83bf3a74d6fb42cbc56f25f1fd534d733ceeb83197350a8'
@@ -48,4 +49,3 @@ if DEPLOY.exists():
    d=d.replace(needle,needle+'      - name: Auditar lote UECE Português 170-269\n        run: node scripts/verificar_uece_lote_08.mjs\n',1)
   DEPLOY.write_text(d)
 print('LOTE08 GERADO — Português +100 — 100/100 | visuais 0')
-# trigger automático validado 2026-09-14
