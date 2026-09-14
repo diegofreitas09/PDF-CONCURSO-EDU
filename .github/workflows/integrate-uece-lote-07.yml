@@ -19,6 +19,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Conferir blocos da fonte
+        run: sha256sum scripts/uece_lote07_final_*.b64
       - name: Gerar e conectar lote
         run: python scripts/integrar_uece_lote_07.py
       - uses: actions/setup-node@v4
