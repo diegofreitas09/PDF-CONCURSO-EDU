@@ -1,4 +1,4 @@
-import { UECE_QUIMICA_LOTE_537 } from "../src/data/questionSources/ueceQuimicaLote100.js";
+import { UECE_QUIMICA_LOTE_537 } from "../src/data/questionSources/ueceQuimica537Snapshot.js";
 
 const lote = UECE_QUIMICA_LOTE_537;
 const fail = (msg) => { console.error(`ERRO UECE Química: ${msg}`); process.exit(1); };
