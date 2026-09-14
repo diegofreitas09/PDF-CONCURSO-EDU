@@ -7,8 +7,11 @@ for i in range(1,9):
  if not p.exists(): sys.exit(f'fragmento ausente: {p}')
  parts.append(p.read_text().strip())
 try:
- encoded=''.join(parts)
- comp=base64.b64decode(encoded,validate=True)
+ chunks=[]
+ for part in parts:
+  padded=part + ('='*((4-len(part)%4)%4))
+  chunks.append(base64.b64decode(padded,validate=True))
+ comp=b''.join(chunks)
  raw=lzma.decompress(comp); text=raw.decode()
 except Exception as e: sys.exit(f'falha reconstrução: {e}')
 sha=hashlib.sha256(raw).hexdigest(); expected='958c1a7d13720dd9b83bf3a74d6fb42cbc56f25f1fd534d733ceeb83197350a8'
