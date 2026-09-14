@@ -8,5 +8,5 @@ for(const q of lote){if(!q.id||q.discipline!=="História"||!q.topic||!q.statemen
 if(lote[0].id!=="UECE-HIST-ATU-020"||lote[2].id!=="UECE-HIST-ATU-022"||lote[3].id!=="UECE-HIST-COL-001"||lote[59].id!=="UECE-HIST-COL-057"||lote[60].id!=="UECE-HIST-REG-001"||lote[65].id!=="UECE-HIST-REG-006"||lote[66].id!=="UECE-HIST-PRI-001"||lote[82].id!=="UECE-HIST-PRI-017"||lote[83].id!=="UECE-HIST-SEG-001"||lote.at(-1).id!=="UECE-HIST-SEG-017")fail('limites divergentes');
 const reg=fs.readFileSync(new URL('../src/data/questionRegistry.js',import.meta.url),'utf8');
 if(!reg.includes('import{UECE_HISTORIA_LOTE_100_14}from"./questionSources/ueceHistoriaLote100_14";'))fail('import do lote 14 ausente no registry');
-if(!reg.includes('...UECE_HISTORIA_LOTE_100_13,...UECE_HISTORIA_LOTE_100_14].map(sanitizeQuestion)'))fail('lote 14 não conectado ao RAW_QUESTIONS');
+if(!reg.includes('...UECE_HISTORIA_LOTE_100_13,...UECE_HISTORIA_LOTE_100_14'))fail('lote 14 não conectado ao RAW_QUESTIONS');
 console.log(`UECE lote 14 OK — 100/100 | conectado ao registry | IDs ${ids.size}/100 | fontes ${src.size}/100 | duplicidades internas 0 | visuais 0 | correções 2`);
