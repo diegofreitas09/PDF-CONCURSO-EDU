@@ -6,7 +6,9 @@ for i in range(1,9):
  p=Path(f'scripts/uece_lote08_rebuild_{i}.b64')
  if not p.exists(): sys.exit(f'fragmento ausente: {p}')
  parts.append(p.read_text().strip())
-try: raw=lzma.decompress(base64.b64decode(''.join(parts),validate=True)); text=raw.decode()
+try:
+ comp=b''.join(base64.b64decode(part,validate=True) for part in parts)
+ raw=lzma.decompress(comp); text=raw.decode()
 except Exception as e: sys.exit(f'falha reconstrução: {e}')
 sha=hashlib.sha256(raw).hexdigest(); expected='958c1a7d13720dd9b83bf3a74d6fb42cbc56f25f1fd534d733ceeb83197350a8'
 if sha!=expected: sys.exit(f'sha divergente {sha}')
