@@ -6,14 +6,37 @@ for i in range(1,9):
  p=Path(f'scripts/uece_lote08_rebuild_{i}.b64')
  if not p.exists(): sys.exit(f'fragmento ausente: {p}')
  parts.append(p.read_text().strip())
+raw=None; errors=[]
+# Estratégia 1: fluxo Base64 único.
 try:
- chunks=[]
- for part in parts:
-  padded=part + ('='*((4-len(part)%4)%4))
-  chunks.append(base64.b64decode(padded,validate=True))
- comp=b''.join(chunks)
- raw=lzma.decompress(comp); text=raw.decode()
-except Exception as e: sys.exit(f'falha reconstrução: {e}')
+ comp=base64.b64decode(''.join(parts),validate=True)
+ raw=lzma.decompress(comp)
+ print('reconstrução: base64 contínuo')
+except Exception as e: errors.append(f'continuo={e}')
+# Estratégia 2: fragmentos Base64 independentes de um único fluxo XZ.
+if raw is None:
+ try:
+  chunks=[]
+  for part in parts:
+   padded=part + ('='*((4-len(part)%4)%4))
+   chunks.append(base64.b64decode(padded,validate=True))
+  raw=lzma.decompress(b''.join(chunks))
+  print('reconstrução: chunks base64 -> fluxo XZ')
+ except Exception as e: errors.append(f'chunks={e}')
+# Estratégia 3: cada fragmento contém um stream XZ independente.
+if raw is None:
+ try:
+  raws=[]
+  for n,part in enumerate(parts,1):
+   padded=part + ('='*((4-len(part)%4)%4))
+   blob=base64.b64decode(padded,validate=True)
+   raws.append(lzma.decompress(blob))
+  raw=b''.join(raws)
+  print('reconstrução: streams XZ independentes')
+ except Exception as e: errors.append(f'streams={e}')
+if raw is None: sys.exit('falha reconstrução: '+' | '.join(errors))
+try: text=raw.decode()
+except Exception as e: sys.exit(f'falha UTF-8 reconstrução: {e}')
 sha=hashlib.sha256(raw).hexdigest(); expected='958c1a7d13720dd9b83bf3a74d6fb42cbc56f25f1fd534d733ceeb83197350a8'
 if sha!=expected: sys.exit(f'sha divergente {sha}')
 if text.count('"id":"UECE-PORT-')!=100: sys.exit('quantidade divergente')
