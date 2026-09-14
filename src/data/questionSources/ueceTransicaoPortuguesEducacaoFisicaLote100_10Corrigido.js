@@ -4,18 +4,10 @@ const ANSWERS={
   "UECE-PORT-GRAM-039":"A","UECE-PORT-GRAM-040":"B","UECE-PORT-GRAM-041":"D",
   ...Object.fromEntries("ADDDCABCABAABABDCBADBCC".split("").map((a,i)=>[`UECE-PORT-MORF-${String(i+1).padStart(3,"0")}`,a])),
   ...Object.fromEntries("ABCDABCBBA".split("").map((a,i)=>[`UECE-PORT-PONT-${String(i+1).padStart(3,"0")}`,a])),
-  ...Object.fromEntries("ADAADB DDAAACABBD".replaceAll(" ","").split("").map((a,i)=>[`UECE-PORT-SEM-${String(i+1).padStart(3,"0")}`,a])),
+  ...Object.fromEntries("ADAADBDDAAACABBD".split("").map((a,i)=>[`UECE-PORT-SEM-${String(i+1).padStart(3,"0")}`,a])),
   ...Object.fromEntries("ACAACDABACCCA".split("").map((a,i)=>[`UECE-PORT-SINT-${String(i+1).padStart(3,"0")}`,a])),
-  ...Object.fromEntries("CCBAA".split("").map((a,i)=>[`UECE-PORT-VERB-${String(i+1).padStart(3,"0")}`,a])),
-  ...Object.fromEntries("CBAAAAABAD D D?".split(""))
+  ...Object.fromEntries("CCBAA".split("").map((a,i)=>[`UECE-PORT-VERB-${String(i+1).padStart(3,"0")}`,a]))
 };
-
-// Chave oficial de Educação Física (Saúde 1–21; Esporte 1–9).
-const EDF_SAUDE="CBAAAAABAD D D?";
-const saude="CBAAAAABAD D D?";
-
-// Montagem explícita para evitar qualquer ambiguidade na chave publicada.
-"CBAAAAABAD D D?";
 const SAUDE_KEYS=["C","B","A","A","A","A","A","A","B","A","D","D","A","C","A","C","C","A","B","A","B"];
 const ESP_KEYS=["D","B","D","B","A","D","C","D","D"];
 for(let i=0;i<SAUDE_KEYS.length;i++) ANSWERS[`UECE-EDF-SAUDE-${String(i+1).padStart(3,"0")}`]=SAUDE_KEYS[i];
