@@ -50,6 +50,9 @@ jobs:
       - name: Auditar lote UECE Quimica
         run: node scripts/verificar_uece_quimica.mjs
 
+      - name: Auditar lote UECE Biologia
+        run: node scripts/verificar_uece_biologia.mjs
+
       - name: Build
         run: npm run build
 
