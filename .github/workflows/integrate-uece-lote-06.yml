@@ -19,6 +19,24 @@ jobs:
           node-version: '20'
           cache: npm
       - run: python -m pip install --disable-pip-version-check gdown pymupdf
+      - name: Baixar apostila oficial com fallback robusto
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f /tmp/uece_11ed.pdf
+          python -m gdown 'https://drive.google.com/uc?id=18fCbZ_iEnHHg_mdvKqtEBVBsl-A3pP0k' -O /tmp/uece_11ed.pdf || true
+          if [ ! -s /tmp/uece_11ed.pdf ] || [ "$(stat -c%s /tmp/uece_11ed.pdf)" -lt 30000000 ]; then
+            rm -f /tmp/uece_11ed.pdf
+            curl -fL --retry 3 --retry-delay 2 'https://drive.usercontent.google.com/download?id=18fCbZ_iEnHHg_mdvKqtEBVBsl-A3pP0k&export=download&confirm=t' -o /tmp/uece_11ed.pdf
+          fi
+          test "$(stat -c%s /tmp/uece_11ed.pdf)" -ge 30000000
+          python - <<'PY'
+          import fitz
+          p='/tmp/uece_11ed.pdf'
+          d=fitz.open(p)
+          assert len(d)==1187, len(d)
+          print('PDF_OK', len(d))
+          PY
       - name: Gerar lote a partir da apostila oficial
         run: python scripts/integrar_uece_lote_06.py
       - name: Auditar lote 100
