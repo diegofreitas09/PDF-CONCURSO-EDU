@@ -1,1 +1,1 @@
-falha ao reconstruir lote 07 com validação integral | atual: lzma=Corrupt input data | atual: incremental-pos=14690:Corrupt input data | atual: incremental-bytes=63407 | atual: UTF-8 inválido: 'utf-8' codec can't decode byte 0xa3 in position 63189: invalid start byte | p2-historica: lzma=Corrupt input data | p2-historica: incremental-pos=7736:Corrupt input data | p2-historica: incremental-bytes=21215 | p2-historica: UTF-8 inválido: 'utf-8' codec can't decode byte 0xc3 in position 20060: invalid continuation byte
+PDF fonte ausente ou incompleto: apostila_uece.pdf (0 bytes)
