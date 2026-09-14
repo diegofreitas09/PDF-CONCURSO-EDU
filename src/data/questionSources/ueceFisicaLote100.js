@@ -1,6 +1,6 @@
 // UECE por Assunto — Física — coleção integrada em ordem da fonte.
 // Compatibilidade: o nome histórico UECE_FISICA_LOTE_100 é preservado para o banco principal,
-// mas agora aponta para 400 questões auditadas (lotes 001–100, 101–200, 201–300 e 301–400).
+// mas agora aponta para 500 questões auditadas (lotes 001–100, 101–200, 201–300, 301–400 e 401–500).
 import { UECE_FISICA_ANALISE_DIMENSIONAL_LOTE_27 } from "./ueceFisicaAnaliseDimensionalLote27.js";
 import { UECE_FISICA_ANALISE_DIMENSIONAL_COMPLEMENTO_05 } from "./ueceFisicaAnaliseDimensionalComplemento05.js";
 import { UECE_FISICA_CINEMATICA_LOTE_18 } from "./ueceFisicaCinematicaLote18.js";
@@ -27,6 +27,10 @@ import { UECE_FISICA_ONDULATORIA_ACUSTICA_LOTE_27 } from "./ueceFisicaOndulatori
 import { UECE_FISICA_OPTICA_LOTE_11 } from "./ueceFisicaOpticaLote11.js";
 import { UECE_FISICA_OPTICA_LOTE_09 } from "./ueceFisicaOpticaLote09.js";
 import { UECE_FISICA_OPTICA_LOTE_23 } from "./ueceFisicaOpticaLote23.js";
+import { UECE_FISICA_MHS_LOTE_29 } from "./ueceFisicaMhsLote29.js";
+import { UECE_FISICA_CALORIMETRIA_LOTE_36 } from "./ueceFisicaCalorimetriaLote36.js";
+import { UECE_FISICA_MOMENTO_LINEAR_LOTE_12 } from "./ueceFisicaMomentoLinearLote12.js";
+import { UECE_FISICA_ANALISE_VETORIAL_ESCALAR_LOTE_04 } from "./ueceFisicaAnaliseVetorialEscalarLote04.js";
 
 const sourceNumber=q=>Number(q.sourceQuestion || String(q.id||"").match(/(\d+)$/)?.[1] || 0);
 const ordered=(items)=>[...items].sort((a,b)=>sourceNumber(a)-sourceNumber(b));
@@ -99,8 +103,6 @@ export const UECE_FISICA_LOTE_201_300=[
 ];
 
 // Lote 301–400: completa Hidrostática e segue Magnetismo, Ondulatória/Acústica e Óptica.
-// O arquivo auditado de Hidrostática contém 32 itens íntegros numerados até 35, pois 3, 4 e 9
-// ficam reservados ao fluxo visual. Como cinco já estavam em 201–300, restam 27 neste lote.
 const HIDROSTATICA_RESTANTE=HIDROSTATICA.slice(5);
 const MAGNETISMO=orderedUnique(UECE_FISICA_MAGNETISMO_LOTE_22).map(enrich);
 const ONDULATORIA_ACUSTICA=orderedUnique(UECE_FISICA_ONDULATORIA_ACUSTICA_LOTE_27).map(enrich);
@@ -118,11 +120,28 @@ export const UECE_FISICA_LOTE_301_400=[
   ...OPTICA_INICIO
 ];
 
+// Lote 401–500: completa Óptica e fecha as fontes íntegras já auditadas de MHS,
+// Calorimetria/Termologia, Momento Linear e Análise Vetorial/Escalar.
+const OPTICA_RESTANTE=OPTICA.slice(24);
+const MHS=orderedUnique(UECE_FISICA_MHS_LOTE_29).map(enrich);
+const CALORIMETRIA=orderedUnique(UECE_FISICA_CALORIMETRIA_LOTE_36).map(enrich);
+const MOMENTO_LINEAR=orderedUnique(UECE_FISICA_MOMENTO_LINEAR_LOTE_12).map(enrich);
+const ANALISE_VETORIAL_ESCALAR=orderedUnique(UECE_FISICA_ANALISE_VETORIAL_ESCALAR_LOTE_04).map(enrich);
+
+export const UECE_FISICA_LOTE_401_500=[
+  ...OPTICA_RESTANTE,
+  ...MHS,
+  ...CALORIMETRIA,
+  ...MOMENTO_LINEAR,
+  ...ANALISE_VETORIAL_ESCALAR
+];
+
 export const UECE_FISICA_LOTE_100=[
   ...UECE_FISICA_LOTE_001_100,
   ...UECE_FISICA_LOTE_101_200,
   ...UECE_FISICA_LOTE_201_300,
-  ...UECE_FISICA_LOTE_301_400
+  ...UECE_FISICA_LOTE_301_400,
+  ...UECE_FISICA_LOTE_401_500
 ];
 
 export const UECE_FISICA_LOTE_100_AUDIT={
@@ -131,6 +150,7 @@ export const UECE_FISICA_LOTE_100_AUDIT={
   loteSegundo:UECE_FISICA_LOTE_101_200.length,
   loteTerceiro:UECE_FISICA_LOTE_201_300.length,
   loteQuarto:UECE_FISICA_LOTE_301_400.length,
+  loteQuinto:UECE_FISICA_LOTE_401_500.length,
   analiseDimensional:ANALISE_DIMENSIONAL.length,
   cinematica:CINEMATICA.length,
   dinamicaBase:DINAMICA_BASE.length,
@@ -147,11 +167,16 @@ export const UECE_FISICA_LOTE_100_AUDIT={
   magnetismo:MAGNETISMO.length,
   ondulatoriaAcustica:ONDULATORIA_ACUSTICA.length,
   opticaInicio:OPTICA_INICIO.length,
+  opticaRestante:OPTICA_RESTANTE.length,
   opticaTotalIntegra:OPTICA.length,
+  mhs:MHS.length,
+  calorimetria:CALORIMETRIA.length,
+  momentoLinear:MOMENTO_LINEAR.length,
+  analiseVetorialEscalar:ANALISE_VETORIAL_ESCALAR.length,
   uniqueIds:new Set(UECE_FISICA_LOTE_100.map(q=>q.id)).size,
   uniqueSources:new Set(UECE_FISICA_LOTE_100.map(q=>`${q.topic}::${q.sourceQuestion}`)).size,
   reviewed:UECE_FISICA_LOTE_100.filter(q=>q.reviewed===true).length,
   withMedia:UECE_FISICA_LOTE_100.filter(q=>q.media).length,
-  withMediaNovo:UECE_FISICA_LOTE_301_400.filter(q=>q.media).length,
+  withMediaNovo:UECE_FISICA_LOTE_401_500.filter(q=>q.media).length,
   missingRequired:UECE_FISICA_LOTE_100.filter(q=>!q.id||!q.discipline||!q.topic||!q.statement||!Array.isArray(q.options)||q.options.length!==4||!Number.isInteger(q.answer)||q.answer<0||q.answer>3||!q.explanation).map(q=>q.id)
 };
