@@ -74,6 +74,9 @@ jobs:
       - name: Auditar lote UECE Biologia
         run: node scripts/verificar_uece_biologia.mjs
 
+      - name: Auditar lote UECE transicao Biologia-Portugues
+        run: node scripts/verificar_uece_lote_06.mjs
+
       - name: Build
         run: npm run build
 
