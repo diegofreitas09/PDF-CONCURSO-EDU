@@ -1,5 +1,5 @@
 name: Deploy GitHub Pages
-# UECE lote 13 auditado e conectado
+# UECE lote 14 em integração auditada
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -26,6 +26,22 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
+      - name: Preparar lote UECE Historia 276-375
+        if: ${{ hashFiles('src/data/questionSources/ueceHistoriaLote100_14.js') == '' }}
+        run: |
+          pip install pymupdf
+          UECE_PDF_URL="https://drive.usercontent.google.com/download?id=18fCbZ_iEnHHg_mdvKqtEBVBsl-A3pP0k&export=download&confirm=t" python scripts/integrar_uece_lote_14.py
+
+      - name: Persistir lote UECE Historia 276-375
+        run: |
+          if ! git diff --quiet || [ -n "$(git ls-files --others --exclude-standard)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add src/data/questionRegistry.js src/data/questionSources/ueceHistoriaLote100_14*.js scripts/verificar_uece_lote_14.mjs
+            git commit -m "feat(uece): integrar lote 14 de Historia"
+            git push origin HEAD:main
+          fi
 
       - name: Verificar integracao das questoes
         run: python scripts/verificar_integracao_questoes.py
@@ -98,6 +114,9 @@ jobs:
 
       - name: Auditar lote UECE Historia 176-275
         run: node scripts/verificar_uece_lote_13.mjs
+
+      - name: Auditar lote UECE Historia 276-375
+        run: node scripts/verificar_uece_lote_14.mjs
 
       - name: Build
         run: npm run build
