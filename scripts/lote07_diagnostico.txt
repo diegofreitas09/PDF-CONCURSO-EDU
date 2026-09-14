@@ -1,1 +1,1 @@
-falha ao reconstruir lote 07 auditado: Corrupt input data
+falha ao reconstruir lote 07 auditado: Excess padding not allowed
