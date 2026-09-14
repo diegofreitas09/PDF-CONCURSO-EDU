@@ -18,7 +18,7 @@ jobs:
         run: pip install pymupdf
       - name: Gerar lote Português 270-369
         env:
-          UECE_PDF_URL: "https://sdmntprwestus2.oaiusercontent.com/files/00000000-1094-81f8-817f-da59b57b6fa9/raw?se=2026-09-14T18%3A17%3A11Z&sp=r&sv=2026-02-06&sr=b&scid=3169c835-d075-5014-b459-5601a44d5e2f&skoid=30ec2761-8f41-44db-b282-7a0f8809659b&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-13T23%3A22%3A15Z&ske=2026-09-14T23%3A22%3A15Z&sks=b&skv=2026-02-06&sig=IIcdNefao%2B0%2BY%2BVRoo3TqRaAKmGSAnUMA51J8go2LDE%3D"
+          UECE_PDF_URL: "https://drive.usercontent.google.com/download?id=18fCbZ_iEnHHg_mdvKqtEBVBsl-A3pP0k&export=download&confirm=t"
         run: python scripts/integrar_uece_lote_09.py
       - uses: actions/setup-node@v4
         with:
