@@ -38,6 +38,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/data/questionSources/ueceTransicaoEducacaoFisicaHistoriaLote100_11.js src/data/questionRegistry.js scripts/verificar_uece_lote_11.mjs .github/workflows/deploy-pages.yml
+          git add src/data/questionSources/ueceTransicaoEducacaoFisicaHistoriaLote100_11.js src/data/questionRegistry.js scripts/verificar_uece_lote_11.mjs
           git commit -m "feat: integra UECE lote 11 Educacao Fisica-Historia"
           git push
