@@ -50,6 +50,27 @@ jobs:
       - name: Auditar lote UECE Quimica
         run: node scripts/verificar_uece_quimica.mjs
 
+      - name: Importar Biologia p01
+        run: node -e "import('./src/data/questionSources/ueceBiologiaLote100_05_p01.js')"
+      - name: Importar Biologia p02
+        run: node -e "import('./src/data/questionSources/ueceBiologiaLote100_05_p02.js')"
+      - name: Importar Biologia p03
+        run: node -e "import('./src/data/questionSources/ueceBiologiaLote100_05_p03.js')"
+      - name: Importar Biologia p04
+        run: node -e "import('./src/data/questionSources/ueceBiologiaLote100_05_p04.js')"
+      - name: Importar Biologia p05
+        run: node -e "import('./src/data/questionSources/ueceBiologiaLote100_05_p05.js')"
+      - name: Importar Biologia p06
+        run: node -e "import('./src/data/questionSources/ueceBiologiaLote100_05_p06.js')"
+      - name: Importar Biologia p07
+        run: node -e "import('./src/data/questionSources/ueceBiologiaLote100_05_p07.js')"
+      - name: Importar Biologia p08
+        run: node -e "import('./src/data/questionSources/ueceBiologiaLote100_05_p08.js')"
+      - name: Importar Biologia p09
+        run: node -e "import('./src/data/questionSources/ueceBiologiaLote100_05_p09.js')"
+      - name: Importar Biologia p10
+        run: node -e "import('./src/data/questionSources/ueceBiologiaLote100_05_p10.js')"
+
       - name: Auditar lote UECE Biologia
         run: node scripts/verificar_uece_biologia.mjs
 
