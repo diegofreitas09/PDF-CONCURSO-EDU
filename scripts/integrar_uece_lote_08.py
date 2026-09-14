@@ -1,11 +1,62 @@
 from pathlib import Path
-import hashlib,sys
-expected=['dbeea8830a9d81e4b59bea06bf6c1eb9aa8e0eebc5a76d1fcd3607ac9a449381','a8c45e008faa2f3e3b2cf21b8d7c85700a41872c7a739a15419355bbe3257164','cc1afcd72eabaf04a3c662d305db1d226e6ed510594d138dd049928820face83','d374b80d3bfb6051e5a25ae9b6dac3ee52447402aa0007c36a316c57e85a721d','9857be22dd9245ccb24ed9f015d86491bacab4203e3a2e79e0d4195adc42402b','2195dbe1d155302cef8468224904e172deef12e698f1da9d7f83ffba16221102','7e210bf0496131934ea433eaf0846248fb58a5b84abe21cd9d7cdaaaa5b5bd38','e58f4c339ff2f6d8dcfd251b30c4c2ff91748e1b8841cfd8f7db3677a4517879','280dcf297d105cb29d78f56d2583b85dd0dd5e281a1fc7946e10a2033cc5fe4d','1b1b73ebf49be4f3fd14a58c07cedca3d66d8bfa8b6c7a653627f7a2726e150e','9b1422a549028b993513b338865d4fd338ce068c9aff06e3c91a93bac947cf93','72a873231ee347928f3155670b7d2a5ec23845b8ee6c8a74e3bddd7538a6cd67','1f4abde126ccf0f2f5763bf7cd0c6ca7d90abbd4f50380b3e2e2999ee29db30e','56e1dc83429d4f28752cd747328c1ca38bc86263d44a2682fcc2019597018715','93f534642eaaa908242f56d92fc303901939471b3a0e6f2b0e8e3c854a62f6f5','6cce4aff252fb81cd3ae465ea4dddae597c17969c55122dc3661a3b05fc53e6d','63ec49d9eca34266255fa0be9e4b25abb27b4c2f137c238a868c0480379e033b','49ef83d30ea0db2601e8f896f44cf968518db9cf8908808355b27f6f11a728ff','daf14e39a4b4a567914533c9188b273915076b120454bac2e19c47aaf1a4d66e','26613f238253df09ebd56ce575c5cbf36baebafaa433180bc596d2485c87f6c6','43c8b93457c889743555e28b614083adfb6fe56214b0190601113555b46e1ddd','1819abf68ab245def233e7c8d003eea79882c5a8ef2fef78d976077ffe9adf5a','85e9cd7247ee882fded4bab845eba980be4b8b1e462dd749a74c8d6d77184f22','427b5c9cc38a960d6d810fc983250f7fdbae28014afbc9e0629edfd95ecb7bcc','533b9106fe9675709c4d742d2ab88e36265b8149c235db31566e31899bc296b7','c7d324140c69a7a605dd77a6e903edacfaa777168c07ebf02d90d738e56b8bc6','5b414b95675d825de67cbed91276bef78799536eb6ab19c35f5c5d8dd496e851','cf42c2b0513e1b626556482176c47b943006ef1d47ff27b74ffc73d32eb0ad32','12af98fb6883d7f5b286d8328541ea2b6171f8f0514a032b8fbb0be35e114304','d31d7a0062a94cff5fddd4a110b9c004de6dbdbaf6d8a6693e0001292dd689d5','48e452ea182020cbac43c195c8bd6dda240fde8ca31c784d1baf00574f172104','0e62cdad386e15bbbc4cade25fe0aa1799de1a99037de368ad29c74b9c72feca','e344ee3549edc8af97fad653ef4e2f468b94d124857cd1a9c69e22be85f554bc','5eda72ee207bfdd037d3749ddbf44d0210f5a8c8499e42af5b98abb1c758715a','436ff241dacf00fe47cdbfab0926c794285314709e5ea4e712e00c3ac9d3a271','713f5133e16d56a7c3682c2867634d9f3fc8a696c62e407516c894a4ecb07a5a','3429f952b38dfa48708fbe8f44f745f0ce520923b400e7187739dbfef3d9fcf8','b6702d1fe148b21f3cc352ffa8399b3405e9626cd2bf83f1c3ebd602fcca73b6','7d8f6a5f17cd7d3ead995682640e229de43de5bbbcc5d19ff0d1491643f94463','6de37ba1e33b86a28b96c004657c6c048aae137a675cc81be6ff78a44520ffe0','8e269c9d468e4fd4f052b2bbb041705e87329c93a715359f51624a5ff356eddd','f2b0814ccc9c2c14d5c38d948932df27fee3e22d31b3ba5b994fd5921e0fb657']
-s=Path('scripts/uece_lote08_rebuild_3.b64').read_text().strip()
-print('len',len(s),'whole',hashlib.sha256(s.encode()).hexdigest())
-bad=[]
-for idx,i in enumerate(range(0,len(s),256)):
- h=hashlib.sha256(s[i:i+256].encode()).hexdigest(); ok=idx<len(expected) and h==expected[idx]
- print(i,h,'OK' if ok else 'BAD')
- if not ok: bad.append(i)
-sys.exit('BAD_CHUNKS '+','.join(map(str,bad)) if bad else 'PART3_OK')
+import base64,lzma,sys,hashlib
+OUT=Path('src/data/questionSources/uecePortuguesLote100_08.js')
+REG=Path('src/data/questionRegistry.js')
+VERIFY=Path('scripts/verificar_uece_lote_08.mjs')
+DEPLOY=Path('.github/workflows/deploy-pages.yml')
+expected_parts={1:'2aced375201fe01dfe1f200386db520629596575209d37d980532c51b95cfc63',2:'3f656f2a17a2e2e0bc9e12f23aa25a0ad926b34fb51690cee9c1f2f6fe17ce62',3:'ec41716447613505c305a713074d7bbfc3ad92a6d65a8cd3b3aa1ada6c1d3b36',4:'cde46f56a4372473745b034bb059f9db5e0746a46faa178c0ab3e9af180db5a5',5:'db311c9e00be68eb7f0ce0e371bbaf6dde0adcc1cea44e4261e4472d867cd19f',6:'ce837dd6eea41ee237cae6b03b4f6ebab99a34123c31e079e7a7efa6c65bb8bb',7:'28742bd8809be66ad8872ecea1e73b14ecb9a509aaf15bf6c0250e651b11f301',8:'b4e916a75aa2784c9531351e120e9964f23d48b23a2002ae09acbd230e255093'}
+parts=[]
+for i in range(1,9):
+    p=Path(f'scripts/uece_lote08_rebuild_{i}.b64')
+    if not p.exists(): sys.exit(f'fragmento ausente: {p}')
+    s=p.read_text().strip()
+    if i==3:
+        bad='WFOpGM7ntiBG'; good='WFOpGM7ktiBG'
+        if bad in s:
+            if s.count(bad)!=1: sys.exit('assinatura de reparo ambígua')
+            s=s.replace(bad,good,1); p.write_text(s)
+            print('parte 3: reparo de transporte aplicado n→k')
+    h=hashlib.sha256(s.encode()).hexdigest()
+    if len(s)!=10603 or h!=expected_parts[i]: sys.exit(f'fragmento divergente parte {i}: len={len(s)} sha={h}')
+    parts.append(s)
+try:
+    raw=lzma.decompress(base64.b64decode(''.join(parts),validate=True)); text=raw.decode('utf-8')
+except Exception as e: sys.exit(f'falha reconstrução: {e}')
+expected='99d96744d3688e18e4e6164ffe407d4bd6118119ef35afaec1a6f0fbd6ac4b9d'
+sha=hashlib.sha256(raw).hexdigest()
+if sha!=expected: sys.exit(f'sha divergente {sha}')
+if text.count('"id":"UECE-PORT-')!=100: sys.exit('quantidade divergente')
+if 'UECE-PORT-INT-170' not in text or 'UECE-PORT-DISC-001' not in text: sys.exit('limites ausentes')
+OUT.write_text(text,encoding='utf-8')
+VERIFY.write_text(r'''import { UECE_PORTUGUES_LOTE_100_08 } from "../src/data/questionSources/uecePortuguesLote100_08.js";
+const lote=UECE_PORTUGUES_LOTE_100_08, fail=m=>{console.error(`ERRO UECE lote 08: ${m}`);process.exit(1)};
+if(lote.length!==100)fail(`esperado 100, veio ${lote.length}`);
+const expect={"Interpretação de texto":11,"Literatura":25,"Linguística e aspectos da linguagem":8,"Estrutura e tipologia textual":3,"Coesão textual":52,"Discurso e vozes do texto":1};
+const ids=new Set(),src=new Set(),topics={};let media=0;
+for(const q of lote){for(const f of ["id","discipline","topic","context","statement","options","answer","explanation","source","origin"])if(q[f]==null||(typeof q[f]==="string"&&!q[f].trim()))fail(`${q.id}: ${f} vazio`);if(q.discipline!=="Português")fail(`${q.id}: disciplina`);if(!Array.isArray(q.options)||q.options.length!==4||q.options.some(x=>!String(x).trim()))fail(`${q.id}: alternativas`);if(!Number.isInteger(q.answer)||q.answer<0||q.answer>3)fail(`${q.id}: gabarito`);if(q.reviewed!==true)fail(`${q.id}: reviewed`);if(q.origin!=="Apostila da UECE por assuntos 11ed - Turma do Jot_260209_173948.pdf")fail(`${q.id}: origem`);if(ids.has(q.id))fail(`ID duplicado ${q.id}`);ids.add(q.id);const fp=`${q.context}::${q.statement}`.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/\s+/g," ").trim();if(src.has(fp))fail(`fonte duplicada ${q.id}`);src.add(fp);const letra=String.fromCharCode(65+q.answer);if(!q.explanation.includes(`Gabarito oficial da apostila: ${letra}`))fail(`${q.id}: comentário/gabarito`);topics[q.topic]=(topics[q.topic]||0)+1;if(q.media)media++;}
+for(const [k,v] of Object.entries(expect))if(topics[k]!==v)fail(`${k}: esperado ${v}, veio ${topics[k]||0}`);
+if(Object.keys(topics).length!==Object.keys(expect).length)fail('tópicos inesperados');
+if(lote[0].id!=="UECE-PORT-INT-170"||lote.at(-1).id!=="UECE-PORT-DISC-001")fail('limites divergentes');
+console.log(`UECE lote 08 OK — 100/100 | IDs ${ids.size}/100 | fontes ${src.size}/100 | visuais ${media}`);
+''',encoding='utf-8')
+reg=REG.read_text()
+imp='import{UECE_PORTUGUES_LOTE_100_08}from"./questionSources/uecePortuguesLote100_08";\n'; anchor='import{UECE_PORTUGUES_LOTE_100_07}from"./questionSources/uecePortuguesLote100_07";\n'
+if imp not in reg:
+    if anchor not in reg: sys.exit('âncora import ausente')
+    reg=reg.replace(anchor,anchor+imp,1)
+old='...UECE_PORTUGUES_LOTE_100_07].map(sanitizeQuestion)'; new='...UECE_PORTUGUES_LOTE_100_07,...UECE_PORTUGUES_LOTE_100_08].map(sanitizeQuestion)'
+if new not in reg:
+    if old not in reg: sys.exit('âncora RAW ausente')
+    reg=reg.replace(old,new,1)
+REG.write_text(reg)
+if DEPLOY.exists():
+    d=DEPLOY.read_text()
+    if 'verificar_uece_lote_08.mjs' not in d:
+        needle='      - name: Auditar lote UECE Português 70-169\n        run: node scripts/verificar_uece_lote_07.mjs\n'
+        if needle in d: d=d.replace(needle,needle+'      - name: Auditar lote UECE Português 170-269\n        run: node scripts/verificar_uece_lote_08.mjs\n',1)
+        else:
+            needle='        run: node scripts/verificar_uece_lote_07.mjs\n'
+            if needle not in d: sys.exit('âncora deploy ausente')
+            d=d.replace(needle,needle+'      - name: Auditar lote UECE Português 170-269\n        run: node scripts/verificar_uece_lote_08.mjs\n',1)
+        DEPLOY.write_text(d)
+print('LOTE08 GERADO — Português +100 — 100/100 | visuais 0')
