@@ -17,6 +17,20 @@ jobs:
         with: {python-version: "3.12"}
       - name: Conferir fonte compactada
         run: test $(ls scripts/uece_lote08_rebuild_*.b64 | wc -l) -eq 8
+      - name: Diagnosticar fragmentos
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64
+          for i in range(1,9):
+              s=Path(f'scripts/uece_lote08_rebuild_{i}.b64').read_text().strip()
+              p=s+'='*((4-len(s)%4)%4)
+              try:
+                  b=base64.b64decode(p,validate=True)
+                  print(i,'chars',len(s),'mod4',len(s)%4,'head',s[:12],'tail',s[-12:],'bytes',len(b),'magic',b[:6].hex())
+              except Exception as e:
+                  print(i,'ERRO',e,'chars',len(s),'mod4',len(s)%4,'head',s[:12],'tail',s[-12:])
+          PY
       - name: Gerar e conectar lote
         run: python scripts/integrar_uece_lote_08.py
       - uses: actions/setup-node@v4
@@ -41,4 +55,3 @@ jobs:
           if git diff --cached --quiet; then echo "Nada para commitar"; exit 0; fi
           git commit -m "feat: integra UECE Português lote 08"
           git push
-# trigger lote 08 v2
