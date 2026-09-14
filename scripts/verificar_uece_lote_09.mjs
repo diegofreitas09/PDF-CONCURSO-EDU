@@ -1,0 +1,7 @@
+import { UECE_PORTUGUES_LOTE_100_09 } from "../src/data/questionSources/uecePortuguesLote100_09.js";
+const lote=UECE_PORTUGUES_LOTE_100_09,fail=m=>{console.error(`ERRO UECE lote 09: ${m}`);process.exit(1)};
+if(lote.length!==100)fail(`esperado 100, veio ${lote.length}`);
+const expect={"Discurso e vozes do texto":2,"Estilística e vícios de linguagem":5,"Figuras e funções da linguagem":27,"Gêneros textuais":28,"Gramática":38}; const topics={}; for(const q of lote)topics[q.topic]=(topics[q.topic]||0)+1; for(const[k,v]of Object.entries(expect))if(topics[k]!==v)fail(`tópico ${k}: ${topics[k]||0}/${v}`);
+const ids=new Set(lote.map(q=>q.id)),src=new Set(lote.map(q=>`${q.source}|${q.statement}`)); if(ids.size!==100)fail('IDs duplicados'); if(src.size!==100)fail('itens duplicados');
+for(const q of lote){if(!q.id||!q.discipline||!q.topic||!q.statement||!Array.isArray(q.options)||q.options.length!==4||q.options.some(x=>!x)||!Number.isInteger(q.answer)||q.answer<0||q.answer>3||!q.explanation||!q.source||!q.origin||q.reviewed!==true)fail(`campos inválidos: ${q.id}`);if(q.explanation!==`Gabarito oficial da apostila: ${"ABCD"[q.answer]}.`)fail(`gabarito divergente: ${q.id}`)}
+if(lote[0].id!=="UECE-PORT-DISC-002"||lote.at(-1).id!=="UECE-PORT-GRAM-038")fail('limites divergentes'); const media=lote.filter(q=>q.media).length; console.log(`UECE lote 09 OK — 100/100 | IDs ${ids.size}/100 | fontes ${src.size}/100 | visuais ${media}`);
