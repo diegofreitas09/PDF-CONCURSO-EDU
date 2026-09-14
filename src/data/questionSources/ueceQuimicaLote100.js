@@ -1,7 +1,7 @@
-// UECE por Assunto — Química — cumulativo auditado + transição para Biologia.
-// Química 001–500 já auditada em lotes anteriores.
-// Fechamento: Orgânica 106–109 (4) + Reações Químicas (14) + Termoquímica (19) = Química 537.
-// Continuação do lote de 100: Biologia — Origem da Vida (30) + Taxonomia/Sistemática/Evolução (28) + Microbiologia 1–5 (5).
+// UECE por Assunto — Química concluída + Biologia cumulativa até 163.
+// Química: 537 questões auditadas.
+// Biologia 001–063: Origem da Vida (30) + Taxonomia/Sistemática/Evolução (28) + Microbiologia 1–5 (5).
+// Biologia 064–163: Microbiologia 6–37 (32) + Seres vivos e reprodução (25) + Bioquímica (35) + Botânica 1–8 (8).
 import { UECE_QUIMICA_ANALISE_ESPECIES_LOTE_09 } from "./ueceQuimicaAnaliseEspeciesLote09.js";
 import { UECE_QUIMICA_ANALISE_ESPECIES_LOTE_25 } from "./ueceQuimicaAnaliseEspeciesLote25.js";
 import { UECE_QUIMICA_ATOMISTICA_LOTE_09 } from "./ueceQuimicaAtomisticaLote09.js";
@@ -43,9 +43,9 @@ import { UECE_QUIMICA_TERMOQUIMICA_19 } from "./ueceQuimicaTermoquimica19.js";
 import { UECE_BIOLOGIA_ORIGEM_VIDA_30 } from "./ueceBiologiaOrigemVida30.js";
 import { UECE_BIOLOGIA_TAXONOMIA_EVOLUCAO_28 } from "./ueceBiologiaTaxonomiaEvolucao28.js";
 import { UECE_BIOLOGIA_MICROBIOLOGIA_37 } from "./ueceBiologiaMicrobiologia37.js";
+import { UECE_BIOLOGIA_LOTE_100_02 } from "./ueceBiologiaLote100_02.js";
 
 const numero = (q) => Number(String(q.id).match(/(\d+)$/)?.[1]);
-
 const BIOQUIMICA_001_A_006 = UECE_QUIMICA_BIOQUIMICA_LOTE_01.filter((q) => {
   const n = numero(q);
   return Number.isInteger(n) && n >= 1 && n <= 6;
@@ -88,11 +88,11 @@ export const UECE_QUIMICA_LOTE_400 = [
 ];
 export const UECE_QUIMICA_LOTE_500 = [...UECE_QUIMICA_LOTE_400,...ORGANICA_006_A_105];
 export const UECE_QUIMICA_LOTE_200 = UECE_QUIMICA_LOTE_300.slice(0,200);
-
 const TERMOQUIMICA_19 = UECE_QUIMICA_TERMOQUIMICA_19.filter((q)=>q.discipline==="Química"&&q.topic==="Termoquímica");
 export const UECE_QUIMICA_LOTE_537 = [...UECE_QUIMICA_LOTE_500,...UECE_QUIMICA_ORGANICA_FINAL_04,...UECE_QUIMICA_REACOES_14,...TERMOQUIMICA_19];
 const MICROBIOLOGIA_001_A_005 = UECE_BIOLOGIA_MICROBIOLOGIA_37.filter((q)=>numero(q)>=1&&numero(q)<=5);
 export const UECE_BIOLOGIA_LOTE_63 = [...UECE_BIOLOGIA_ORIGEM_VIDA_30,...UECE_BIOLOGIA_TAXONOMIA_EVOLUCAO_28,...MICROBIOLOGIA_001_A_005];
-export const UECE_APOSTILA_LOTE_600 = [...UECE_QUIMICA_LOTE_537,...UECE_BIOLOGIA_LOTE_63];
+export const UECE_BIOLOGIA_LOTE_163 = [...UECE_BIOLOGIA_LOTE_63,...UECE_BIOLOGIA_LOTE_100_02];
+export const UECE_APOSTILA_LOTE_700 = [...UECE_QUIMICA_LOTE_537,...UECE_BIOLOGIA_LOTE_163];
 // Compatibilidade com o agregador principal: inclui todo o acumulado já conectado desta etapa.
-export const UECE_QUIMICA_LOTE_100 = UECE_APOSTILA_LOTE_600;
+export const UECE_QUIMICA_LOTE_100 = UECE_APOSTILA_LOTE_700;
