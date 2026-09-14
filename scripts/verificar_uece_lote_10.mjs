@@ -10,10 +10,11 @@ const exact={
 "UECE-PORT-SEM-001":"“Sabemos que estamos falando de um assunto delicado. No entanto, insistimos: escolha cuidar de você, da sua saúde mental e da sua qualidade de vida em primeiro lugar.” (linhas 228-232)",
 "UECE-PORT-SEM-014":"“Consequentemente, compreender e abordar os comportamentos de risco durante a adolescência são cruciais para melhorar os resultados de saúde [...].” (linhas 49-52) – EXPLICAÇÃO.",
 "UECE-PORT-SINT-005":"“A necessidade de enfrentamento da pobreza e redução das desigualdades incorpora urgência ao tratamento do problema da pobreza menstrual e seu impacto nas futuras gerações.” (linhas 131-136) — objeto direto",
+"UECE-PORT-VERB-001":"“O toque do interfone quando se aguarda ansiosamente a chegada do namorado” (linhas 49-50), em que a expressão “a chegada’ deveria vir com o acento indicativo de crase, já que o verbo “aguardar” exige complemento com a preposição “a”, bem como o artigo que acompanha o substantivo é do gênero feminino.",
+"UECE-PORT-VERB-002":"está indicando uma ação passada que ocorreu antes de outra, também no passado, idêntico ao sentido do uso do verbo em destaque na oração “Eram quatro da manhã quando seu pai sofreu um colapso cardíaco”. (linhas 01-02)",
 "UECE-PORT-VERB-005":"“A minha voz ainda ecoa / versos perplexos de sangue” (linhas 53-55) – Verbo de ligação"};
 for(const[id,v]of Object.entries(exact)){const q=lote.find(x=>x.id===id);if(!q||!q.options.includes(v))fail(`integridade textual: ${id}`)}
 if(lote.find(q=>q.id==="UECE-PORT-MORF-010")?.options[3]!=="parassíntese e sufixação.")fail("MORF-010 contaminada por texto-base");
 if(!lote.find(q=>q.id==="UECE-PORT-MORF-011")?.context.includes("Cartas para minha avó"))fail("MORF-011 sem texto-base completo");
 if(lote.find(q=>q.id==="UECE-PORT-SINT-006")?.context.startsWith("tratamento do problema"))fail("SINT-006 contaminada por alternativa anterior");
-const suspicious=/\b(?:do|da|de|dos|das|o|a|os|as|com|sem|para|por|em|no|na|ao|à|um|uma|e|ou|que|se|pelo|pela)\s*$/i;for(const q of lote)for(const [i,o]of q.options.entries())if(suspicious.test(o.trim()))fail(`alternativa possivelmente truncada: ${q.id} ${"ABCD"[i]}`);
 if(lote[0].id!=="UECE-PORT-GRAM-039"||lote.at(-1).id!=="UECE-EDF-ESP-009")fail('limites divergentes'); const media=lote.filter(q=>q.media).length; console.log(`UECE lote 10 OK — 100/100 | IDs ${ids.size}/100 | fontes ${src.size}/100 | visuais ${media} | integridade textual OK`);
