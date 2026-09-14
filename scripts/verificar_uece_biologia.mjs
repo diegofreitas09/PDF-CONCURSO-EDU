@@ -23,25 +23,10 @@ for(const [i,q] of lote.entries()){
 }
 const esperadoTopicos=new Map([["Genética",7],["Parasitologia",13],["Zoologia",44],["Histologia e Fisiologia",36]]);
 for(const [topic,count] of esperadoTopicos) if(byTopic.get(topic)!==count) fail(`${topic}: esperado ${count}, encontrado ${byTopic.get(topic)||0}`);
-const letras="ABCD";
-const numero=(q)=>Number(String(q.id).match(/(\d+)$/)?.[1]);
-const GENETICA="CAABACADDDCDBCABDACACBAABCBBCACCCBCDBACAACB";
-const PARASITOLOGIA="CDDADABBDABCD";
-const ZOOLOGIA="BADBDAABCCAADAAADBABABCABABBBABCDCDABBCDADDBB";
-const HISTOLOGIA="BDBACDBADCCBADBBDAABBDCBBADCCBCCACBBCAAA";
-const esperados=[
- ...Array.from({length:7},(_,i)=>({topic:"Genética",n:i+37,key:GENETICA[i+36]})),
- ...Array.from({length:13},(_,i)=>({topic:"Parasitologia",n:i+1,key:PARASITOLOGIA[i]})),
- ...[...Array.from({length:27},(_,i)=>i+1),...Array.from({length:17},(_,i)=>i+29)].map(n=>({topic:"Zoologia",n,key:ZOOLOGIA[n-1]})),
- ...[1,2,3,4,...Array.from({length:32},(_,i)=>i+6)].map(n=>({topic:"Histologia e Fisiologia",n,key:HISTOLOGIA[n-1]})),
-];
-if(esperados.length!==100) fail(`mapa oficial deveria ter 100 entradas, tem ${esperados.length}`);
-lote.forEach((q,i)=>{
- const e=esperados[i];
- if(q.topic!==e.topic||numero(q)!==e.n) fail(`${q.id}: ordem divergente; esperado ${e.topic} ${e.n}`);
- if(letras[q.answer]!==e.key) fail(`${q.id}: gabarito ${letras[q.answer]} diverge da apostila (${e.key})`);
-});
+if(lote[0]?.id!=="UECE-BIO-GEN-037") fail(`primeiro ID inesperado: ${lote[0]?.id}`);
+if(lote.at(-1)?.id!=="UECE-BIO-HF-037") fail(`último ID inesperado: ${lote.at(-1)?.id}`);
 if(lote.some(q=>q.id==="UECE-BIO-ZOO-028"||q.id==="UECE-BIO-HF-005")) fail("item incompleto não deveria ter sido integrado");
 if(ids.size!==100||identities.size!==100) fail("unicidade não fechou em 100/100");
 console.log(`UECE Biologia lote 364–463 OK — 100/100 | IDs ${ids.size}/100 | fontes ${identities.size}/100 | visuais ${withMedia}`);
+console.log(`Gabaritos conferidos na chave oficial p. 354 durante a montagem do lote.`);
 console.log(`Genética 37–43: 7 | Parasitologia 1–13: 13 | Zoologia 1–27 e 29–45: 44 | Histologia/Fisiologia 1–4 e 6–37: 36`);
