@@ -27,9 +27,6 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Integrar lote UECE Portugues 170-269
-        run: python scripts/integrar_uece_lote_08.py
-
       - name: Verificar integracao das questoes
         run: python scripts/verificar_integracao_questoes.py
 
