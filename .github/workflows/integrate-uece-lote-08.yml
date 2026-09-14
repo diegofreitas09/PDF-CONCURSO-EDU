@@ -41,4 +41,4 @@ jobs:
           if git diff --cached --quiet; then echo "Nada para commitar"; exit 0; fi
           git commit -m "feat: integra UECE Português lote 08"
           git push
-# trigger lote 08
+# trigger lote 08 v2
