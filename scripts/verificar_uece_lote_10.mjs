@@ -1,0 +1,7 @@
+import { UECE_TRANSICAO_PORT_EDF_LOTE_100_10 } from "../src/data/questionSources/ueceTransicaoPortuguesEducacaoFisicaLote100_10.js";
+const lote=UECE_TRANSICAO_PORT_EDF_LOTE_100_10,fail=m=>{console.error(`ERRO UECE lote 10: ${m}`);process.exit(1)};
+if(lote.length!==100)fail(`esperado 100, veio ${lote.length}`);
+const expect={"Gramática":3,"Morfologia textual":23,"Pontuação":10,"Semântica":16,"Sintaxe":13,"Verbo":5,"Saúde":21,"Esporte e manifestação cultural":9}; const topics={}; for(const q of lote)topics[q.topic]=(topics[q.topic]||0)+1; for(const[k,v]of Object.entries(expect))if(topics[k]!==v)fail(`tópico ${k}: ${topics[k]||0}/${v}`);
+const ids=new Set(lote.map(q=>q.id)),src=new Set(lote.map(q=>`${q.source}|${q.statement}`)); if(ids.size!==100)fail('IDs duplicados'); if(src.size!==100)fail('itens duplicados');
+for(const q of lote){if(!q.id||!q.discipline||!q.topic||!q.statement||!Array.isArray(q.options)||q.options.length!==4||q.options.some(x=>!x)||!Number.isInteger(q.answer)||q.answer<0||q.answer>3||!q.explanation||!q.source||!q.origin||q.reviewed!==true)fail(`campos inválidos: ${q.id}`);if(q.explanation!==`Gabarito oficial da apostila: ${"ABCD"[q.answer]}.`)fail(`gabarito divergente: ${q.id}`)}
+if(lote[0].id!=="UECE-PORT-GRAM-039"||lote.at(-1).id!=="UECE-EDF-ESP-009")fail('limites divergentes'); const media=lote.filter(q=>q.media).length; console.log(`UECE lote 10 OK — 100/100 | IDs ${ids.size}/100 | fontes ${src.size}/100 | visuais ${media}`);
