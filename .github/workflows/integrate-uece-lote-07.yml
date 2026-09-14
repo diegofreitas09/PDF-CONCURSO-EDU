@@ -22,7 +22,20 @@ jobs:
       - name: Conferir blocos da fonte
         run: sha256sum scripts/uece_lote07_final_*.b64
       - name: Gerar e conectar lote
-        run: python scripts/integrar_uece_lote_07.py
+        id: gerar
+        continue-on-error: true
+        run: python scripts/integrar_uece_lote_07.py > lote07-geracao.log 2>&1
+      - name: Registrar diagnóstico da geração
+        if: steps.gerar.outcome == 'failure'
+        run: |
+          cat lote07-geracao.log
+          cp lote07-geracao.log scripts/lote07_diagnostico.txt
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/lote07_diagnostico.txt
+          git commit -m "chore: registra diagnóstico UECE lote 07" || true
+          git push
+          exit 1
       - uses: actions/setup-node@v4
         with:
           node-version: 22
