@@ -1,6 +1,6 @@
-import{UECE_HISTORIA_LOTE_100_15_P01}from"./ueceHistoriaLote100_15_p01";
-import{UECE_HISTORIA_LOTE_100_15_P02}from"./ueceHistoriaLote100_15_p02";
-import{UECE_HISTORIA_LOTE_100_15_P03}from"./ueceHistoriaLote100_15_p03";
-import{UECE_HISTORIA_LOTE_100_15_P04}from"./ueceHistoriaLote100_15_p04";
-import{UECE_HISTORIA_LOTE_100_15_P05}from"./ueceHistoriaLote100_15_p05";
+import{UECE_HISTORIA_LOTE_100_15_P01}from"./ueceHistoriaLote100_15_p01.js";
+import{UECE_HISTORIA_LOTE_100_15_P02}from"./ueceHistoriaLote100_15_p02.js";
+import{UECE_HISTORIA_LOTE_100_15_P03}from"./ueceHistoriaLote100_15_p03.js";
+import{UECE_HISTORIA_LOTE_100_15_P04}from"./ueceHistoriaLote100_15_p04.js";
+import{UECE_HISTORIA_LOTE_100_15_P05}from"./ueceHistoriaLote100_15_p05.js";
 export const UECE_HISTORIA_LOTE_100_15=[...UECE_HISTORIA_LOTE_100_15_P01,...UECE_HISTORIA_LOTE_100_15_P02,...UECE_HISTORIA_LOTE_100_15_P03,...UECE_HISTORIA_LOTE_100_15_P04,...UECE_HISTORIA_LOTE_100_15_P05];
