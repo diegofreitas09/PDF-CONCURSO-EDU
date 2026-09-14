@@ -1,8 +1,8 @@
-import { UECE_BIOLOGIA_LOTE_363 } from "../src/data/questionSources/ueceQuimicaLote100.js";
+import { UECE_BIOLOGIA_LOTE_463 } from "../src/data/questionSources/ueceQuimicaLote100.js";
 
-const lote=UECE_BIOLOGIA_LOTE_363;
+const lote=UECE_BIOLOGIA_LOTE_463;
 const fail=(msg)=>{console.error(`ERRO UECE Biologia: ${msg}`);process.exit(1);};
-if(lote.length!==363) fail(`esperadas 363 questões, encontradas ${lote.length}`);
+if(lote.length!==463) fail(`esperadas 463 questões, encontradas ${lote.length}`);
 const required=["id","discipline","topic","statement","options","answer","explanation","source","origin"];
 const ids=new Set(), identities=new Set();
 const byTopic=new Map();
@@ -30,7 +30,10 @@ const expected=new Map([
   ["Botânica",65],
   ["Citologia",41],
   ["Ecologia",66],
-  ["Genética",36],
+  ["Genética",43],
+  ["Parasitologia",13],
+  ["Zoologia",44],
+  ["Histologia e Fisiologia",36],
 ]);
 for(const [topic,count] of expected) if(byTopic.get(topic)!==count) fail(`${topic}: esperado ${count}, encontrado ${byTopic.get(topic)||0}`);
 const letras="ABCD";
@@ -39,6 +42,16 @@ const validarChave=(topic,chave)=>{
  const itens=lote.filter(q=>q.topic===topic).sort((a,b)=>numero(a)-numero(b));
  if(itens.length!==chave.length) fail(`${topic}: chave ${chave.length}, itens ${itens.length}`);
  itens.forEach((q,i)=>{if(numero(q)!==i+1) fail(`${q.id}: sequência esperada ${i+1}`);if(letras[q.answer]!==chave[i]) fail(`${q.id}: gabarito ${letras[q.answer]} diverge da apostila (${chave[i]})`);});
+};
+const validarSelecionados=(topic,chaveCompleta,numeros)=>{
+ const itens=lote.filter(q=>q.topic===topic).sort((a,b)=>numero(a)-numero(b));
+ if(itens.length!==numeros.length) fail(`${topic}: esperados ${numeros.length} itens selecionados, encontrados ${itens.length}`);
+ itens.forEach((q,i)=>{
+   const n=numeros[i];
+   if(numero(q)!==n) fail(`${q.id}: número esperado ${n}`);
+   const esperado=chaveCompleta[n-1];
+   if(letras[q.answer]!==esperado) fail(`${q.id}: gabarito ${letras[q.answer]} diverge da apostila (${esperado})`);
+ });
 };
 validarChave("Origem da Vida","DCDBDDCAABBACBADDCBABDDDACCADC");
 validarChave("Taxonomia, Sistemática e Evolução","BCDABDDDACBDCABBBBBDABDDACDB");
@@ -50,20 +63,24 @@ for(const [topic,total] of [["Microbiologia",37],["Seres vivos e reprodução",2
 const BOTANICA="DBACDCABACBABAABADDCBDBDBADCBADABABADCBBDDACDDABCBDBBCCBBCBACABCA";
 const CITOLOGIA="DBCBDCCACCABABDCBADABBBACBCACCCBBBDCBDADB";
 const ECOLOGIA="CDCACBCBCCAACDCACBBDCACABBABCCACCBDDACCCBBDADCDAADACBDABBAABCAACDA";
-const GENETICA="CAABACADDDCDBCABDACACBAABCBBCACCCBCD";
+const GENETICA="CAABACADDDCDBCABDACACBAABCBBCACCCBCDBACAACB";
+const PARASITOLOGIA="CDDADABBDABCD";
+const ZOOLOGIA="BADBDAABCCAADAAADBABABCABABBBABCDCDABBCDADDBB";
+const HISTOLOGIA="BDBACDBADCCBADBBD AABBDCBBADCCBCCACBB".replace(/\s/g,"");
 validarChave("Botânica",BOTANICA);
 validarChave("Citologia",CITOLOGIA);
 validarChave("Ecologia",ECOLOGIA);
 validarChave("Genética",GENETICA);
-const lote004=lote.slice(263);
-if(lote004.length!==100) fail(`lote 264–363 deveria ter 100 questões, encontrou ${lote004.length}`);
-const esperadoLote004=ECOLOGIA.slice(2)+GENETICA;
-if(esperadoLote004.length!==100) fail(`chave do lote 264–363 inválida: ${esperadoLote004.length}`);
-lote004.forEach((q,i)=>{if(letras[q.answer]!==esperadoLote004[i]) fail(`${q.id}: gabarito do lote 264–363 diverge da apostila (${esperadoLote004[i]})`);});
-const faixa=(topic,a,b)=>lote004.filter(q=>q.topic===topic&&numero(q)>=a&&numero(q)<=b).length;
-if(faixa("Ecologia",3,66)!==64) fail("lote 264–363: Ecologia 3–66 incompleta");
-if(faixa("Genética",1,36)!==36) fail("lote 264–363: Genética 1–36 incompleta");
-if(ids.size!==363||identities.size!==363) fail("unicidade não fechou em 363/363");
-console.log(`UECE Biologia OK — ${lote.length}/363 | IDs ${ids.size}/363 | fontes ${identities.size}/363 | visuais ${withMedia}`);
-console.log(`Lote 264–363 OK — 100/100 | Ecologia 3–66: 64 | Genética 1–36: 36`);
+validarChave("Parasitologia",PARASITOLOGIA);
+validarSelecionados("Zoologia",ZOOLOGIA,[...Array.from({length:27},(_,i)=>i+1),...Array.from({length:17},(_,i)=>i+29)]);
+validarSelecionados("Histologia e Fisiologia",HISTOLOGIA,[1,2,3,4,...Array.from({length:32},(_,i)=>i+6)]);
+const lote005=lote.slice(363);
+if(lote005.length!==100) fail(`lote 364–463 deveria ter 100 questões, encontrou ${lote005.length}`);
+const esperadoLote005=GENETICA.slice(36)+PARASITOLOGIA+ZOOLOGIA.slice(0,27)+ZOOLOGIA.slice(28)+HISTOLOGIA.slice(0,4)+HISTOLOGIA.slice(5,37);
+if(esperadoLote005.length!==100) fail(`chave do lote 364–463 inválida: ${esperadoLote005.length}`);
+lote005.forEach((q,i)=>{if(letras[q.answer]!==esperadoLote005[i]) fail(`${q.id}: gabarito do lote 364–463 diverge da apostila (${esperadoLote005[i]})`);});
+if(lote.some(q=>q.id==="UECE-BIO-ZOO-028"||q.id==="UECE-BIO-HF-005")) fail("item incompleto não deveria ter sido integrado");
+if(ids.size!==463||identities.size!==463) fail("unicidade não fechou em 463/463");
+console.log(`UECE Biologia OK — ${lote.length}/463 | IDs ${ids.size}/463 | fontes ${identities.size}/463 | visuais ${withMedia}`);
+console.log(`Lote 364–463 OK — 100/100 | Genética 37–43: 7 | Parasitologia 1–13: 13 | Zoologia 1–27 e 29–45: 44 | Histologia/Fisiologia 1–4 e 6–37: 36`);
 console.log([...byTopic.entries()].map(([k,v])=>`${k}: ${v}`).join(" | "));
