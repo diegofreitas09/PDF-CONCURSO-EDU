@@ -1,34 +1,31 @@
 from __future__ import annotations
-import json,re,subprocess,sys
+import base64,gzip,json,re,sys
 from pathlib import Path
 
-DRIVE_ID='18fCbZ_iEnHHg_mdvKqtEBVBsl-A3pP0k'
-PDF=Path('/tmp/uece_11ed.pdf')
 OUT=Path('src/data/questionSources/ueceTransicaoLote100_06.js')
 REG=Path('src/data/questionRegistry.js')
 VERIFY=Path('scripts/verificar_uece_lote_06.mjs')
 
+encoded=''.join(Path(f'scripts/uece_lote06_source_{i}.b64').read_text(encoding='utf-8').strip() for i in range(1,5))
 try:
- import fitz
-except ImportError:
- sys.exit('PyMuPDF não instalado')
-
-if not PDF.exists():
- subprocess.run([sys.executable,'-m','gdown','--id',DRIVE_ID,'-O',str(PDF)],check=True)
-if PDF.stat().st_size < 30_000_000:
- sys.exit(f'PDF inesperadamente pequeno: {PDF.stat().st_size}')
-doc=fitz.open(PDF)
-if len(doc)!=1187:
- sys.exit(f'Quantidade de páginas divergente: {len(doc)}')
+ source_text=gzip.decompress(base64.b64decode(encoded)).decode('utf-8')
+except Exception as e:
+ sys.exit(f'Falha ao reconstruir fonte UECE incorporada: {e}')
+parts=re.split(r'\n<<<PAGE:(\d+)>>>\n',source_text)
+page_map={int(parts[i]):parts[i+1] for i in range(1,len(parts)-1,2)}
+needed=set(range(345,354))|set(range(357,384))
+missing=sorted(needed-set(page_map))
+if missing:
+ sys.exit(f'Páginas-fonte ausentes: {missing}')
 
 BOILER={'TURMA DO JOTA','Made with Xodo PDF Reader and Editor'}
 def pages_text(a:int,b:int)->str:
  out=[]
- for pno in range(a-1,b):
+ for pno in range(a,b+1):
   lines=[]
-  for line in doc[pno].get_text('text').splitlines():
+  for line in page_map[pno].splitlines():
    s=line.strip()
-   if s in BOILER or s==str(pno+1): continue
+   if s in BOILER or s==str(pno): continue
    lines.append(line)
   out.append('\n'.join(lines))
  return '\n'.join(out)
