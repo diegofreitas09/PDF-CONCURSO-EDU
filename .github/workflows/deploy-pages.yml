@@ -1,5 +1,5 @@
 name: Deploy GitHub Pages
-# UECE lote 14 em integração auditada
+# UECE lote 15 em integração auditada
 
 on:
   push:
@@ -40,6 +40,22 @@ jobs:
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add src/data/questionRegistry.js src/data/questionSources/ueceHistoriaLote100_14*.js scripts/verificar_uece_lote_14.mjs
             git commit -m "feat(uece): integrar lote 14 de Historia"
+            git push origin HEAD:main
+          fi
+
+      - name: Preparar lote UECE Historia 376-475
+        if: ${{ hashFiles('src/data/questionSources/ueceHistoriaLote100_15.js') == '' }}
+        run: |
+          pip install pymupdf
+          UECE_PDF_URL="https://drive.usercontent.google.com/download?id=18fCbZ_iEnHHg_mdvKqtEBVBsl-A3pP0k&export=download&confirm=t" python scripts/integrar_uece_lote_15.py
+
+      - name: Persistir lote UECE Historia 376-475
+        run: |
+          if ! git diff --quiet || [ -n "$(git ls-files --others --exclude-standard)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add src/data/questionRegistry.js src/data/questionSources/ueceHistoriaLote100_15*.js scripts/verificar_uece_lote_15.mjs
+            git commit -m "feat(uece): integrar lote 15 de Historia"
             git push origin HEAD:main
           fi
 
@@ -90,46 +106,26 @@ jobs:
 
       - name: Auditar lote UECE Biologia
         run: node scripts/verificar_uece_biologia.mjs
-
       - name: Auditar lote UECE transicao Biologia-Portugues
         run: node scripts/verificar_uece_lote_06.mjs
-
       - name: Auditar lote UECE Portugues 70-169
         run: node scripts/verificar_uece_lote_07.mjs
-
       - name: Auditar lote UECE Portugues 170-269
         run: node scripts/verificar_uece_lote_08.mjs
-
       - name: Auditar lote UECE Portugues 270-369
         run: node scripts/verificar_uece_lote_09.mjs
-
       - name: Auditar lote UECE transicao Portugues-Educacao Fisica
         run: node scripts/verificar_uece_lote_10.mjs
-
       - name: Auditar lote UECE transicao Educacao Fisica-Historia
         run: node scripts/verificar_uece_lote_11.mjs
-
       - name: Auditar lote UECE Historia 76-175
         run: node scripts/verificar_uece_lote_12.mjs
-
       - name: Auditar lote UECE Historia 176-275
         run: node scripts/verificar_uece_lote_13.mjs
-
       - name: Auditar lote UECE Historia 276-375
         run: node scripts/verificar_uece_lote_14.mjs
-
-      - name: Persistir diagnostico lote 14
-        run: |
-          if [ -s scripts/lote14_diagnostico.txt ]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add scripts/lote14_diagnostico.txt
-            git commit -m "diagnostic(uece): registrar pendencias lote 14"
-            git push origin HEAD:main
-          fi
-
-      - name: Bloquear lote 14 com pendencias
-        run: test ! -s scripts/lote14_diagnostico.txt
+      - name: Auditar lote UECE Historia 376-475
+        run: node scripts/verificar_uece_lote_15.mjs
 
       - name: Build
         run: npm run build
