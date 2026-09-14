@@ -1,4 +1,4 @@
-// UECE por Assunto — Química — lote cumulativo auditado 001–400.
+// UECE por Assunto — Química — lote cumulativo auditado 001–500.
 // 001–100: Análise de espécies químicas (34), Atomística (60), Bioquímica (1–6).
 // 101–200: Bioquímica restante (11), Cinética Química (15), Química Ambiental (10),
 // Propriedades periódicas (18), Coloides (6), Eletrólise (9), Eletroquímica (18)
@@ -9,6 +9,8 @@
 // após Gases: Isomeria (13), Materiais de Laboratório (13), Leis Ponderais (11),
 // Ligações Químicas (21), Métodos de Separação (9), Polímeros (5), Propriedades
 // Coligativas (11), Inorgânica 37–48 (12) e Orgânica 1–5 (5).
+// 401–500: Química e Reações Orgânicas 6–105 (100 questões íntegras), reunindo itens
+// textuais e visuais/KaTeX já auditados contra a apostila e sua chave oficial.
 // Itens incompletos permanecem fora; nada é inventado nem reconstruído sem base no material.
 import { UECE_QUIMICA_ANALISE_ESPECIES_LOTE_09 } from "./ueceQuimicaAnaliseEspeciesLote09.js";
 import { UECE_QUIMICA_ANALISE_ESPECIES_LOTE_25 } from "./ueceQuimicaAnaliseEspeciesLote25.js";
@@ -38,7 +40,13 @@ import { UECE_QUIMICA_POLIMEROS_TEXTUAIS_04 } from "./ueceQuimicaPolimerosTextua
 import { UECE_QUIMICA_POLIMEROS_VISUAL_01 } from "./ueceQuimicaPolimerosVisual01.js";
 import { UECE_QUIMICA_PROPRIEDADES_COLIGATIVAS_11 } from "./ueceQuimicaPropriedadesColigativas11.js";
 import { UECE_QUIMICA_ORGANICA_TEXTUAIS_11 } from "./ueceQuimicaOrganicaTextuais11.js";
+import { UECE_QUIMICA_ORGANICA_TEXTUAIS_16C } from "./ueceQuimicaOrganicaTextuais16c.js";
+import { UECE_QUIMICA_ORGANICA_TEXTUAIS_29B } from "./ueceQuimicaOrganicaTextuais29b.js";
 import { UECE_QUIMICA_ORGANICA_VISUAIS_04_07 } from "./ueceQuimicaOrganicaVisuais04e07.js";
+import { UECE_QUIMICA_ORGANICA_VISUAIS_10D } from "./ueceQuimicaOrganicaVisuais10d.js";
+import { UECE_QUIMICA_ORGANICA_VISUAIS_46_55 } from "./ueceQuimicaOrganicaVisuais46e55.js";
+import { UECE_QUIMICA_ORGANICA_VISUAIS_FINAIS_04 } from "./ueceQuimicaOrganicaVisuaisFinais04.js";
+import { UECE_QUIMICA_ORGANICA_VISUAL_77 } from "./ueceQuimicaOrganicaVisual77.js";
 
 const numero = (q) => Number(String(q.id).match(/(\d+)$/)?.[1]);
 
@@ -75,11 +83,19 @@ const POLIMEROS_001_A_005 = [
   ...UECE_QUIMICA_POLIMEROS_VISUAL_01.filter((q) => q.discipline === "Química" && q.topic === "Polímeros"),
 ].sort((a, b) => numero(a) - numero(b));
 
-const ORGANICA_001_A_005 = [...new Map([
+const ORGANICA_TODAS = [...new Map([
   ...UECE_QUIMICA_ORGANICA_TEXTUAIS_11,
+  ...UECE_QUIMICA_ORGANICA_TEXTUAIS_16C,
+  ...UECE_QUIMICA_ORGANICA_TEXTUAIS_29B,
   ...UECE_QUIMICA_ORGANICA_VISUAIS_04_07,
-].filter((q) => numero(q) >= 1 && numero(q) <= 5).map((q) => [q.id, q])).values()]
-  .sort((a, b) => numero(a) - numero(b));
+  ...UECE_QUIMICA_ORGANICA_VISUAIS_10D,
+  ...UECE_QUIMICA_ORGANICA_VISUAIS_46_55,
+  ...UECE_QUIMICA_ORGANICA_VISUAIS_FINAIS_04,
+  ...UECE_QUIMICA_ORGANICA_VISUAL_77,
+].map((q) => [q.id, q])).values()].sort((a, b) => numero(a) - numero(b));
+
+const ORGANICA_001_A_005 = ORGANICA_TODAS.filter((q) => numero(q) >= 1 && numero(q) <= 5);
+const ORGANICA_006_A_105 = ORGANICA_TODAS.filter((q) => numero(q) >= 6 && numero(q) <= 105);
 
 export const UECE_QUIMICA_LOTE_300 = [
   ...UECE_QUIMICA_ANALISE_ESPECIES_LOTE_09,
@@ -116,6 +132,11 @@ export const UECE_QUIMICA_LOTE_400 = [
   ...ORGANICA_001_A_005,
 ];
 
+export const UECE_QUIMICA_LOTE_500 = [
+  ...UECE_QUIMICA_LOTE_400,
+  ...ORGANICA_006_A_105,
+];
+
 export const UECE_QUIMICA_LOTE_200 = UECE_QUIMICA_LOTE_300.slice(0, 200);
 // Compatibilidade com o agregador principal: o alias aponta sempre para o lote cumulativo mais recente.
-export const UECE_QUIMICA_LOTE_100 = UECE_QUIMICA_LOTE_400;
+export const UECE_QUIMICA_LOTE_100 = UECE_QUIMICA_LOTE_500;
