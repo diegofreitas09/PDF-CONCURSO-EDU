@@ -1,0 +1,43 @@
+name: Integrar UECE lote 11
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/integrate-uece-lote-11.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Instalar extrator PDF
+        run: pip install pymupdf
+      - name: Gerar lote 11
+        env:
+          UECE_PDF_URL: "https://drive.usercontent.google.com/download?id=18fCbZ_iEnHHg_mdvKqtEBVBsl-A3pP0k&export=download&confirm=t"
+        run: python scripts/integrar_uece_lote_11.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm install
+      - name: Auditar lote 11
+        run: node scripts/verificar_uece_lote_11.mjs
+      - name: Verificador geral
+        run: python scripts/verificar_integracao_questoes.py
+      - name: Verificar mídias
+        run: python scripts/verificar_midias_questoes.py
+      - name: Build
+        run: npm run build
+      - name: Commitar lote auditado
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/questionSources/ueceTransicaoEducacaoFisicaHistoriaLote100_11.js src/data/questionRegistry.js scripts/verificar_uece_lote_11.mjs .github/workflows/deploy-pages.yml
+          git commit -m "feat: integra UECE lote 11 Educacao Fisica-Historia"
+          git push
