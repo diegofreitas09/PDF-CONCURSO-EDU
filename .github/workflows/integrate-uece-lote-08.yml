@@ -1,0 +1,43 @@
+name: Integrar UECE lote 08
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "scripts/integrar_uece_lote_08.py"
+      - "scripts/uece_lote08_rebuild_*.b64"
+      - ".github/workflows/integrate-uece-lote-08.yml"
+permissions:
+  contents: write
+jobs:
+  integrar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Conferir fonte compactada
+        run: test $(ls scripts/uece_lote08_rebuild_*.b64 | wc -l) -eq 8
+      - name: Gerar e conectar lote
+        run: python scripts/integrar_uece_lote_08.py
+      - uses: actions/setup-node@v4
+        with: {node-version: 22, cache: npm}
+      - name: Auditar lote
+        run: node scripts/verificar_uece_lote_08.mjs
+      - name: Verificar integração
+        run: python scripts/verificar_integracao_questoes.py
+      - name: Verificar mídias
+        run: python scripts/verificar_midias_questoes.py
+      - name: Instalar dependências
+        run: npm install
+      - name: Build
+        run: npm run build
+      - name: Validar diff
+        run: git diff --check -- ':!package-lock.json'
+      - name: Commitar lote integrado
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/questionSources/uecePortuguesLote100_08.js src/data/questionRegistry.js scripts/verificar_uece_lote_08.mjs .github/workflows/deploy-pages.yml
+          if git diff --cached --quiet; then echo "Nada para commitar"; exit 0; fi
+          git commit -m "feat: integra UECE Português lote 08"
+          git push
