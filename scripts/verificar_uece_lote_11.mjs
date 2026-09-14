@@ -1,0 +1,7 @@
+import { UECE_TRANSICAO_EDF_HIST_LOTE_100_11 as lote } from "../src/data/questionSources/ueceTransicaoEducacaoFisicaHistoriaLote100_11.js";
+const fail=m=>{console.error(`ERRO UECE lote 11: ${m}`);process.exit(1)};
+if(lote.length!==100)fail(`esperado 100, veio ${lote.length}`);
+const exp={"Esporte e manifestação cultural":19,"Sociedade e causas sociais":6,"Historiografia e pré-história":14,"Idade Antiga":50,"Idade Média":11}, got={}; for(const q of lote)got[q.topic]=(got[q.topic]||0)+1; for(const[k,v]of Object.entries(exp))if(got[k]!==v)fail(`${k}: ${got[k]||0}/${v}`);
+const ids=new Set(lote.map(q=>q.id)),src=new Set(lote.map(q=>`${q.source}|${q.statement}`)); if(ids.size!==100)fail('IDs duplicados'); if(src.size!==100)fail('fontes duplicadas');
+for(const q of lote){if(!q.id||!q.discipline||!q.topic||!q.statement||!Array.isArray(q.options)||q.options.length!==4||q.options.some(x=>!x)||!Number.isInteger(q.answer)||q.answer<0||q.answer>3||!q.explanation||!q.source||q.origin!=="Apostila da UECE por assuntos 11ed - Turma do Jot_260209_173948.pdf"||q.reviewed!==true)fail(`campos inválidos: ${q.id}`);if(q.explanation!==`Gabarito oficial da apostila: ${"ABCD"[q.answer]}.`)fail(`gabarito divergente: ${q.id}`)}
+if(lote[0].id!=="UECE-EDF-ESP-010"||lote.at(-1).id!=="UECE-HIST-MED-011")fail('limites divergentes'); console.log(`UECE lote 11 OK — 100/100 | IDs ${ids.size}/100 | fontes ${src.size}/100 | visuais 0`);
