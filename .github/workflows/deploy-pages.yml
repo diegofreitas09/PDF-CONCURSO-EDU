@@ -1,5 +1,5 @@
 name: Deploy GitHub Pages
-# UECE lote 08 auditado e conectado
+# UECE lote 09 auditado e conectado
 
 on:
   push:
@@ -86,6 +86,9 @@ jobs:
 
       - name: Auditar lote UECE Portugues 170-269
         run: node scripts/verificar_uece_lote_08.mjs
+
+      - name: Auditar lote UECE Portugues 270-369
+        run: node scripts/verificar_uece_lote_09.mjs
 
       - name: Build
         run: npm run build
