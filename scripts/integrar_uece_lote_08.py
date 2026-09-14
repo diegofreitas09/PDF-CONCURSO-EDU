@@ -48,3 +48,4 @@ if DEPLOY.exists():
    d=d.replace(needle,needle+'      - name: Auditar lote UECE Português 170-269\n        run: node scripts/verificar_uece_lote_08.mjs\n',1)
   DEPLOY.write_text(d)
 print('LOTE08 GERADO — Português +100 — 100/100 | visuais 0')
+# trigger automático validado 2026-09-14
