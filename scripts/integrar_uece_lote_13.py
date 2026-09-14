@@ -33,6 +33,14 @@ def parse(a,b,topic,prefix,lo,hi,keys):
         if not lo<=n<=hi: continue
         end=ms[i+1].start() if i+1<len(ms) else len(txt)
         chunk=txt[m.end():end]
+        source_raw=m.group(2).strip()
+        # No item 22, o PDF perdeu o ')' do cabeçalho da prova e da alternativa A na extração textual.
+        # O conteúdo original está íntegro no próprio PDF; separamos apenas o trecho engolido pelo cabeçalho.
+        if prefix=='UECE-HIST-CONT' and n==22 and ' Atente para as seguintes' in source_raw:
+            source_raw, swallowed=source_raw.split(' Atente para as seguintes',1)
+            swallowed='Atente para as seguintes'+swallowed
+            swallowed=re.sub(r'\s*A\s*$','',swallowed)
+            chunk=swallowed+'\nA) '+chunk
         marks=list(re.finditer(r'(?<!\w)([ABCD])\)\s*',chunk))
         chosen=[]; pos=0
         for mark in marks:
@@ -48,7 +56,7 @@ def parse(a,b,topic,prefix,lo,hi,keys):
         if not statement or any(not x for x in opts): raise SystemExit(f'item não íntegro: {prefix} {n}')
         if any('TURMA DO JOTA' in x or 'Made with Xodo' in x for x in [statement,*opts]): raise SystemExit(f'contaminação de cabeçalho: {prefix} {n}')
         letter=keys[n-1]
-        rows.append({'id':f'{prefix}-{n:03d}','discipline':'História','topic':topic,'context':'','statement':statement,'options':opts,'answer':'ABCD'.index(letter),'explanation':f'Gabarito oficial da apostila: {letter}.','source':re.sub(r'(\d{4})\.\s+(\d)',r'\1.\2',m.group(2).strip()),'origin':ORIGIN,'reviewed':True})
+        rows.append({'id':f'{prefix}-{n:03d}','discipline':'História','topic':topic,'context':'','statement':statement,'options':opts,'answer':'ABCD'.index(letter),'explanation':f'Gabarito oficial da apostila: {letter}.','source':re.sub(r'(\d{4})\.\s+(\d)',r'\1.\2',source_raw),'origin':ORIGIN,'reviewed':True})
     return rows
 
 # Gabaritos oficiais completos das duas seções, conferidos na grade da apostila.
