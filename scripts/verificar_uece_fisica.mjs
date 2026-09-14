@@ -1,4 +1,4 @@
-import { UECE_FISICA_LOTE_100, UECE_FISICA_LOTE_001_100, UECE_FISICA_LOTE_101_200, UECE_FISICA_LOTE_201_300, UECE_FISICA_LOTE_301_400, UECE_FISICA_LOTE_401_500, UECE_FISICA_LOTE_100_AUDIT } from "../src/data/questionSources/ueceFisicaLote100.js";
+import { UECE_FISICA_LOTE_100, UECE_FISICA_LOTE_001_100, UECE_FISICA_LOTE_101_200, UECE_FISICA_LOTE_201_300, UECE_FISICA_LOTE_301_400, UECE_FISICA_LOTE_401_500, UECE_FISICA_FECHAMENTO_501_510, UECE_FISICA_LOTE_100_AUDIT } from "../src/data/questionSources/ueceFisicaLote100.js";
 
 const fail=(message)=>{console.error(`❌ UECE Física: ${message}`);process.exit(1)};
 const all=UECE_FISICA_LOTE_100;
@@ -12,9 +12,10 @@ if(UECE_FISICA_LOTE_101_200.length!==100)fail(`lote 101–200 possui ${UECE_FISI
 if(UECE_FISICA_LOTE_201_300.length!==100)fail(`lote 201–300 possui ${UECE_FISICA_LOTE_201_300.length}; esperado 100`);
 if(UECE_FISICA_LOTE_301_400.length!==100)fail(`lote 301–400 possui ${UECE_FISICA_LOTE_301_400.length}; esperado 100`);
 if(UECE_FISICA_LOTE_401_500.length!==100)fail(`lote 401–500 possui ${UECE_FISICA_LOTE_401_500.length}; esperado 100`);
-if(all.length!==500)fail(`coleção possui ${all.length} itens; esperado 500`);
-if(uniqueIds.size!==500)fail(`IDs únicos: ${uniqueIds.size}/500`);
-if(uniqueSources.size!==500)fail(`identidades de fonte únicas: ${uniqueSources.size}/500`);
+if(UECE_FISICA_FECHAMENTO_501_510.length!==10)fail(`fechamento 501–510 possui ${UECE_FISICA_FECHAMENTO_501_510.length}; esperado 10`);
+if(all.length!==510)fail(`coleção possui ${all.length} itens; esperado 510`);
+if(uniqueIds.size!==510)fail(`IDs únicos: ${uniqueIds.size}/510`);
+if(uniqueSources.size!==510)fail(`identidades de fonte únicas: ${uniqueSources.size}/510`);
 if(UECE_FISICA_LOTE_100_AUDIT.missingRequired.length)fail(`campos obrigatórios ausentes em ${UECE_FISICA_LOTE_100_AUDIT.missingRequired.join(", ")}`);
 
 for(const q of all){
@@ -42,7 +43,8 @@ if(topics["Ondulatória e Acústica"]!==27)fail(`Ondulatória/Acústica íntegra
 if(topics["Óptica"]!==46)fail(`Óptica completa: ${topics["Óptica"]||0}/46`);
 if(topics["Movimento Harmônico Simples"]!==35)fail(`MHS completo: ${topics["Movimento Harmônico Simples"]||0}/35`);
 if(topics["Calorimetria, Termologia e Calor"]!==37)fail(`Calorimetria/Termologia completa: ${topics["Calorimetria, Termologia e Calor"]||0}/37`);
-if(topics["Momento Linear"]!==6)fail(`Momento Linear parcial: ${topics["Momento Linear"]||0}/6`);
+if(topics["Momento Linear"]!==12)fail(`Momento Linear: ${topics["Momento Linear"]||0}/12`);
+if(topics["Análise Vetorial e Escalar"]!==4)fail(`Análise Vetorial e Escalar: ${topics["Análise Vetorial e Escalar"]||0}/4`);
 
 const expected401_500=[
   ["Óptica",25,46],
@@ -56,5 +58,15 @@ for(const [topic,min,max] of expected401_500){
   if(JSON.stringify(nums)!==JSON.stringify(expected))fail(`sequência de fonte inválida em ${topic}: ${nums.join(",")}`);
 }
 
-console.log(`✅ UECE Física: 500/500 | lote 401–500 100/100 | IDs únicos ${uniqueIds.size} | fontes únicas ${uniqueSources.size} | mídias ${UECE_FISICA_LOTE_100_AUDIT.withMedia}`);
-console.log(`   Composição 401–500: Óptica ${UECE_FISICA_LOTE_100_AUDIT.opticaRestante} | MHS ${UECE_FISICA_LOTE_100_AUDIT.mhs} | Calorimetria/Termologia ${UECE_FISICA_LOTE_100_AUDIT.calorimetria} | Momento Linear ${UECE_FISICA_LOTE_100_AUDIT.momentoLinearInicio}`);
+const expectedFinal=[
+  ["Momento Linear",7,12],
+  ["Análise Vetorial e Escalar",1,4]
+];
+for(const [topic,min,max] of expectedFinal){
+  const nums=UECE_FISICA_FECHAMENTO_501_510.filter(q=>q.topic===topic).map(q=>q.sourceQuestion).sort((a,b)=>a-b);
+  const expected=Array.from({length:max-min+1},(_,i)=>min+i);
+  if(JSON.stringify(nums)!==JSON.stringify(expected))fail(`fechamento inválido em ${topic}: ${nums.join(",")}`);
+}
+
+console.log(`✅ UECE Física: 510/510 | cinco lotes 100/100 + fechamento 10/10 | IDs únicos ${uniqueIds.size} | fontes únicas ${uniqueSources.size} | mídias ${UECE_FISICA_LOTE_100_AUDIT.withMedia}`);
+console.log(`   Fechamento 501–510: Momento Linear ${UECE_FISICA_LOTE_100_AUDIT.momentoLinearRestante} | Análise Vetorial/Escalar ${UECE_FISICA_LOTE_100_AUDIT.analiseVetorialEscalar}`);
