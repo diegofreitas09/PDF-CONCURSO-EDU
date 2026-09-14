@@ -1,6 +1,6 @@
 // UECE por Assunto — Física — coleção integrada em ordem da fonte.
 // Compatibilidade: o nome histórico UECE_FISICA_LOTE_100 é preservado para o banco principal,
-// mas agora aponta para 500 questões auditadas (lotes 001–100, 101–200, 201–300, 301–400 e 401–500).
+// e agora aponta para 500 questões auditadas (lotes 001–100, 101–200, 201–300, 301–400 e 401–500).
 import { UECE_FISICA_ANALISE_DIMENSIONAL_LOTE_27 } from "./ueceFisicaAnaliseDimensionalLote27.js";
 import { UECE_FISICA_ANALISE_DIMENSIONAL_COMPLEMENTO_05 } from "./ueceFisicaAnaliseDimensionalComplemento05.js";
 import { UECE_FISICA_CINEMATICA_LOTE_18 } from "./ueceFisicaCinematicaLote18.js";
@@ -26,11 +26,13 @@ import { UECE_FISICA_MAGNETISMO_LOTE_22 } from "./ueceFisicaMagnetismoLote22.js"
 import { UECE_FISICA_ONDULATORIA_ACUSTICA_LOTE_27 } from "./ueceFisicaOndulatoriaAcusticaLote27.js";
 import { UECE_FISICA_OPTICA_LOTE_11 } from "./ueceFisicaOpticaLote11.js";
 import { UECE_FISICA_OPTICA_LOTE_09 } from "./ueceFisicaOpticaLote09.js";
+import { UECE_FISICA_OPTICA_COMPLEMENTO_21_23 } from "./ueceFisicaOpticaComplemento21a23.js";
 import { UECE_FISICA_OPTICA_LOTE_23 } from "./ueceFisicaOpticaLote23.js";
 import { UECE_FISICA_MHS_LOTE_29 } from "./ueceFisicaMhsLote29.js";
+import { UECE_FISICA_MHS_COMPLEMENTO_VISUAL_06 } from "./ueceFisicaMhsComplementoVisual06.js";
 import { UECE_FISICA_CALORIMETRIA_LOTE_36 } from "./ueceFisicaCalorimetriaLote36.js";
+import { UECE_FISICA_CALORIMETRIA_VISUAL_01 } from "./ueceFisicaCalorimetriaVisual01.js";
 import { UECE_FISICA_MOMENTO_LINEAR_LOTE_12 } from "./ueceFisicaMomentoLinearLote12.js";
-import { UECE_FISICA_ANALISE_VETORIAL_ESCALAR_LOTE_04 } from "./ueceFisicaAnaliseVetorialEscalarLote04.js";
 
 const sourceNumber=q=>Number(q.sourceQuestion || String(q.id||"").match(/(\d+)$/)?.[1] || 0);
 const ordered=(items)=>[...items].sort((a,b)=>sourceNumber(a)-sourceNumber(b));
@@ -62,13 +64,10 @@ const DINAMICA_BASE=orderedUnique([
 
 export const UECE_FISICA_LOTE_001_100=[...ANALISE_DIMENSIONAL,...CINEMATICA,...DINAMICA_BASE];
 
-// Somente itens íntegros já conferidos no material. Posições ausentes nos arquivos auditados
-// não são reconstruídas nem inventadas; a sequência avança ao próximo item íntegro da fonte.
 const DINAMICA_RESTANTE=orderedUnique([
   ...UECE_FISICA_DINAMICA_LOTE_17,
   ...UECE_FISICA_DINAMICA_LOTE_22
 ]).filter(q=>sourceNumber(q)>13).map(enrich);
-
 const ELETRODINAMICA=orderedUnique([
   ...UECE_FISICA_ELETRODINAMICA_LOTE_20,
   ...UECE_FISICA_ELETRODINAMICA_LOTE_17
@@ -78,10 +77,7 @@ const CAPACITORES=orderedUnique(UECE_FISICA_ELETRICA_CAPACITORES_LOTE_25).map(en
 const CAPACITORES_INICIO=CAPACITORES.filter(q=>sourceNumber(q)<=6);
 
 export const UECE_FISICA_LOTE_101_200=[
-  ...DINAMICA_RESTANTE,
-  ...ELETRODINAMICA,
-  ...TERMODINAMICA,
-  ...CAPACITORES_INICIO
+  ...DINAMICA_RESTANTE,...ELETRODINAMICA,...TERMODINAMICA,...CAPACITORES_INICIO
 ];
 
 const CAPACITORES_RESTANTE=CAPACITORES.filter(q=>sourceNumber(q)>6);
@@ -95,45 +91,41 @@ const HIDROSTATICA=orderedUnique(UECE_FISICA_HIDROSTATICA_LOTE_32).map(enrich);
 const HIDROSTATICA_INICIO=HIDROSTATICA.slice(0,5);
 
 export const UECE_FISICA_LOTE_201_300=[
-  ...CAPACITORES_RESTANTE,
-  ...ENERGIA,
-  ...ESTATICA_ELETROSTATICA_TRABALHO,
-  ...GRAVITACAO,
-  ...HIDROSTATICA_INICIO
+  ...CAPACITORES_RESTANTE,...ENERGIA,...ESTATICA_ELETROSTATICA_TRABALHO,...GRAVITACAO,...HIDROSTATICA_INICIO
 ];
 
-// Lote 301–400: completa Hidrostática e segue Magnetismo, Ondulatória/Acústica e Óptica.
 const HIDROSTATICA_RESTANTE=HIDROSTATICA.slice(5);
 const MAGNETISMO=orderedUnique(UECE_FISICA_MAGNETISMO_LOTE_22).map(enrich);
 const ONDULATORIA_ACUSTICA=orderedUnique(UECE_FISICA_ONDULATORIA_ACUSTICA_LOTE_27).map(enrich);
 const OPTICA=orderedUnique([
   ...UECE_FISICA_OPTICA_LOTE_11,
   ...UECE_FISICA_OPTICA_LOTE_09,
+  ...UECE_FISICA_OPTICA_COMPLEMENTO_21_23,
   ...UECE_FISICA_OPTICA_LOTE_23
 ]).map(enrich);
 const OPTICA_INICIO=OPTICA.slice(0,24);
 
+// Correção da ordem real da fonte: este lote contém Óptica 1–24, incluindo os itens 21–23.
 export const UECE_FISICA_LOTE_301_400=[
-  ...HIDROSTATICA_RESTANTE,
-  ...MAGNETISMO,
-  ...ONDULATORIA_ACUSTICA,
-  ...OPTICA_INICIO
+  ...HIDROSTATICA_RESTANTE,...MAGNETISMO,...ONDULATORIA_ACUSTICA,...OPTICA_INICIO
 ];
 
-// Lote 401–500: completa Óptica e fecha as fontes íntegras já auditadas de MHS,
-// Calorimetria/Termologia, Momento Linear e Análise Vetorial/Escalar.
 const OPTICA_RESTANTE=OPTICA.slice(24);
-const MHS=orderedUnique(UECE_FISICA_MHS_LOTE_29).map(enrich);
-const CALORIMETRIA=orderedUnique(UECE_FISICA_CALORIMETRIA_LOTE_36).map(enrich);
+const MHS=orderedUnique([
+  ...UECE_FISICA_MHS_LOTE_29,
+  ...UECE_FISICA_MHS_COMPLEMENTO_VISUAL_06
+]).map(enrich);
+const CALORIMETRIA=orderedUnique([
+  ...UECE_FISICA_CALORIMETRIA_LOTE_36,
+  ...UECE_FISICA_CALORIMETRIA_VISUAL_01
+]).map(enrich);
 const MOMENTO_LINEAR=orderedUnique(UECE_FISICA_MOMENTO_LINEAR_LOTE_12).map(enrich);
-const ANALISE_VETORIAL_ESCALAR=orderedUnique(UECE_FISICA_ANALISE_VETORIAL_ESCALAR_LOTE_04).map(enrich);
+const MOMENTO_LINEAR_INICIO=MOMENTO_LINEAR.slice(0,6);
 
+// Lote 401–500 em ordem da apostila: Óptica 25–46 (22), MHS 1–35 (35),
+// Calorimetria/Termologia 1–37 (37) e Momento Linear 1–6 (6).
 export const UECE_FISICA_LOTE_401_500=[
-  ...OPTICA_RESTANTE,
-  ...MHS,
-  ...CALORIMETRIA,
-  ...MOMENTO_LINEAR,
-  ...ANALISE_VETORIAL_ESCALAR
+  ...OPTICA_RESTANTE,...MHS,...CALORIMETRIA,...MOMENTO_LINEAR_INICIO
 ];
 
 export const UECE_FISICA_LOTE_100=[
@@ -171,8 +163,8 @@ export const UECE_FISICA_LOTE_100_AUDIT={
   opticaTotalIntegra:OPTICA.length,
   mhs:MHS.length,
   calorimetria:CALORIMETRIA.length,
-  momentoLinear:MOMENTO_LINEAR.length,
-  analiseVetorialEscalar:ANALISE_VETORIAL_ESCALAR.length,
+  momentoLinearInicio:MOMENTO_LINEAR_INICIO.length,
+  momentoLinearTotalIntegra:MOMENTO_LINEAR.length,
   uniqueIds:new Set(UECE_FISICA_LOTE_100.map(q=>q.id)).size,
   uniqueSources:new Set(UECE_FISICA_LOTE_100.map(q=>`${q.topic}::${q.sourceQuestion}`)).size,
   reviewed:UECE_FISICA_LOTE_100.filter(q=>q.reviewed===true).length,
