@@ -27,7 +27,15 @@ jobs:
           python-version: "3.12"
 
       - name: Materializar lote UECE Portugues 170-269
-        run: python scripts/integrar_uece_lote_08.py
+        run: |
+          if [ -f src/data/questionSources/uecePortuguesLote100_08.js ]; then
+            echo "Lote 08 ja materializado."
+          else
+            git fetch --depth=1 origin 49f00fd183737fe7d6abee43d42bdb6a22b38d3c
+            git checkout FETCH_HEAD -- scripts/uece_lote08_rebuild_1.b64 scripts/uece_lote08_rebuild_2.b64 scripts/uece_lote08_rebuild_3.b64 scripts/uece_lote08_rebuild_4.b64 scripts/uece_lote08_rebuild_5.b64 scripts/uece_lote08_rebuild_6.b64 scripts/uece_lote08_rebuild_7.b64 scripts/uece_lote08_rebuild_8.b64
+            python scripts/integrar_uece_lote_08.py
+            git checkout HEAD -- scripts/uece_lote08_rebuild_1.b64 scripts/uece_lote08_rebuild_2.b64 scripts/uece_lote08_rebuild_3.b64 scripts/uece_lote08_rebuild_4.b64 scripts/uece_lote08_rebuild_5.b64 scripts/uece_lote08_rebuild_6.b64 scripts/uece_lote08_rebuild_7.b64 scripts/uece_lote08_rebuild_8.b64
+          fi
 
       - name: Persistir lote UECE 08 auditado
         run: |
