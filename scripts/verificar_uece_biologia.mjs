@@ -1,8 +1,8 @@
-import { UECE_BIOLOGIA_LOTE_263 } from "../src/data/questionSources/ueceQuimicaLote100.js";
+import { UECE_BIOLOGIA_LOTE_363 } from "../src/data/questionSources/ueceQuimicaLote100.js";
 
-const lote=UECE_BIOLOGIA_LOTE_263;
+const lote=UECE_BIOLOGIA_LOTE_363;
 const fail=(msg)=>{console.error(`ERRO UECE Biologia: ${msg}`);process.exit(1);};
-if(lote.length!==263) fail(`esperadas 263 questões, encontradas ${lote.length}`);
+if(lote.length!==363) fail(`esperadas 363 questões, encontradas ${lote.length}`);
 const required=["id","discipline","topic","statement","options","answer","explanation","source","origin"];
 const ids=new Set(), identities=new Set();
 const byTopic=new Map();
@@ -29,7 +29,8 @@ const expected=new Map([
   ["Bioquímica",35],
   ["Botânica",65],
   ["Citologia",41],
-  ["Ecologia",2],
+  ["Ecologia",66],
+  ["Genética",36],
 ]);
 for(const [topic,count] of expected) if(byTopic.get(topic)!==count) fail(`${topic}: esperado ${count}, encontrado ${byTopic.get(topic)||0}`);
 const letras="ABCD";
@@ -48,19 +49,21 @@ for(const [topic,total] of [["Microbiologia",37],["Seres vivos e reprodução",2
 }
 const BOTANICA="DBACDCABACBABAABADDCBDBDBADCBADABABADCBBDDACDDABCBDBBCCBBCBACABCA";
 const CITOLOGIA="DBCBDCCACCABABDCBADABBBACBCACCCBBBDCBDADB";
+const ECOLOGIA="CDCACBCBCCAACDCACBBDCACABBABCCACCBDDACCCBBDADCDAADACBDABBAABCAACDA";
+const GENETICA="CAABACADDDCDBCABDACACBAABCBBCACCCBCD";
 validarChave("Botânica",BOTANICA);
 validarChave("Citologia",CITOLOGIA);
-validarChave("Ecologia","CD");
-const lote003=lote.slice(163);
-if(lote003.length!==100) fail(`lote 164–263 deveria ter 100 questões, encontrou ${lote003.length}`);
-const esperadoLote003=BOTANICA.slice(8)+CITOLOGIA+"CD";
-if(esperadoLote003.length!==100) fail(`chave do lote 164–263 inválida: ${esperadoLote003.length}`);
-lote003.forEach((q,i)=>{if(letras[q.answer]!==esperadoLote003[i]) fail(`${q.id}: gabarito do lote 164–263 diverge da apostila (${esperadoLote003[i]})`);});
-const faixa=(topic,a,b)=>lote003.filter(q=>q.topic===topic&&numero(q)>=a&&numero(q)<=b).length;
-if(faixa("Botânica",9,65)!==57) fail("lote 164–263: Botânica 9–65 incompleta");
-if(faixa("Citologia",1,41)!==41) fail("lote 164–263: Citologia 1–41 incompleta");
-if(faixa("Ecologia",1,2)!==2) fail("lote 164–263: Ecologia 1–2 incompleta");
-if(ids.size!==263||identities.size!==263) fail("unicidade não fechou em 263/263");
-console.log(`UECE Biologia OK — ${lote.length}/263 | IDs ${ids.size}/263 | fontes ${identities.size}/263 | visuais ${withMedia}`);
-console.log(`Lote 164–263 OK — 100/100 | Botânica 9–65: 57 | Citologia 1–41: 41 | Ecologia 1–2: 2`);
+validarChave("Ecologia",ECOLOGIA);
+validarChave("Genética",GENETICA);
+const lote004=lote.slice(263);
+if(lote004.length!==100) fail(`lote 264–363 deveria ter 100 questões, encontrou ${lote004.length}`);
+const esperadoLote004=ECOLOGIA.slice(2)+GENETICA;
+if(esperadoLote004.length!==100) fail(`chave do lote 264–363 inválida: ${esperadoLote004.length}`);
+lote004.forEach((q,i)=>{if(letras[q.answer]!==esperadoLote004[i]) fail(`${q.id}: gabarito do lote 264–363 diverge da apostila (${esperadoLote004[i]})`);});
+const faixa=(topic,a,b)=>lote004.filter(q=>q.topic===topic&&numero(q)>=a&&numero(q)<=b).length;
+if(faixa("Ecologia",3,66)!==64) fail("lote 264–363: Ecologia 3–66 incompleta");
+if(faixa("Genética",1,36)!==36) fail("lote 264–363: Genética 1–36 incompleta");
+if(ids.size!==363||identities.size!==363) fail("unicidade não fechou em 363/363");
+console.log(`UECE Biologia OK — ${lote.length}/363 | IDs ${ids.size}/363 | fontes ${identities.size}/363 | visuais ${withMedia}`);
+console.log(`Lote 264–363 OK — 100/100 | Ecologia 3–66: 64 | Genética 1–36: 36`);
 console.log([...byTopic.entries()].map(([k,v])=>`${k}: ${v}`).join(" | "));

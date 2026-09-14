@@ -1,8 +1,9 @@
-// UECE por Assunto — Química concluída + Biologia cumulativa até 263.
+// UECE por Assunto — Química concluída + Biologia cumulativa até 363.
 // Química: 537 questões auditadas.
 // Biologia 001–063: Origem da Vida (30) + Taxonomia/Sistemática/Evolução (28) + Microbiologia 1–5 (5).
 // Biologia 064–163: Microbiologia 6–37 (32) + Seres vivos e reprodução (25) + Bioquímica (35) + Botânica 1–8 (8).
 // Biologia 164–263: Botânica 9–65 (57) + Citologia 1–41 (41) + Ecologia 1–2 (2).
+// Biologia 264–363: Ecologia 3–66 (64) + Genética 1–36 (36).
 import { UECE_QUIMICA_ANALISE_ESPECIES_LOTE_09 } from "./ueceQuimicaAnaliseEspeciesLote09.js";
 import { UECE_QUIMICA_ANALISE_ESPECIES_LOTE_25 } from "./ueceQuimicaAnaliseEspeciesLote25.js";
 import { UECE_QUIMICA_ATOMISTICA_LOTE_09 } from "./ueceQuimicaAtomisticaLote09.js";
@@ -46,6 +47,7 @@ import { UECE_BIOLOGIA_TAXONOMIA_EVOLUCAO_28 } from "./ueceBiologiaTaxonomiaEvol
 import { UECE_BIOLOGIA_MICROBIOLOGIA_37 } from "./ueceBiologiaMicrobiologia37.js";
 import { UECE_BIOLOGIA_LOTE_100_02 } from "./ueceBiologiaLote100_02.js";
 import { UECE_BIOLOGIA_LOTE_100_03 } from "./ueceBiologiaLote100_03.js";
+import { UECE_BIOLOGIA_LOTE_100_04 } from "./ueceBiologiaLote100_04.js";
 
 const numero = (q) => Number(String(q.id).match(/(\d+)$/)?.[1]);
 const BIOQUIMICA_001_A_006 = UECE_QUIMICA_BIOQUIMICA_LOTE_01.filter((q) => {
@@ -96,7 +98,9 @@ const MICROBIOLOGIA_001_A_005 = UECE_BIOLOGIA_MICROBIOLOGIA_37.filter((q)=>numer
 export const UECE_BIOLOGIA_LOTE_63 = [...UECE_BIOLOGIA_ORIGEM_VIDA_30,...UECE_BIOLOGIA_TAXONOMIA_EVOLUCAO_28,...MICROBIOLOGIA_001_A_005];
 export const UECE_BIOLOGIA_LOTE_163 = [...UECE_BIOLOGIA_LOTE_63,...UECE_BIOLOGIA_LOTE_100_02];
 export const UECE_BIOLOGIA_LOTE_263 = [...UECE_BIOLOGIA_LOTE_163,...UECE_BIOLOGIA_LOTE_100_03];
+export const UECE_BIOLOGIA_LOTE_363 = [...UECE_BIOLOGIA_LOTE_263,...UECE_BIOLOGIA_LOTE_100_04];
 export const UECE_APOSTILA_LOTE_700 = [...UECE_QUIMICA_LOTE_537,...UECE_BIOLOGIA_LOTE_163];
 export const UECE_APOSTILA_LOTE_800 = [...UECE_QUIMICA_LOTE_537,...UECE_BIOLOGIA_LOTE_263];
+export const UECE_APOSTILA_LOTE_900 = [...UECE_QUIMICA_LOTE_537,...UECE_BIOLOGIA_LOTE_363];
 // Compatibilidade com o agregador principal: inclui todo o acumulado já conectado desta etapa.
-export const UECE_QUIMICA_LOTE_100 = UECE_APOSTILA_LOTE_800;
+export const UECE_QUIMICA_LOTE_100 = UECE_APOSTILA_LOTE_900;
