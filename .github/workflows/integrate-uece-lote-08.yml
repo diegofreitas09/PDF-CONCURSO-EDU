@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "scripts/integrar_uece_lote_08.py"
+      - "scripts/reparar_uece_lote08_part8.py"
 permissions:
   contents: write
 jobs:
@@ -15,6 +16,8 @@ jobs:
         with: {python-version: "3.12"}
       - name: Conferir fonte compactada
         run: test $(ls scripts/uece_lote08_rebuild_*.b64 | wc -l) -eq 8
+      - name: Reparar transporte da parte 8
+        run: python scripts/reparar_uece_lote08_part8.py
       - name: Gerar e conectar lote
         run: python scripts/integrar_uece_lote_08.py
       - uses: actions/setup-node@v4
@@ -35,7 +38,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add scripts/uece_lote08_rebuild_3.b64 src/data/questionSources/uecePortuguesLote100_08.js src/data/questionRegistry.js scripts/verificar_uece_lote_08.mjs .github/workflows/deploy-pages.yml
+          git add scripts/uece_lote08_rebuild_3.b64 scripts/uece_lote08_rebuild_5.b64 scripts/uece_lote08_rebuild_8.b64 src/data/questionSources/uecePortuguesLote100_08.js src/data/questionRegistry.js scripts/verificar_uece_lote_08.mjs .github/workflows/deploy-pages.yml
           if git diff --cached --quiet; then echo "Nada para commitar"; exit 0; fi
           git commit -m "feat: integra UECE Português lote 08"
           git push
