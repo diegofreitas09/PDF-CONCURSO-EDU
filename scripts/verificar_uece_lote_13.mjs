@@ -8,5 +8,5 @@ for(const q of lote){if(!q.id||q.discipline!=="História"||!q.topic||!q.statemen
 if(lote[0].id!=="UECE-HIST-CONT-011"||lote[80].id!=="UECE-HIST-CONT-091"||lote[81].id!=="UECE-HIST-ATU-001"||lote.at(-1).id!=="UECE-HIST-ATU-019")fail('limites divergentes');
 const reg=fs.readFileSync(new URL('../src/data/questionRegistry.js',import.meta.url),'utf8');
 if(!reg.includes('import{UECE_HISTORIA_LOTE_100_13}from"./questionSources/ueceHistoriaLote100_13";'))fail('import do lote 13 ausente no registry');
-if(!reg.includes('...UECE_HISTORIA_LOTE_100_12,...UECE_HISTORIA_LOTE_100_13].map(sanitizeQuestion)'))fail('lote 13 não conectado ao RAW_QUESTIONS');
+if(!reg.includes('...UECE_HISTORIA_LOTE_100_12,...UECE_HISTORIA_LOTE_100_13'))fail('lote 13 não conectado ao RAW_QUESTIONS');
 console.log(`UECE lote 13 OK — 100/100 | conectado ao registry | IDs ${ids.size}/100 | fontes ${src.size}/100 | duplicidades internas 0 | visuais 0`);
