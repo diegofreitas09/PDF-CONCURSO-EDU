@@ -51,10 +51,9 @@ def parse(a,b,topic,prefix,lo,hi,keys):
         rows.append({'id':f'{prefix}-{n:03d}','discipline':'História','topic':topic,'context':'','statement':statement,'options':opts,'answer':'ABCD'.index(letter),'explanation':f'Gabarito oficial da apostila: {letter}.','source':re.sub(r'(\d{4})\.\s+(\d)',r'\1.\2',m.group(2).strip()),'origin':ORIGIN,'reviewed':True})
     return rows
 
-MED=list('BAACACCADA'+'ABCBDBADDC'+'BBBDBCD BDB'.replace(' ','')+'DAADACABCD'+'BCBD BADAB'.replace(' ',''))
-# Grade oficial completa da Idade Média (1-51); o lote usa 12-51.
-MED=list('BAACACCADA'+'AABCBDBADDC'+'BBBDBCD BDB'.replace(' ','')+'DAADACABCD'+'BCBDBADAB'.replace(' ',''))
-MOD=list('DDCDADC DCB'.replace(' ','')+'DADCB DABAD'.replace(' ','')+'BABBAADADD'+'CBBBABBAAC'+'CDAACCBBAD')
+# Grades oficiais completas da apostila. O lote usa Idade Média 12-51, Idade Moderna 1-50 e Idade Contemporânea 1-10.
+MED=list('BAACACCADA'+'AABCBDBADD'+'CBBBDBCDBD'+'BDAAADACAB'+'CDBCBDBADA'+'B')
+MOD=list('DDCDADCDCB'+'DADCBDABAD'+'BABBAADADD'+'CBBBABBAAC'+'CDAACCBBAD')
 CONT=list('DCDBABBCCD')
 if len(MED)!=51: raise SystemExit(f'gabarito Idade Média inválido: {len(MED)}')
 if len(MOD)!=50: raise SystemExit(f'gabarito Idade Moderna inválido: {len(MOD)}')
