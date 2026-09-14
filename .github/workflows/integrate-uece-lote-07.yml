@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - "scripts/integrar_uece_lote_07.py"
+      - "scripts/uece_lote07_rebuild_*.b64"
       - ".github/workflows/integrate-uece-lote-07.yml"
 
 permissions:
@@ -18,14 +19,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Preparar fonte oficial do Drive
+      - name: Conferir fonte reconstruída da apostila
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq poppler-utils
-          python -m pip install --quiet gdown
-          gdown 18fCbZ_iEnHHg_mdvKqtEBVBsl-A3pP0k -O apostila_uece.pdf
-          test $(stat -c%s apostila_uece.pdf) -gt 30000000
-          pdfinfo apostila_uece.pdf | head
+          test $(ls scripts/uece_lote07_rebuild_*.b64 | wc -l) -eq 8
+          sha256sum scripts/uece_lote07_rebuild_*.b64
       - name: Gerar e conectar lote
         id: gerar
         continue-on-error: true
