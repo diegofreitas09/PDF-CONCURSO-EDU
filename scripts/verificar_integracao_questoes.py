@@ -17,7 +17,13 @@ QCALL_RE = re.compile(
     re.S,
 )
 PREFIX_RE = re.compile(r'id:`(?P<prefix>[^$`]+)\$\{String\(id\)\.padStart\(3,"0"\)\}`')
-FIELD_STR = lambda name, body: re.search(rf'\b{name}:\s*"([^"]*)"', body)
+QUOTED_RE = re.compile(r'(["\'`])(?:\\.|(?!\1).)*\1', re.S)
+
+
+def field_value(name: str, body: str):
+    """Lê string JS em aspas duplas, simples ou template literal."""
+    m = re.search(rf'\b{name}:\s*(["\'`])((?:\\.|(?!\1).)*)\1', body, re.S)
+    return m.group(2) if m else None
 
 
 def iter_literal_objects(text: str):
@@ -54,11 +60,13 @@ def iter_literal_objects(text: str):
 
 
 def count_strings(text: str):
-    return len(re.findall(r'"(?:[^"\\]|\\.)*"', text))
+    return len(QUOTED_RE.findall(text))
 
 
 def count_options(body: str):
-    m = re.search(r'\boptions:\s*\[(?P<opts>(?:\s*"(?:[^"\\]|\\.)*"\s*,?)*)\]', body, re.S)
+    # Ancora no campo answer para permitir alternativas entre crases e conteúdo
+    # com colchetes textuais sem relaxar a exigência de exatamente 4 opções UECE.
+    m = re.search(r'\boptions:\s*\[(?P<opts>.*?)\]\s*,\s*answer\s*:', body, re.S)
     return count_strings(m.group('opts')) if m else None
 
 
@@ -114,12 +122,12 @@ def main():
             strict=is_uece(path,qid)
 
             for name in ("discipline","topic","statement"):
-                value=FIELD_STR(name,body)
-                if not value or not value.group(1).strip():
+                value=field_value(name,body)
+                if value is None or not value.strip():
                     issues.append({"id":qid,"arquivo":path.name,"erro":f"campo ausente/vazio: {name}"})
 
-            explanation=FIELD_STR("explanation",body)
-            if not explanation or not explanation.group(1).strip():
+            explanation=field_value("explanation",body)
+            if explanation is None or not explanation.strip():
                 target=issues if strict else warnings
                 target.append({"id":qid,"arquivo":path.name,"erro":"campo ausente/vazio: explanation"})
 
