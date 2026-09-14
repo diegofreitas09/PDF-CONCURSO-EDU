@@ -56,3 +56,5 @@ if new not in reg:
     reg=reg.replace(old,new,1)
 REG.write_text(reg,encoding='utf-8')
 print('LOTE07 GERADO — Portugues 70-169 — 100/100')
+
+# Integração solicitada: executar o workflow do lote 07 após a validação do payload.
