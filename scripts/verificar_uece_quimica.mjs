@@ -1,8 +1,8 @@
-import { UECE_QUIMICA_LOTE_300 } from "../src/data/questionSources/ueceQuimicaLote100.js";
+import { UECE_QUIMICA_LOTE_400 } from "../src/data/questionSources/ueceQuimicaLote100.js";
 
-const lote = UECE_QUIMICA_LOTE_300;
+const lote = UECE_QUIMICA_LOTE_400;
 const fail = (msg) => { console.error(`ERRO UECE Química: ${msg}`); process.exit(1); };
-if (lote.length !== 300) fail(`esperadas 300 questões, encontradas ${lote.length}`);
+if (lote.length !== 400) fail(`esperadas 400 questões, encontradas ${lote.length}`);
 
 const required = ["id","discipline","topic","statement","options","answer","explanation","source","origin"];
 const ids = new Set();
@@ -39,23 +39,58 @@ const expected = new Map([
   ["Estequiometria",24],
   ["Forças intermoleculares",9],
   ["Gases",24],
-  ["Química e Reações Inorgânicas",36],
+  ["Isomeria",13],
+  ["Materiais de Laboratório",13],
+  ["Leis Ponderais",11],
+  ["Ligações Químicas",21],
+  ["Métodos de Separação de Misturas",9],
+  ["Polímeros",5],
+  ["Propriedades Coligativas",11],
+  ["Química e Reações Inorgânicas",48],
+  ["Química e Reações Orgânicas",5],
 ]);
 for (const [topic,count] of expected) if (byTopic.get(topic)!==count) fail(`${topic}: esperado ${count}, encontrado ${byTopic.get(topic)||0}`);
-if (ids.size !== 300 || identities.size !== 300) fail("unicidade do lote não fechou em 300/300");
+if (ids.size !== 400 || identities.size !== 400) fail("unicidade do lote não fechou em 400/400");
 
-const terceiro = lote.slice(200);
-if (terceiro.length !== 100) fail(`lote 201–300 não fechou em 100 itens: ${terceiro.length}`);
-const terceiroTopics = new Map();
-for (const q of terceiro) terceiroTopics.set(q.topic,(terceiroTopics.get(q.topic)||0)+1);
-const expectedTerceiro = new Map([
-  ["Equilíbrio Químico",7],
-  ["Estequiometria",24],
-  ["Forças intermoleculares",9],
-  ["Gases",24],
-  ["Química e Reações Inorgânicas",36],
+const quarto = lote.slice(300);
+if (quarto.length !== 100) fail(`lote 301–400 não fechou em 100 itens: ${quarto.length}`);
+const quartoTopics = new Map();
+for (const q of quarto) quartoTopics.set(q.topic,(quartoTopics.get(q.topic)||0)+1);
+const expectedQuarto = new Map([
+  ["Isomeria",13],
+  ["Materiais de Laboratório",13],
+  ["Leis Ponderais",11],
+  ["Ligações Químicas",21],
+  ["Métodos de Separação de Misturas",9],
+  ["Polímeros",5],
+  ["Propriedades Coligativas",11],
+  ["Química e Reações Inorgânicas",12],
+  ["Química e Reações Orgânicas",5],
 ]);
-for (const [topic,count] of expectedTerceiro) if (terceiroTopics.get(topic)!==count) fail(`lote 201–300 / ${topic}: esperado ${count}, encontrado ${terceiroTopics.get(topic)||0}`);
+for (const [topic,count] of expectedQuarto) if (quartoTopics.get(topic)!==count) fail(`lote 301–400 / ${topic}: esperado ${count}, encontrado ${quartoTopics.get(topic)||0}`);
 
-console.log(`UECE Química OK — ${lote.length}/300 | lote 201–300 ${terceiro.length}/100 | IDs ${ids.size}/300 | fontes ${identities.size}/300 | visuais ${withMedia}`);
+const numero = (q) => Number(String(q.id).match(/(\d+)$/)?.[1]);
+const letras = "ABCD";
+const chaves = new Map([
+  ["Isomeria","CDACCDACCDBCD"],
+  ["Materiais de Laboratório","CBCABACDCDAAC"],
+  ["Leis Ponderais","ACBCDBCACDC"],
+  ["Ligações Químicas","CBDBCAABDCCBCADACCCAA"],
+  ["Métodos de Separação de Misturas","DCBDBDDCB"],
+  ["Polímeros","DDBAD"],
+  ["Propriedades Coligativas","BDCBBABDBBC"],
+  ["Química e Reações Orgânicas","DCACB"],
+]);
+const chaveInorganica = new Map([[37,"A"],[38,"A"],[39,"B"],[40,"C"],[41,"D"],[42,"C"],[43,"C"],[44,"D"],[45,"A"],[46,"B"],[47,"D"],[48,"B"]]);
+for (const q of quarto) {
+  const n = numero(q);
+  let esperado = null;
+  if (q.topic === "Química e Reações Inorgânicas") esperado = chaveInorganica.get(n);
+  else if (chaves.has(q.topic)) esperado = chaves.get(q.topic)[n-1];
+  if (!esperado) fail(`${q.id}: sem chave oficial mapeada para auditoria do lote 301–400`);
+  if (letras[q.answer] !== esperado) fail(`${q.id}: gabarito ${letras[q.answer]} diverge da apostila (${esperado})`);
+}
+
+const quartoVisuais = quarto.filter(q => q.media).length;
+console.log(`UECE Química OK — ${lote.length}/400 | lote 301–400 ${quarto.length}/100 | IDs ${ids.size}/400 | fontes ${identities.size}/400 | visuais lote ${quartoVisuais} | visuais acumulados ${withMedia}`);
 console.log([...byTopic.entries()].map(([k,v])=>`${k}: ${v}`).join(" | "));
