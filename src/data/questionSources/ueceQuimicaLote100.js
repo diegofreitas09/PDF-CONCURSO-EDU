@@ -1,11 +1,15 @@
-// UECE por Assunto — Química — lote cumulativo auditado 001–300.
+// UECE por Assunto — Química — lote cumulativo auditado 001–400.
 // 001–100: Análise de espécies químicas (34), Atomística (60), Bioquímica (1–6).
 // 101–200: Bioquímica restante (11), Cinética Química (15), Química Ambiental (10),
 // Propriedades periódicas (18), Coloides (6), Eletrólise (9), Eletroquímica (18)
 // e Equilíbrio Químico (1–13).
 // 201–300: Equilíbrio Químico (14–20), Estequiometria (24), Forças intermoleculares (9),
-// Gases (24) e as primeiras 36 questões íntegras de Química e Reações Inorgânicas,
-// em ordem do material. Itens incompletos permanecem fora; nada é reconstruído.
+// Gases (24) e as primeiras 36 questões íntegras de Química e Reações Inorgânicas.
+// 301–400: recuperação, na ordem da apostila, dos assuntos íntegros ainda não conectados
+// após Gases: Isomeria (13), Materiais de Laboratório (13), Leis Ponderais (11),
+// Ligações Químicas (21), Métodos de Separação (9), Polímeros (5), Propriedades
+// Coligativas (11), Inorgânica 37–48 (12) e Orgânica 1–5 (5).
+// Itens incompletos permanecem fora; nada é inventado nem reconstruído sem base no material.
 import { UECE_QUIMICA_ANALISE_ESPECIES_LOTE_09 } from "./ueceQuimicaAnaliseEspeciesLote09.js";
 import { UECE_QUIMICA_ANALISE_ESPECIES_LOTE_25 } from "./ueceQuimicaAnaliseEspeciesLote25.js";
 import { UECE_QUIMICA_ATOMISTICA_LOTE_09 } from "./ueceQuimicaAtomisticaLote09.js";
@@ -25,6 +29,16 @@ import { UECE_QUIMICA_FORCAS_INTERMOLECULARES_LOTE_09 } from "./ueceQuimicaForca
 import { UECE_QUIMICA_GASES_LOTE_24 } from "./ueceQuimicaGasesLote24.js";
 import { UECE_QUIMICA_INORGANICA_TEXTUAIS_27 } from "./ueceQuimicaInorganicaTextuais27.js";
 import { UECE_QUIMICA_INORGANICA_COMPLEMENTO_21 } from "./ueceQuimicaInorganicaComplemento21.js";
+import { UECE_QUIMICA_ISOMERIA_TEXTUAIS_07 } from "./ueceQuimicaIsomeriaTextuais07.js";
+import { UECE_QUIMICA_MATERIAIS_LABORATORIO_13 } from "./ueceQuimicaMateriaisLaboratorio13.js";
+import { UECE_QUIMICA_LEIS_PONDERAIS_11 } from "./ueceQuimicaLeisPonderais11.js";
+import { UECE_QUIMICA_LIGACOES_TEXTUAIS_16 } from "./ueceQuimicaLigacoesTextuais16.js";
+import { UECE_QUIMICA_METODOS_SEPARACAO_09 } from "./ueceQuimicaMetodosSeparacao09.js";
+import { UECE_QUIMICA_POLIMEROS_TEXTUAIS_04 } from "./ueceQuimicaPolimerosTextuais04.js";
+import { UECE_QUIMICA_POLIMEROS_VISUAL_01 } from "./ueceQuimicaPolimerosVisual01.js";
+import { UECE_QUIMICA_PROPRIEDADES_COLIGATIVAS_11 } from "./ueceQuimicaPropriedadesColigativas11.js";
+import { UECE_QUIMICA_ORGANICA_TEXTUAIS_11 } from "./ueceQuimicaOrganicaTextuais11.js";
+import { UECE_QUIMICA_ORGANICA_VISUAIS_04_07 } from "./ueceQuimicaOrganicaVisuais04e07.js";
 
 const numero = (q) => Number(String(q.id).match(/(\d+)$/)?.[1]);
 
@@ -48,10 +62,24 @@ const EQUILIBRIO_014_A_020 = UECE_QUIMICA_EQUILIBRIO_LOTE_20.filter((q) => {
   return Number.isInteger(n) && n >= 14 && n <= 20;
 });
 
-const INORGANICA_001_A_036 = [
+const INORGANICA_TODAS = [
   ...UECE_QUIMICA_INORGANICA_TEXTUAIS_27,
   ...UECE_QUIMICA_INORGANICA_COMPLEMENTO_21,
-].sort((a, b) => numero(a) - numero(b)).slice(0, 36);
+].sort((a, b) => numero(a) - numero(b));
+
+const INORGANICA_001_A_036 = INORGANICA_TODAS.slice(0, 36);
+const INORGANICA_037_A_048 = INORGANICA_TODAS.filter((q) => numero(q) >= 37 && numero(q) <= 48);
+
+const POLIMEROS_001_A_005 = [
+  ...UECE_QUIMICA_POLIMEROS_TEXTUAIS_04,
+  ...UECE_QUIMICA_POLIMEROS_VISUAL_01.filter((q) => q.discipline === "Química" && q.topic === "Polímeros"),
+].sort((a, b) => numero(a) - numero(b));
+
+const ORGANICA_001_A_005 = [...new Map([
+  ...UECE_QUIMICA_ORGANICA_TEXTUAIS_11,
+  ...UECE_QUIMICA_ORGANICA_VISUAIS_04_07,
+].filter((q) => numero(q) >= 1 && numero(q) <= 5).map((q) => [q.id, q])).values()]
+  .sort((a, b) => numero(a) - numero(b));
 
 export const UECE_QUIMICA_LOTE_300 = [
   ...UECE_QUIMICA_ANALISE_ESPECIES_LOTE_09,
@@ -75,6 +103,19 @@ export const UECE_QUIMICA_LOTE_300 = [
   ...INORGANICA_001_A_036,
 ];
 
+export const UECE_QUIMICA_LOTE_400 = [
+  ...UECE_QUIMICA_LOTE_300,
+  ...UECE_QUIMICA_ISOMERIA_TEXTUAIS_07,
+  ...UECE_QUIMICA_MATERIAIS_LABORATORIO_13,
+  ...UECE_QUIMICA_LEIS_PONDERAIS_11,
+  ...UECE_QUIMICA_LIGACOES_TEXTUAIS_16,
+  ...UECE_QUIMICA_METODOS_SEPARACAO_09,
+  ...POLIMEROS_001_A_005,
+  ...UECE_QUIMICA_PROPRIEDADES_COLIGATIVAS_11,
+  ...INORGANICA_037_A_048,
+  ...ORGANICA_001_A_005,
+];
+
 export const UECE_QUIMICA_LOTE_200 = UECE_QUIMICA_LOTE_300.slice(0, 200);
-// Compatibilidade com o agregador principal já conectado no projeto.
-export const UECE_QUIMICA_LOTE_100 = UECE_QUIMICA_LOTE_300;
+// Compatibilidade com o agregador principal: o alias aponta sempre para o lote cumulativo mais recente.
+export const UECE_QUIMICA_LOTE_100 = UECE_QUIMICA_LOTE_400;
