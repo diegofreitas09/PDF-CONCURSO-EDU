@@ -1,44 +1,45 @@
 from pathlib import Path
 import base64,lzma,sys,hashlib
 OUT=Path('src/data/questionSources/uecePortuguesLote100_08.js'); REG=Path('src/data/questionRegistry.js'); VERIFY=Path('scripts/verificar_uece_lote_08.mjs'); DEPLOY=Path('.github/workflows/deploy-pages.yml')
+expected='958c1a7d13720dd9b83bf3a74d6fb42cbc56f25f1fd534d733ceeb83197350a8'
 parts=[]
 for i in range(1,9):
  p=Path(f'scripts/uece_lote08_rebuild_{i}.b64')
  if not p.exists(): sys.exit(f'fragmento ausente: {p}')
  parts.append(p.read_text().strip())
-raw=None; errors=[]
-# Estratégia 1: fluxo Base64 único.
+enc=''.join(parts); raw=None
 try:
- comp=base64.b64decode(''.join(parts),validate=True)
- raw=lzma.decompress(comp)
- print('reconstrução: base64 contínuo')
-except Exception as e: errors.append(f'continuo={e}')
-# Estratégia 2: fragmentos Base64 independentes de um único fluxo XZ.
-if raw is None:
- try:
-  chunks=[]
-  for part in parts:
-   padded=part + ('='*((4-len(part)%4)%4))
-   chunks.append(base64.b64decode(padded,validate=True))
-  raw=lzma.decompress(b''.join(chunks))
-  print('reconstrução: chunks base64 -> fluxo XZ')
- except Exception as e: errors.append(f'chunks={e}')
-# Estratégia 3: cada fragmento contém um stream XZ independente.
-if raw is None:
- try:
-  raws=[]
-  for n,part in enumerate(parts,1):
-   padded=part + ('='*((4-len(part)%4)%4))
-   blob=base64.b64decode(padded,validate=True)
-   raws.append(lzma.decompress(blob))
-  raw=b''.join(raws)
-  print('reconstrução: streams XZ independentes')
- except Exception as e: errors.append(f'streams={e}')
-if raw is None: sys.exit('falha reconstrução: '+' | '.join(errors))
-try: text=raw.decode()
+ raw=lzma.decompress(base64.b64decode(enc,validate=True))
+except Exception as original_error:
+ # A auditoria localizou a corrupção na faixa comprimida 51776–51840 bytes.
+ # Procuramos APENAS uma substituição Base64 pontual ao redor dessa faixa e
+ # aceitamos o reparo exclusivamente se o conteúdo descompactado produzir o
+ # SHA-256 original já registrado para o lote.
+ alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+ center=(51776*4)//3
+ start=max(0,center-128); end=min(len(enc),center+256)
+ chars=list(enc); attempts=0
+ print(f'recuperação controlada: faixa base64 {start}:{end}; erro original={original_error}')
+ for pos in range(start,end):
+  old=chars[pos]
+  if old not in alphabet: continue
+  for c in alphabet:
+   if c==old: continue
+   chars[pos]=c; attempts+=1
+   try:
+    candidate=lzma.decompress(base64.b64decode(''.join(chars),validate=True))
+   except Exception:
+    continue
+   if hashlib.sha256(candidate).hexdigest()==expected:
+    raw=candidate
+    print(f'REPARO_SHA_OK pos={pos} {old}->{c} tentativas={attempts}')
+    break
+  chars[pos]=old
+  if raw is not None: break
+ if raw is None: sys.exit(f'falha reconstrução após {attempts} candidatos validados por XZ/SHA')
+if hashlib.sha256(raw).hexdigest()!=expected: sys.exit('sha divergente após reconstrução')
+try: text=raw.decode('utf-8')
 except Exception as e: sys.exit(f'falha UTF-8 reconstrução: {e}')
-sha=hashlib.sha256(raw).hexdigest(); expected='958c1a7d13720dd9b83bf3a74d6fb42cbc56f25f1fd534d733ceeb83197350a8'
-if sha!=expected: sys.exit(f'sha divergente {sha}')
 if text.count('"id":"UECE-PORT-')!=100: sys.exit('quantidade divergente')
 if 'UECE-PORT-INT-170' not in text or 'UECE-PORT-DISC-001' not in text: sys.exit('limites ausentes')
 OUT.write_text(text,encoding='utf-8')
@@ -54,8 +55,7 @@ if(lote[0].id!=="UECE-PORT-INT-170"||lote.at(-1).id!=="UECE-PORT-DISC-001")fail(
 console.log(`UECE lote 08 OK — 100/100 | IDs ${ids.size}/100 | fontes ${src.size}/100 | visuais ${media}`);
 ''',encoding='utf-8')
 reg=REG.read_text()
-imp='import{UECE_PORTUGUES_LOTE_100_08}from"./questionSources/uecePortuguesLote100_08";\n'
-anchor='import{UECE_PORTUGUES_LOTE_100_07}from"./questionSources/uecePortuguesLote100_07";\n'
+imp='import{UECE_PORTUGUES_LOTE_100_08}from"./questionSources/uecePortuguesLote100_08";\n'; anchor='import{UECE_PORTUGUES_LOTE_100_07}from"./questionSources/uecePortuguesLote100_07";\n'
 if imp not in reg:
  if anchor not in reg: sys.exit('âncora import ausente')
  reg=reg.replace(anchor,anchor+imp,1)
