@@ -1,1 +1,1 @@
-PDF fonte ausente ou incompleto: apostila_uece.pdf (0 bytes)
+falha ao reconstruir lote 07 auditado: Corrupt input data
