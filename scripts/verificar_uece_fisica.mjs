@@ -39,11 +39,22 @@ if(topics["Gravitação"]!==18)fail(`Gravitação: ${topics["Gravitação"]||0}/
 if(topics["Hidrostática"]!==32)fail(`Hidrostática íntegra: ${topics["Hidrostática"]||0}/32`);
 if(topics["Magnetismo e Eletromagnetismo"]!==22)fail(`Magnetismo íntegro: ${topics["Magnetismo e Eletromagnetismo"]||0}/22`);
 if(topics["Ondulatória e Acústica"]!==27)fail(`Ondulatória/Acústica íntegra: ${topics["Ondulatória e Acústica"]||0}/27`);
-if(topics["Óptica"]!==43)fail(`Óptica íntegra: ${topics["Óptica"]||0}/43`);
-if(topics["Movimento Harmônico Simples"]!==29)fail(`MHS íntegro: ${topics["Movimento Harmônico Simples"]||0}/29`);
-if(topics["Calorimetria, Termologia e Calor"]!==36)fail(`Calorimetria/Termologia: ${topics["Calorimetria, Termologia e Calor"]||0}/36`);
-if(topics["Momento Linear"]!==12)fail(`Momento Linear: ${topics["Momento Linear"]||0}/12`);
-if(topics["Análise Vetorial e Escalar"]!==4)fail(`Análise Vetorial/Escalar: ${topics["Análise Vetorial e Escalar"]||0}/4`);
+if(topics["Óptica"]!==46)fail(`Óptica completa: ${topics["Óptica"]||0}/46`);
+if(topics["Movimento Harmônico Simples"]!==35)fail(`MHS completo: ${topics["Movimento Harmônico Simples"]||0}/35`);
+if(topics["Calorimetria, Termologia e Calor"]!==37)fail(`Calorimetria/Termologia completa: ${topics["Calorimetria, Termologia e Calor"]||0}/37`);
+if(topics["Momento Linear"]!==6)fail(`Momento Linear parcial: ${topics["Momento Linear"]||0}/6`);
+
+const expected401_500=[
+  ["Óptica",25,46],
+  ["Movimento Harmônico Simples",1,35],
+  ["Calorimetria, Termologia e Calor",1,37],
+  ["Momento Linear",1,6]
+];
+for(const [topic,min,max] of expected401_500){
+  const nums=UECE_FISICA_LOTE_401_500.filter(q=>q.topic===topic).map(q=>q.sourceQuestion).sort((a,b)=>a-b);
+  const expected=Array.from({length:max-min+1},(_,i)=>min+i);
+  if(JSON.stringify(nums)!==JSON.stringify(expected))fail(`sequência de fonte inválida em ${topic}: ${nums.join(",")}`);
+}
 
 console.log(`✅ UECE Física: 500/500 | lote 401–500 100/100 | IDs únicos ${uniqueIds.size} | fontes únicas ${uniqueSources.size} | mídias ${UECE_FISICA_LOTE_100_AUDIT.withMedia}`);
-console.log(`   Composição 401–500: Óptica ${UECE_FISICA_LOTE_100_AUDIT.opticaRestante} | MHS ${UECE_FISICA_LOTE_100_AUDIT.mhs} | Calorimetria/Termologia ${UECE_FISICA_LOTE_100_AUDIT.calorimetria} | Momento Linear ${UECE_FISICA_LOTE_100_AUDIT.momentoLinear} | Análise Vetorial/Escalar ${UECE_FISICA_LOTE_100_AUDIT.analiseVetorialEscalar}`);
+console.log(`   Composição 401–500: Óptica ${UECE_FISICA_LOTE_100_AUDIT.opticaRestante} | MHS ${UECE_FISICA_LOTE_100_AUDIT.mhs} | Calorimetria/Termologia ${UECE_FISICA_LOTE_100_AUDIT.calorimetria} | Momento Linear ${UECE_FISICA_LOTE_100_AUDIT.momentoLinearInicio}`);
