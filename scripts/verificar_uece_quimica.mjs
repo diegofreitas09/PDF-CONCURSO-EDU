@@ -37,7 +37,7 @@ const expected = new Map([
   ["Eletroquímica",18],
   ["Equilíbrio Químico",20],
   ["Estequiometria",24],
-  ["Forças Intermoleculares",9],
+  ["Forças intermoleculares",9],
   ["Gases",24],
   ["Química e Reações Inorgânicas",36],
 ]);
@@ -51,7 +51,7 @@ for (const q of terceiro) terceiroTopics.set(q.topic,(terceiroTopics.get(q.topic
 const expectedTerceiro = new Map([
   ["Equilíbrio Químico",7],
   ["Estequiometria",24],
-  ["Forças Intermoleculares",9],
+  ["Forças intermoleculares",9],
   ["Gases",24],
   ["Química e Reações Inorgânicas",36],
 ]);
