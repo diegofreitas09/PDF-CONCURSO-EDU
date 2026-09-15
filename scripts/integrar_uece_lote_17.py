@@ -1,4 +1,5 @@
 # Integração UECE lote 17 — Geografia 100 questões após lote 16
+# execução automática auditada
 from pathlib import Path
 import os,re,json,urllib.request,fitz
 ROOT=Path(__file__).resolve().parents[1]; PDF=ROOT/'tmp_uece_11ed.pdf'; ORIGIN='Apostila da UECE por assuntos 11ed - Turma do Jot_260209_173948.pdf'
@@ -39,8 +40,7 @@ for k in range(5):
 imports='\n'.join(f'import{{UECE_GEOGRAFIA_LOTE_100_17_P{k:02d}}}from"./ueceGeografiaLote100_17_p{k:02d}.js";' for k in range(1,6)); spreads=','.join(f'...UECE_GEOGRAFIA_LOTE_100_17_P{k:02d}' for k in range(1,6))
 (out/'ueceGeografiaLote100_17.js').write_text(imports+f'\nexport const UECE_GEOGRAFIA_LOTE_100_17=[{spreads}];\n',encoding='utf-8')
 regfile=ROOT/'src/data/questionRegistry.js'; txt=regfile.read_text(encoding='utf-8')
-imp='import{UECE_GEOGRAFIA_LOTE_100_17}from"./questionSources/ueceGeografiaLote100_17";'
-anchor='import{UECE_TRANSICAO_HIST_GEO_LOTE_100_16}from"./questionSources/ueceTransicaoHistoriaGeografiaLote100_16";'
+imp='import{UECE_GEOGRAFIA_LOTE_100_17}from"./questionSources/ueceGeografiaLote100_17";'; anchor='import{UECE_TRANSICAO_HIST_GEO_LOTE_100_16}from"./questionSources/ueceTransicaoHistoriaGeografiaLote100_16";'
 if imp not in txt: txt=txt.replace(anchor,anchor+'\n'+imp)
 needle='...UECE_TRANSICAO_HIST_GEO_LOTE_100_16].map(sanitizeQuestion)'
 if needle in txt: txt=txt.replace(needle,'...UECE_TRANSICAO_HIST_GEO_LOTE_100_16,...UECE_GEOGRAFIA_LOTE_100_17].map(sanitizeQuestion)')
