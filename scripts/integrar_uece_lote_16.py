@@ -1,3 +1,4 @@
+# Integração UECE lote 16 — execução auditada
 from pathlib import Path
 import os,re,json,urllib.request,fitz
 ROOT=Path(__file__).resolve().parents[1]; PDF=ROOT/'tmp_uece_11ed.pdf'; ORIGIN='Apostila da UECE por assuntos 11ed - Turma do Jot_260209_173948.pdf'
