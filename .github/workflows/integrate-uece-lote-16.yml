@@ -1,0 +1,41 @@
+name: Integrar UECE lote 16
+on:
+  push:
+    branches: ["main"]
+    paths: ["scripts/integrar_uece_lote_16.py"]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pymupdf
+      - name: Gerar lote 16 da fonte oficial
+        env:
+          UECE_PDF_URL: https://drive.usercontent.google.com/download?id=18fCbZ_iEnHHg_mdvKqtEBVBsl-A3pP0k&export=download&confirm=t
+        run: python scripts/integrar_uece_lote_16.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm install
+      - name: Auditar 100 questões do lote 16
+        run: node scripts/verificar_uece_lote_16.mjs
+      - name: Verificador geral
+        run: python scripts/verificar_integracao_questoes.py
+      - name: Verificador de mídias
+        run: python scripts/verificar_midias_questoes.py
+      - name: Build
+        run: npm run build
+      - name: Persistir integração
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/questionRegistry.js src/data/questionSources/ueceTransicaoHistoriaGeografiaLote100_16*.js scripts/verificar_uece_lote_16.mjs
+          git commit -m "feat(uece): integrar lote 16 Historia-Geografia"
+          git push origin HEAD:main
