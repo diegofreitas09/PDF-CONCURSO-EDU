@@ -16,13 +16,18 @@ def take(a,b,start,end,topic,prefix,answers):
   if not m: raise RuntimeError(f'Questao ausente: {topic} {n}')
   nxt=re.compile(r'(?m)^\s*'+str(n+1)+r'\)\s*\(UECE').search(s,m.end()) if n<end else None
   q=s[m.end():(nxt.start() if nxt else len(s))].strip(); pos=nxt.start() if nxt else len(s)
-  aps=[]
-  for L in 'ABCD':
-   mm=list(re.finditer(r'(?:^|\n|\s)'+L+r'\)\s+',q))
-   if not mm: raise RuntimeError(f'Alternativa {L} ausente: {topic} {n}')
-   aps.append(mm[-1])
-  if not all(aps[i].start()<aps[i+1].start() for i in range(3)): raise RuntimeError(f'Ordem alternativas invalida: {topic} {n}')
-  st=clean(q[:aps[0].start()]); opts=[clean(q[x.end():(aps[i+1].start() if i<3 else len(q))]) for i,x in enumerate(aps)]
+  # O PDF é diagramado em colunas. Em alguns itens a extração textual vem A,C,B,D
+  # embora visualmente as alternativas sejam A,B,C,D. Por isso segmentamos pela ordem
+  # física encontrada e depois remontamos explicitamente pelo rótulo, sem alterar o texto.
+  marks=list(re.finditer(r'(?:^|\n|\s)([ABCD])\)\s+',q))
+  last={}
+  for mm in marks: last[mm.group(1)]=mm
+  if set(last)!={'A','B','C','D'}: raise RuntimeError(f'Alternativas incompletas: {topic} {n}')
+  chosen=sorted(last.values(),key=lambda x:x.start())
+  st=clean(q[:chosen[0].start()]); by_label={}
+  for i,mm in enumerate(chosen):
+   by_label[mm.group(1)]=clean(q[mm.end():(chosen[i+1].start() if i+1<len(chosen) else len(q))])
+  opts=[by_label[L] for L in 'ABCD']
   ans=answers[n]
   out.append({'id':f'{prefix}-{n:03d}','discipline':'Geografia','topic':topic,'context':'','statement':st,'options':opts,'answer':'ABCD'.index(ans),'explanation':f'Gabarito oficial da apostila: {ans}.','source':m.group(1),'origin':ORIGIN,'reviewed':True})
  return out
