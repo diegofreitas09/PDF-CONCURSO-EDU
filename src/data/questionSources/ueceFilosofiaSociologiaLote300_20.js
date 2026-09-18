@@ -1,0 +1,16 @@
+import{UECE_FIL_SOC_LOTE_300_20_P01}from"./ueceFilosofiaSociologiaLote300_20_p01.js";
+import{UECE_FIL_SOC_LOTE_300_20_P02}from"./ueceFilosofiaSociologiaLote300_20_p02.js";
+import{UECE_FIL_SOC_LOTE_300_20_P03}from"./ueceFilosofiaSociologiaLote300_20_p03.js";
+import{UECE_FIL_SOC_LOTE_300_20_P04}from"./ueceFilosofiaSociologiaLote300_20_p04.js";
+import{UECE_FIL_SOC_LOTE_300_20_P05}from"./ueceFilosofiaSociologiaLote300_20_p05.js";
+import{UECE_FIL_SOC_LOTE_300_20_P06}from"./ueceFilosofiaSociologiaLote300_20_p06.js";
+import{UECE_FIL_SOC_LOTE_300_20_P07}from"./ueceFilosofiaSociologiaLote300_20_p07.js";
+import{UECE_FIL_SOC_LOTE_300_20_P08}from"./ueceFilosofiaSociologiaLote300_20_p08.js";
+import{UECE_FIL_SOC_LOTE_300_20_P09}from"./ueceFilosofiaSociologiaLote300_20_p09.js";
+import{UECE_FIL_SOC_LOTE_300_20_P10}from"./ueceFilosofiaSociologiaLote300_20_p10.js";
+import{UECE_FIL_SOC_LOTE_300_20_P11}from"./ueceFilosofiaSociologiaLote300_20_p11.js";
+import{UECE_FIL_SOC_LOTE_300_20_P12}from"./ueceFilosofiaSociologiaLote300_20_p12.js";
+import{UECE_FIL_SOC_LOTE_300_20_P13}from"./ueceFilosofiaSociologiaLote300_20_p13.js";
+import{UECE_FIL_SOC_LOTE_300_20_P14}from"./ueceFilosofiaSociologiaLote300_20_p14.js";
+import{UECE_FIL_SOC_LOTE_300_20_P15}from"./ueceFilosofiaSociologiaLote300_20_p15.js";
+export const UECE_FIL_SOC_LOTE_300_20=[...UECE_FIL_SOC_LOTE_300_20_P01,...UECE_FIL_SOC_LOTE_300_20_P02,...UECE_FIL_SOC_LOTE_300_20_P03,...UECE_FIL_SOC_LOTE_300_20_P04,...UECE_FIL_SOC_LOTE_300_20_P05,...UECE_FIL_SOC_LOTE_300_20_P06,...UECE_FIL_SOC_LOTE_300_20_P07,...UECE_FIL_SOC_LOTE_300_20_P08,...UECE_FIL_SOC_LOTE_300_20_P09,...UECE_FIL_SOC_LOTE_300_20_P10,...UECE_FIL_SOC_LOTE_300_20_P11,...UECE_FIL_SOC_LOTE_300_20_P12,...UECE_FIL_SOC_LOTE_300_20_P13,...UECE_FIL_SOC_LOTE_300_20_P14,...UECE_FIL_SOC_LOTE_300_20_P15];
