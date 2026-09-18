@@ -1,0 +1,16 @@
+import{UECE_GEO_FIL_LOTE_300_19_P01}from"./ueceGeografiaFilosofiaLote300_19_p01.js";
+import{UECE_GEO_FIL_LOTE_300_19_P02}from"./ueceGeografiaFilosofiaLote300_19_p02.js";
+import{UECE_GEO_FIL_LOTE_300_19_P03}from"./ueceGeografiaFilosofiaLote300_19_p03.js";
+import{UECE_GEO_FIL_LOTE_300_19_P04}from"./ueceGeografiaFilosofiaLote300_19_p04.js";
+import{UECE_GEO_FIL_LOTE_300_19_P05}from"./ueceGeografiaFilosofiaLote300_19_p05.js";
+import{UECE_GEO_FIL_LOTE_300_19_P06}from"./ueceGeografiaFilosofiaLote300_19_p06.js";
+import{UECE_GEO_FIL_LOTE_300_19_P07}from"./ueceGeografiaFilosofiaLote300_19_p07.js";
+import{UECE_GEO_FIL_LOTE_300_19_P08}from"./ueceGeografiaFilosofiaLote300_19_p08.js";
+import{UECE_GEO_FIL_LOTE_300_19_P09}from"./ueceGeografiaFilosofiaLote300_19_p09.js";
+import{UECE_GEO_FIL_LOTE_300_19_P10}from"./ueceGeografiaFilosofiaLote300_19_p10.js";
+import{UECE_GEO_FIL_LOTE_300_19_P11}from"./ueceGeografiaFilosofiaLote300_19_p11.js";
+import{UECE_GEO_FIL_LOTE_300_19_P12}from"./ueceGeografiaFilosofiaLote300_19_p12.js";
+import{UECE_GEO_FIL_LOTE_300_19_P13}from"./ueceGeografiaFilosofiaLote300_19_p13.js";
+import{UECE_GEO_FIL_LOTE_300_19_P14}from"./ueceGeografiaFilosofiaLote300_19_p14.js";
+import{UECE_GEO_FIL_LOTE_300_19_P15}from"./ueceGeografiaFilosofiaLote300_19_p15.js";
+export const UECE_GEO_FIL_LOTE_300_19=[...UECE_GEO_FIL_LOTE_300_19_P01,...UECE_GEO_FIL_LOTE_300_19_P02,...UECE_GEO_FIL_LOTE_300_19_P03,...UECE_GEO_FIL_LOTE_300_19_P04,...UECE_GEO_FIL_LOTE_300_19_P05,...UECE_GEO_FIL_LOTE_300_19_P06,...UECE_GEO_FIL_LOTE_300_19_P07,...UECE_GEO_FIL_LOTE_300_19_P08,...UECE_GEO_FIL_LOTE_300_19_P09,...UECE_GEO_FIL_LOTE_300_19_P10,...UECE_GEO_FIL_LOTE_300_19_P11,...UECE_GEO_FIL_LOTE_300_19_P12,...UECE_GEO_FIL_LOTE_300_19_P13,...UECE_GEO_FIL_LOTE_300_19_P14,...UECE_GEO_FIL_LOTE_300_19_P15];
