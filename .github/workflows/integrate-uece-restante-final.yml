@@ -1,0 +1,41 @@
+name: Finalizar UECE lotes 21 a 23
+on:
+  push:
+    branches: ["main"]
+    paths: ["scripts/integrar_uece_restante_final.py"]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pymupdf
+      - name: Gerar lotes 21, 22 e 23
+        env:
+          UECE_PDF_URL: https://drive.usercontent.google.com/download?id=18fCbZ_iEnHHg_mdvKqtEBVBsl-A3pP0k&export=download&confirm=t
+        run: python scripts/integrar_uece_restante_final.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm install
+      - name: Auditar lotes finais
+        run: node scripts/verificar_uece_restante_final.mjs
+      - name: Verificador geral
+        run: python scripts/verificar_integracao_questoes.py
+      - name: Verificador de mídias
+        run: python scripts/verificar_midias_questoes.py
+      - name: Build
+        run: npm run build
+      - name: Persistir lotes finais
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/questionRegistry.js src/data/questionSources/ueceRestanteLote300_21*.js src/data/questionSources/ueceRestanteLote300_22*.js src/data/questionSources/ueceRestanteLoteFinal_23*.js scripts/verificar_uece_restante_final.mjs public/question-media/uece/final docs/UECE_PENDENCIAS_FINAIS.json
+          git commit -m "feat(uece): concluir apostila com lotes 21 a 23 auditados"
+          git push origin HEAD:main
