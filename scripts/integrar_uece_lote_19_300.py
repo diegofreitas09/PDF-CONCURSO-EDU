@@ -77,7 +77,7 @@ pol=amap('A D C B B C A C C B B B D D C B B A B A D B B C C B D B D A D D B A D 
 Q=[]
 for spec in [
     (824,830,20,28,'Geografia','Relevo','UECE-GEO-REL',rel),
-    (830,838,1,46,'Geografia','Geologia e geomorfologia','UECE-GEO-GEO',geo),
+    (830,838,1,46,'Geografia','Geologia e geomorfologia','UECE-GEO-GEL',geo),
     (838,843,1,20,'Geografia','Vegetação e biomas','UECE-GEO-VEG',veg),
     (843,854,1,37,'Geografia','Geografia do Ceará','UECE-GEO-CEA',cea),
     (854,859,1,17,'Filosofia','Surgimento da filosofia','UECE-FIL-SUR',sur),
