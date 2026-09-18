@@ -1,4 +1,5 @@
-import fitz,re,json,os,urllib.request\n# Auditor final v2: preserva diferenças ortográficas e numeração de linhas.
+import fitz,re,json,os,urllib.request
+# Auditor final v2: preserva diferenças ortográficas e numeração de linhas.
 from functools import lru_cache
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
