@@ -32,7 +32,7 @@ def take(a,b,start,end,topic,prefix,ans):
  for n in range(start,end+1):
   m=re.compile(r'(?m)^\s*'+str(n)+r'\)\s*\((UECE[^)]*)\)\s*').search(s,pos)
   if not m: raise RuntimeError(f'ausente {topic} {n}')
-  nx=re.compile(r'(?m)^\s*'+str(n+1)+r'\)\s*\(UECE').search(s,m.end()) if n<end else None
+  nx=re.compile(r'(?m)^\s*\d+\)\s*\(UECE').search(s,m.end())
   q=s[m.end():(nx.start() if nx else len(s))].strip(); pos=nx.start() if nx else len(s)
   ms=list(re.finditer(r'(?:^|\n|\s)([ABCD])\)\s+',q)); last={}
   for x in ms:last[x.group(1)]=x
@@ -61,11 +61,11 @@ ene=amap('B B B D D D B B D C A D A C'); reg=amap('D A D B A A B C C D A D')
 rel=amap('C B A D C A B A A D C B A D C C B C D C A B C B B A C C')
 Q=[]
 for x in [
- (754,761,10,30,'Globalização','UECE-GEO-GLO',glo),(762,773,1,43,'Meio ambiente','UECE-GEO-MEI',mei),
- (774,778,1,18,'População','UECE-GEO-POP',pop),(779,780,1,6,'Transporte','UECE-GEO-TRA',tra),
- (781,792,1,47,'Urbanização','UECE-GEO-URB',urb),(793,800,1,41,'Cartografia','UECE-GEO-CAR',car),
- (801,808,1,38,'Climatologia','UECE-GEO-CLI',cli),(809,816,1,41,'Hidrografia','UECE-GEO-HID',hid),
- (817,820,1,14,'Fontes de energia','UECE-GEO-ENE',ene),(821,823,1,12,'Regiões','UECE-GEO-REG',reg),
+ (754,762,10,30,'Globalização','UECE-GEO-GLO',glo),(762,774,1,43,'Meio ambiente','UECE-GEO-MEI',mei),
+ (774,779,1,18,'População','UECE-GEO-POP',pop),(779,781,1,6,'Transporte','UECE-GEO-TRA',tra),
+ (781,793,1,47,'Urbanização','UECE-GEO-URB',urb),(793,801,1,41,'Cartografia','UECE-GEO-CAR',car),
+ (801,809,1,38,'Climatologia','UECE-GEO-CLI',cli),(809,817,1,41,'Hidrografia','UECE-GEO-HID',hid),
+ (817,821,1,14,'Fontes de energia','UECE-GEO-ENE',ene),(821,824,1,12,'Regiões','UECE-GEO-REG',reg),
  (824,829,1,19,'Relevo','UECE-GEO-REL',rel)]: Q+=take(*x)
 if len(Q)!=300 or len({q['id'] for q in Q})!=300: raise RuntimeError(f'count {len(Q)}')
 for q in Q:
