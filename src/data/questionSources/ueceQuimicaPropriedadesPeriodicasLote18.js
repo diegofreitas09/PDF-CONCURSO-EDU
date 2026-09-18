@@ -1,11 +1,11 @@
 // UECE por Assunto — Química / Propriedades Periódicas (18 questões)
 // Fonte: Apostila UECE por Assunto 11ª edição, pp. 194-196. Gabaritos conferidos no quadro oficial.
 const ORIGIN="Apostila UECE por Assunto 11ª edição — pp. 194-196";
-const q=(id,source,statement,options,answer,explanation,media=null)=>({
+const q=(id,source,statement,options,answer,explanation,media=null,context="")=>({
   id:`UECE-QUI-PER-${String(id).padStart(3,"0")}`,discipline:"Química",topic:"Propriedades periódicas",
   statement:`(${source}) ${statement}`,options,answer,
   explanation:`Gabarito oficial: ${String.fromCharCode(65+answer)}. ${explanation}`,
-  source,origin:ORIGIN,reviewed:true,...(media?{media}:{})
+  source,origin:ORIGIN,reviewed:true,...(media?{media}:{}),...(context?{context}:{})
 });
 
 export const UECE_QUIMICA_PROPRIEDADES_PERIODICAS_LOTE_18=[
@@ -27,12 +27,12 @@ q(4,"UECE 2020.1 1ª Fase","A 15ª edição da Escola de Verão de Química da U
   "Estabeleceu a primeira lei periódica conhecida como lei das oitavas baseada na escala musical.",
   "Priorizou, no alinhamento dos elementos, as propriedades químicas em detrimento da ordem de massas atômicas."
 ],3,"Mendeleev priorizou a coerência das propriedades químicas, chegando a contrariar a ordem estrita de massas quando necessário."),
-q(5,"UECE 2020.1 2ª Fase","Segundo a revista Superinteressante de novembro de 2019, o cigarro libera diversas substâncias tóxicas e cancerígenas. Considerando as substâncias mencionadas no texto, é correto afirmar que",[
+q(5,"UECE 2020.1 2ª Fase","Considerando as substâncias mencionadas acima, é correto afirmar que",[
   "níquel e cádmio são metais de transição e fazem parte da mesma família na tabela periódica.",
   "arsênio e fósforo estão localizados no mesmo período da tabela periódica.",
   "a acroleína, a nicotina e as cetonas são compostos orgânicos de diferentes funções.",
   "o polônio é um metal de transição pertencente à família do oxigênio."
-],2,"Acroleína, nicotina e cetonas pertencem a funções orgânicas distintas."),
+],2,"Acroleína, nicotina e cetonas pertencem a funções orgânicas distintas.",null,"Segundo a revista Superinteressante de novembro de 2019, o cigarro é uma arma química que mata 8 milhões de pessoas, no mundo, por ano. Quando um cigarro é aceso, ocorrem reações que produzem mais de 250 substâncias tóxicas, tais como monóxido de carbono, nicotina, amônia, cetonas, formaldeído, acetaldeído e acroleína, e mais de 40 substâncias comprovadamente cancerígenas, dentre as quais se encontram arsênio, níquel, cádmio, polônio, fósforo, acetona, naftaleno etc."),
 q(6,"UECE 2020.2 2ª Fase","Um telefone celular típico contém metais como cobre, prata, ouro, paládio e platina. Atente para as proposições: I. O ouro é altamente resistente à corrosão devido ao seu potencial de oxidação muito positivo. II. O material retardante tem como objetivo diminuir o risco de explosões no celular. III. Pertencente ao bloco f da tabela periódica, o paládio é usado nos capacitores dos celulares. IV. O cobre é bom condutor de eletricidade. V. A prata é o melhor condutor metálico de corrente elétrica em temperatura normal. Está correto somente o que se afirma em",[
   "I, III e IV.","III e V.","I e II.","II, IV e V."
 ],3,"II, IV e V são verdadeiras. O paládio pertence ao bloco d, e a afirmação I está formulada incorretamente."),
