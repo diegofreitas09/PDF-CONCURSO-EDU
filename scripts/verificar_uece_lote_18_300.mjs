@@ -1,0 +1,1 @@
+import{UECE_GEOGRAFIA_LOTE_300_18 as Q}from"../src/data/questionSources/ueceGeografiaLote300_18.js";if(Q.length!==300)throw new Error("count "+Q.length);if(new Set(Q.map(q=>q.id)).size!==300)throw new Error("ids");for(const q of Q){if(!q.statement||q.options?.length!==4||!Number.isInteger(q.answer)||!q.source||!q.origin)throw new Error(q.id)}console.log("Lote 18 OK 300/300");
