@@ -8,18 +8,18 @@ OUT.mkdir(parents=True,exist_ok=True); MEDIA.mkdir(parents=True,exist_ok=True)
 if not PDF.exists(): urllib.request.urlretrieve(url,PDF)
 d=fitz.open(PDF)
 HDR='TURMA DO JOTA\nMade with Xodo PDF Reader and Editor'
-TD=re.compile(r'\\b(?:no texto|de acordo com o texto|com base no texto|segundo o texto|a partir do texto|leia o texto|leia o trecho|texto acima|texto anterior)\\b',re.I)
-MD=re.compile(r'\\b(?:figura|imagem|gráfico|grafico|mapa|charge|tirinha|quadro|diagrama|esquema|infográfico|infografico|fotografia|foto)\\b',re.I)
-CUE=re.compile(r'\\b(?:com base (?:no|neste|nesse) (?:texto|excerto|fragmento)|de acordo com (?:o|este|esse) (?:texto|excerto|fragmento)|a partir (?:do|deste|desse) (?:texto|excerto|fragmento)|segundo (?:o|este|esse) (?:texto|excerto|fragmento))\\b',re.I)
+TD=re.compile(r'\b(?:no texto|de acordo com o texto|com base no texto|segundo o texto|a partir do texto|leia o texto|leia o trecho|texto acima|texto anterior)\b',re.I)
+MD=re.compile(r'\b(?:figura|imagem|gráfico|grafico|mapa|charge|tirinha|quadro|diagrama|esquema|infográfico|infografico|fotografia|foto)\b',re.I)
+CUE=re.compile(r'\b(?:com base (?:no|neste|nesse) (?:texto|excerto|fragmento)|de acordo com (?:o|este|esse) (?:texto|excerto|fragmento)|a partir (?:do|deste|desse) (?:texto|excerto|fragmento)|segundo (?:o|este|esse) (?:texto|excerto|fragmento))\b',re.I)
 def raw(p): return d[p-1].get_text().replace(HDR,'')
-def clean(s): return re.sub(r'\\s+',' ',s.replace(chr(2),' ')).replace(' .','.').strip()
+def clean(s): return re.sub(r'\s+',' ',s.replace(chr(2),' ')).replace(' .','.').strip()
 def pages(a,b): return '\n'.join(raw(i) for i in range(a,b+1))
 def amap(s): return {i+1:x for i,x in enumerate(s.split())}
 def splitctx(s):
  s=clean(s); m=CUE.search(s)
  return (clean(s[:m.start()]),clean(s[m.start():])) if m and m.start()>=100 else ('',s)
 def qpage(a,b,n):
- pat=re.compile(r'(?m)^\\s*'+str(n)+r'\\)\\s*\\(UECE')
+ pat=re.compile(r'(?m)^\s*'+str(n)+r'\)\s*\(UECE')
  for p in range(a,b+1):
   if pat.search(raw(p)): return p
  return a
@@ -30,11 +30,11 @@ def media(p):
 def take(a,b,start,end,topic,prefix,ans):
  s=pages(a,b); out=[]; pos=0
  for n in range(start,end+1):
-  m=re.compile(r'(?m)^\\s*'+str(n)+r'\\)\\s*\\((UECE[^)]*)\\)\\s*').search(s,pos)
+  m=re.compile(r'(?m)^\s*'+str(n)+r'\)\s*\((UECE[^)]*)\)\s*').search(s,pos)
   if not m: raise RuntimeError(f'ausente {topic} {n}')
-  nx=re.compile(r'(?m)^\\s*'+str(n+1)+r'\\)\\s*\\(UECE').search(s,m.end()) if n<end else None
+  nx=re.compile(r'(?m)^\s*'+str(n+1)+r'\)\s*\(UECE').search(s,m.end()) if n<end else None
   q=s[m.end():(nx.start() if nx else len(s))].strip(); pos=nx.start() if nx else len(s)
-  ms=list(re.finditer(r'(?:^|\\n|\\s)([ABCD])\\)\\s+',q)); last={}
+  ms=list(re.finditer(r'(?:^|\n|\s)([ABCD])\)\s+',q)); last={}
   for x in ms:last[x.group(1)]=x
   if set(last)!={'A','B','C','D'}: raise RuntimeError(f'alternativas {topic} {n}')
   ch=sorted(last.values(),key=lambda x:x.start()); st0=clean(q[:ch[0].start()]); by={}
