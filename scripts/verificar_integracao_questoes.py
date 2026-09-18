@@ -148,6 +148,10 @@ def main():
 
     for path in files:
         text=path.read_text(encoding="utf-8", errors="ignore")
+        # Lotes acelerados são serializados em JSON; normaliza apenas nomes de chaves,
+        # sem tocar em aspas escapadas dentro do conteúdo das questões.
+        if '"id":' in text:
+            text=re.sub(r'(?<!\\)"([A-Za-z][A-Za-z0-9_]*)"\\s*:', r'\\1:', text)
 
         for qid, body in iter_literal_objects(text):
             total+=1; literal_total+=1; add_id(ids,qid,path.name)
