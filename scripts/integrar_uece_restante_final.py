@@ -175,11 +175,15 @@ SG=parse_lang(1164,1186,152,'Espanhol','Gramática','UECE-ESP-GRA',spa['GRAMÁTI
 
 blocked=[{'id':'UECE-ING-INT-084','reason':'missing-statement','detail':'O PDF salta da questão 83 para a 85; o gabarito traz a posição 84, mas não há enunciado/alternativas no material.'}]
 blocked += [{'id':x['id'],'reason':'missing-answer','sourcePage':x.get('sourcePage',1117),'detail':'Questão presente no PDF, mas sem resposta preenchida no gabarito oficial da apostila.'} for x in EI if x['answer'] is None]
-published=Q+[x for x in EI if x['answer'] is not None]+EG+SI+SG
+duplicate_source=[x for x in EG if len({re.sub(r'\\s+',' ',o).strip().casefold() for o in x['options']})<4]
+if [x['id'] for x in duplicate_source]!=['UECE-ING-GRA-055']: raise RuntimeError('duplicatas de alternativas inesperadas: '+str([x['id'] for x in duplicate_source]))
+blocked += [{'id':'UECE-ING-GRA-055','reason':'duplicate-options-source','sourcePage':1128,'detail':'No PDF original, as alternativas A e C são idênticas; a questão foi bloqueada sem inventar correção.'}]
+blocked_ids={x['id'] for x in blocked}
+published=Q+[x for x in EI if x['answer'] is not None and x['id'] not in blocked_ids]+[x for x in EG if x['id'] not in blocked_ids]+SI+SG
 
 if len(Q)!=208 or len(EI)!=132 or len(EG)!=90 or len(SI)!=183 or len(SG)!=152: raise RuntimeError('contagens de origem divergentes')
-if len(published)!=757 or len(blocked)!=9: raise RuntimeError(f'fechamento divergente: published={len(published)} blocked={len(blocked)}')
-if len({q['id'] for q in published})!=757: raise RuntimeError('IDs duplicados no restante')
+if len(published)!=756 or len(blocked)!=10: raise RuntimeError(f'fechamento divergente: published={len(published)} blocked={len(blocked)}')
+if len({q['id'] for q in published})!=756: raise RuntimeError('IDs duplicados no restante')
 for q in published:
  if not q['statement'] or len(q['options'])!=4 or any(not x for x in q['options']) or not isinstance(q['answer'],int) or q['answer'] not in range(4) or not q['discipline'] or not q['topic'] or not q['source'] or not q['origin']:
   raise RuntimeError('catraca básica: '+q['id'])
@@ -198,7 +202,7 @@ for arr,(const,base) in zip(lots,names):
  spreads=','.join('...'+pc for pc,_ in chunks)
  (OUT/f'{base}.js').write_text(imports+f'\nexport const {const}=[{spreads}];\n',encoding='utf-8')
 
-(ROOT/'docs/UECE_PENDENCIAS_FINAIS.json').write_text(json.dumps({'blocked':blocked,'publishedRemaining':757,'sourcePositionsRemaining':766},ensure_ascii=False,indent=2),encoding='utf-8')
+(ROOT/'docs/UECE_PENDENCIAS_FINAIS.json').write_text(json.dumps({'blocked':blocked,'publishedRemaining':756,'sourcePositionsRemaining':766},ensure_ascii=False,indent=2),encoding='utf-8')
 
 r=ROOT/'src/data/questionRegistry.js'; t=r.read_text(encoding='utf-8')
 anchor='import{UECE_FIL_SOC_LOTE_300_20}from"./questionSources/ueceFilosofiaSociologiaLote300_20";'
@@ -215,6 +219,6 @@ if needle in t: t=t.replace(needle,replacement)
 elif replacement not in t: raise RuntimeError('registry mudou')
 r.write_text(t,encoding='utf-8')
 
-ver='import{UECE_RESTANTE_LOTE_300_21 as A}from"../src/data/questionSources/ueceRestanteLote300_21.js";\nimport{UECE_RESTANTE_LOTE_300_22 as B}from"../src/data/questionSources/ueceRestanteLote300_22.js";\nimport{UECE_RESTANTE_LOTE_FINAL_23 as C}from"../src/data/questionSources/ueceRestanteLoteFinal_23.js";\nimport{auditQuestionBank}from"../src/data/questionAuditEngine.js";\nconst lots=[["21",A,300],["22",B,300],["23",C,157]];let all=[];for(const[n,q,c]of lots){if(q.length!==c)throw new Error("lote "+n+": "+q.length);const a=auditQuestionBank(q);if(a.stats.published!==c||a.stats.quarantined||a.stats.duplicates){console.error(a.quarantined.map(x=>({id:x.id,issues:x.auditIssues})));throw new Error("catraca lote "+n+": "+JSON.stringify(a.stats))}all.push(...q)}if(new Set(all.map(q=>q.id)).size!==757)throw new Error("ids");const d=all.reduce((a,q)=>(a[q.discipline]=(a[q.discipline]||0)+1,a),{});if(d.Sociologia!==208||d["Inglês"]!==214||d.Espanhol!==335)throw new Error(JSON.stringify(d));console.log("Restante UECE OK — lote21 300 | lote22 300 | lote23 157 | total 757 | bloqueadas na fonte 9");\n'
+ver='import{UECE_RESTANTE_LOTE_300_21 as A}from"../src/data/questionSources/ueceRestanteLote300_21.js";\nimport{UECE_RESTANTE_LOTE_300_22 as B}from"../src/data/questionSources/ueceRestanteLote300_22.js";\nimport{UECE_RESTANTE_LOTE_FINAL_23 as C}from"../src/data/questionSources/ueceRestanteLoteFinal_23.js";\nimport{auditQuestionBank}from"../src/data/questionAuditEngine.js";\nconst lots=[["21",A,300],["22",B,300],["23",C,156]];let all=[];for(const[n,q,c]of lots){if(q.length!==c)throw new Error("lote "+n+": "+q.length);const a=auditQuestionBank(q);if(a.stats.published!==c||a.stats.quarantined||a.stats.duplicates){console.error(a.quarantined.map(x=>({id:x.id,issues:x.auditIssues})));throw new Error("catraca lote "+n+": "+JSON.stringify(a.stats))}all.push(...q)}if(new Set(all.map(q=>q.id)).size!==756)throw new Error("ids");const d=all.reduce((a,q)=>(a[q.discipline]=(a[q.discipline]||0)+1,a),{});if(d.Sociologia!==208||d["Inglês"]!==213||d.Espanhol!==335)throw new Error(JSON.stringify(d));console.log("Restante UECE OK — lote21 300 | lote22 300 | lote23 156 | total 756 | bloqueadas na fonte 10");\n'
 (ROOT/'scripts/verificar_uece_restante_final.mjs').write_text(ver,encoding='utf-8')
-print('Restante preparado: 757 publicáveis em 300 + 300 + 157; 9 bloqueadas por ausência na fonte/gabarito.')
+print('Restante preparado: 756 publicáveis em 300 + 300 + 156; 10 bloqueadas por falhas da própria fonte/gabarito.')
