@@ -149,7 +149,11 @@ def embedded_text_support(statement: str) -> bool:
 def embedded_media_support(statement: str) -> bool:
     raw = str(statement or "")
     # Quadros/tabelas reconstruídos em LaTeX já contêm a mídia necessária.
-    return bool(re.search(r'\\begin\{(?:array|tabular|matrix|pmatrix|bmatrix)\}|\$\
+    return any(token in raw for token in (
+        "\\begin{array}", "\\begin{tabular}", "\\begin{matrix}",
+        "\\begin{pmatrix}", "\\begin{bmatrix}", "$$"
+    ))
+
 def check_options(issues, qid, filename, nopt, strict_uece):
     valid = (nopt == 4) if strict_uece else (nopt in {4, 5})
     if not valid:
