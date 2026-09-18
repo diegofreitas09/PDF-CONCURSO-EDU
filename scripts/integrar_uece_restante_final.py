@@ -50,8 +50,21 @@ PROMPT_CUE=re.compile(r'(?is)\b(?:considerando\s+(?:o\s+)?(?:texto\s+acima|expos
 
 def split_simple_context(s):
  s=clean(s)
- m=re.match(r'(?is)^Complete\s+os\s+espaços\s+no\s+texto\s+a\s+seguir\.\s*(.+?)\s+(Assinale\s+a\s+alternativa.+)
-
+ m=re.match(r'(?is)^Complete\\s+os\\s+espaços\\s+no\\s+texto\\s+a\\s+seguir\\.\\s*(.+?)\\s+(Assinale\\s+a\\s+alternativa.+)$',s)
+ if m:return clean(m.group(1)),clean('Complete os espaços no texto a seguir. '+m.group(2))
+ matches=list(PROMPT_CUE.finditer(s))
+ if matches:
+  m=matches[-1]
+  if m.start()>=80:return clean(s[:m.start()]),clean(s[m.start():])
+ # Alguns itens trazem o texto-base e só no fim iniciam o comando que referencia trecho/texto anterior.
+ for pat in [r'(?is)\\bConsiderando\\b',r'(?is)\\bAssinale\\b',r'(?is)\\bCom\\s+base\\b',r'(?is)\\bDe\\s+acordo\\b']:
+  found=list(re.finditer(pat,s))
+  if found:
+   m=found[-1]
+   suffix=clean(s[m.start():])
+   if m.start()>=120 and TEXT_REF.search(suffix):
+    return clean(s[:m.start()]),suffix
+ return '',s
 def qpage(a,b,n):
  pat=re.compile(r'(?m)^\s*0*'+str(n)+r'\s*[\)\.]?\s*\(UECE')
  for p in range(a,b+1):
