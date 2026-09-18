@@ -6,7 +6,7 @@ de avisos de legado. Itens UECE exigem maior rigor, mas referências históricas
 expressões (ex.: origin:src) são aceitas quando o campo está presente.
 """
 from __future__ import annotations
-import json, re
+import json, re, unicodedata
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -103,6 +103,38 @@ def is_uece(path: Path, qid: str = "") -> bool:
     return path.name.lower().startswith("uece") or str(qid).upper().startswith("UECE-")
 
 
+
+TEXT_DEP_RE = re.compile(r'\b(?:no texto|neste texto|nesse texto|de acordo com (?:o |este |esse )?texto|com base (?:no|neste|nesse) texto|segundo (?:o |este |esse )?texto|a partir (?:do|deste|desse) texto|texto (?:acima|anterior|a seguir|seguinte)|leia (?:o |este |esse )?(?:texto|trecho|fragmento|poema|tirinha|noticia)|considere (?:o |este |esse )?(?:texto|trecho|fragmento)|observe (?:o |este |esse )?(?:texto|trecho|fragmento)|no trecho|neste trecho|nesse trecho|paragrafo|autor(?:a)? do texto|ideia central do texto|texto-base|texto de apoio)\b')
+MEDIA_DEP_RE = re.compile(r'(?:\b(?:observe|analise|considere|veja|examine)\s+(?:a|o)\s+(?:figura|imagem|grafico|tabela|mapa|charge|tirinha|quadro|diagrama|esquema)\b)|(?:\b(?:figura|imagem|grafico|tabela|mapa|charge|tirinha|quadro|diagrama|esquema)\s+(?:acima|abaixo|a seguir|seguinte|anterior|apresentad[oa]|mostrad[oa]|representad[oa])\b)|(?:\brepresentad[oa]\s+(?:na|no)\s+(?:figura|imagem|grafico|tabela|mapa|charge|tirinha|quadro|diagrama|esquema)\b)')
+CONTEXT_FIELDS = ("context", "passage", "supportText", "texto", "textBase", "baseText", "textoBase")
+ORIGIN_FIELDS = ("source", "origin", "prova", "exam", "reference", "referencia")
+
+def normalized_phrase(value: str) -> str:
+    raw = unicodedata.normalize("NFD", str(value or "").casefold())
+    return "".join(ch for ch in raw if unicodedata.category(ch) != "Mn")
+
+def needs_text_support(value: str) -> bool:
+    return bool(TEXT_DEP_RE.search(normalized_phrase(value)))
+
+def needs_media_support(value: str) -> bool:
+    return bool(MEDIA_DEP_RE.search(normalized_phrase(value)))
+
+def has_context_support(body: str) -> bool:
+    for name in CONTEXT_FIELDS:
+        value = field_value(name, body)
+        if value is not None and value.strip():
+            return True
+        if value is None and has_field(body, name):
+            return True
+    return False
+
+def has_origin_ref(body: str) -> bool:
+    return any(has_field(body, name) for name in ORIGIN_FIELDS)
+
+def embedded_text_support(statement: str) -> bool:
+    s = normalized_phrase(statement)
+    return ("texto-base" in s or "texto de apoio" in s) and "questao" in s
+
 def check_options(issues, qid, filename, nopt, strict_uece):
     valid = (nopt == 4) if strict_uece else (nopt in {4, 5})
     if not valid:
@@ -121,20 +153,24 @@ def main():
             total+=1; literal_total+=1; add_id(ids,qid,path.name)
             strict=is_uece(path,qid)
 
+            statement_value = field_value("statement", body) or ""
             for name in ("discipline","topic","statement"):
                 value=field_value(name,body)
                 if value is None or not value.strip():
                     issues.append({"id":qid,"arquivo":path.name,"erro":f"campo ausente/vazio: {name}"})
+
+            if needs_text_support(statement_value) and not has_context_support(body) and not embedded_text_support(statement_value):
+                issues.append({"id":qid,"arquivo":path.name,"erro":"texto-base/contexto ausente"})
+            if needs_media_support(statement_value) and not has_media(body):
+                issues.append({"id":qid,"arquivo":path.name,"erro":"mídia necessária ausente"})
 
             explanation=field_value("explanation",body)
             if explanation is None or not explanation.strip():
                 target=issues if strict else warnings
                 target.append({"id":qid,"arquivo":path.name,"erro":"campo ausente/vazio: explanation"})
 
-            if strict:
-                for name in ("source","origin"):
-                    if not has_field(body,name):
-                        warnings.append({"id":qid,"arquivo":path.name,"erro":f"referência ausente: {name}"})
+            if strict and not has_origin_ref(body):
+                issues.append({"id":qid,"arquivo":path.name,"erro":"origem/fonte ausente"})
 
             nopt=count_options(body); ans=answer_index(body)
             check_options(issues,qid,path.name,nopt,strict)
@@ -161,6 +197,12 @@ def main():
                 nopt=count_strings(match.group("options")); ans=int(match.group("answer"))
                 if not statement:
                     issues.append({"id":qid,"arquivo":path.name,"erro":"campo ausente/vazio: statement"})
+                if strict and not match.group("source").strip():
+                    issues.append({"id":qid,"arquivo":path.name,"erro":"origem/fonte ausente"})
+                if needs_text_support(statement) and not embedded_text_support(statement):
+                    issues.append({"id":qid,"arquivo":path.name,"erro":"texto-base/contexto ausente"})
+                if needs_media_support(statement) and not (match.group("media") or "").strip():
+                    issues.append({"id":qid,"arquivo":path.name,"erro":"mídia necessária ausente"})
                 if not explanation:
                     target=issues if strict else warnings
                     target.append({"id":qid,"arquivo":path.name,"erro":"campo ausente/vazio: explanation"})
