@@ -62,8 +62,8 @@ def split_simple_context(s):
   if found:
    m=found[-1]
    suffix=clean(s[m.start():])
-   flat=re.sub(r'\\s+',' ',suffix)
-   has_ref=bool(TEXT_REF.search(flat) or re.search(r'(?i)\\b(?:trecho|texto|excerto|passagem)\\s+(?:acima|anterior)\\b',flat))
+   flat=re.sub(r'\s+',' ',suffix)
+   has_ref=bool(TEXT_REF.search(flat) or re.search(r'(?i)\b(?:trecho|texto|excerto|passagem)\s+(?:acima|anterior)\b',flat))
    if m.start()>=120 and has_ref:
     return clean(s[:m.start()]),suffix
  return '',s
