@@ -35,6 +35,8 @@ def validate_image(path: Path):
 
 for js in SOURCES.glob("*.js"):
     text = js.read_text(encoding="utf-8", errors="replace")
+    if '"id":' in text:
+        text = re.sub(r'(?<!\\)"([A-Za-z][A-Za-z0-9_]*)"\\s*:', r'\\1:', text)
     for ref in REF_RE.findall(text):
         if ref.startswith(("http://", "https://", "data:")):
             continue
