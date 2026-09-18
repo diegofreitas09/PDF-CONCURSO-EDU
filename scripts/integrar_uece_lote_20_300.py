@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Catraca lote 20: auditoria estrita de conteúdo, contexto, mídia, gabarito, assunto e origem.
 from pathlib import Path
 import os,re,json,urllib.request,fitz
 
