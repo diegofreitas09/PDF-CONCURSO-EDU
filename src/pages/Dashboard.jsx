@@ -1,7 +1,7 @@
 import React,{useEffect,useMemo,useState}from"react";
 import{ArrowRight,BookOpenText,Clock3,Database,FileText,ListChecks,PlayCircle,Target,TrendingUp,Sparkles,ShieldCheck}from"lucide-react";
 import{useNavigate}from"react-router";
-import{REGISTERED_QUESTIONS,QUESTION_REGISTRY_STATS}from"../data/questionRegistry";
+import{REGISTERED_QUESTIONS,QUESTION_BANK_STATS}from"../data/questionRegistry";
 import{LIBRARY_MATERIALS}from"../data/libraryMaterials";
 import"../styles/functions.css";
 
@@ -23,9 +23,9 @@ export default function Dashboard(){
  const uniqueDisciplines=useMemo(()=>new Set(ALL_QUESTIONS.map(q=>q.discipline).filter(Boolean)).size,[]);
  const completedCount=(state.completedTopics||[]).length;
  const progress=uniqueTopics?Math.min(100,Math.round(completedCount/uniqueTopics*100)):0;
- const reviewCount=QUESTION_REGISTRY_STATS?.quarantined||0;
- const analyzedCount=QUESTION_REGISTRY_STATS?.raw??publishedQuestions;
- const duplicateCount=QUESTION_REGISTRY_STATS?.duplicates||0;
+ const reviewCount=QUESTION_BANK_STATS?.quarantined||0;
+ const analyzedCount=QUESTION_BANK_STATS?.raw??publishedQuestions;
+ const duplicateCount=QUESTION_BANK_STATS?.duplicates||0;
  const goal=Number(state.settings?.weeklyGoal||300);const goalPct=Math.min(100,Math.round(studiedMinutes/Math.max(1,goal)*100));
  return <section className="page dashboard-page dashboard-pro">
   <div className="dashboard-hero">
