@@ -1,0 +1,65 @@
+{
+  "blocked": [
+    {
+      "id": "UECE-ING-INT-084",
+      "reason": "missing-statement",
+      "detail": "O PDF salta da questão 83 para a 85; o gabarito traz a posição 84, mas não há enunciado/alternativas no material."
+    },
+    {
+      "id": "UECE-ING-INT-126",
+      "reason": "missing-answer",
+      "sourcePage": 1117,
+      "detail": "Questão presente no PDF, mas sem resposta preenchida no gabarito oficial da apostila."
+    },
+    {
+      "id": "UECE-ING-INT-127",
+      "reason": "missing-answer",
+      "sourcePage": 1117,
+      "detail": "Questão presente no PDF, mas sem resposta preenchida no gabarito oficial da apostila."
+    },
+    {
+      "id": "UECE-ING-INT-128",
+      "reason": "missing-answer",
+      "sourcePage": 1117,
+      "detail": "Questão presente no PDF, mas sem resposta preenchida no gabarito oficial da apostila."
+    },
+    {
+      "id": "UECE-ING-INT-129",
+      "reason": "missing-answer",
+      "sourcePage": 1117,
+      "detail": "Questão presente no PDF, mas sem resposta preenchida no gabarito oficial da apostila."
+    },
+    {
+      "id": "UECE-ING-INT-130",
+      "reason": "missing-answer",
+      "sourcePage": 1117,
+      "detail": "Questão presente no PDF, mas sem resposta preenchida no gabarito oficial da apostila."
+    },
+    {
+      "id": "UECE-ING-INT-131",
+      "reason": "missing-answer",
+      "sourcePage": 1117,
+      "detail": "Questão presente no PDF, mas sem resposta preenchida no gabarito oficial da apostila."
+    },
+    {
+      "id": "UECE-ING-INT-132",
+      "reason": "missing-answer",
+      "sourcePage": 1117,
+      "detail": "Questão presente no PDF, mas sem resposta preenchida no gabarito oficial da apostila."
+    },
+    {
+      "id": "UECE-ING-INT-133",
+      "reason": "missing-answer",
+      "sourcePage": 1117,
+      "detail": "Questão presente no PDF, mas sem resposta preenchida no gabarito oficial da apostila."
+    },
+    {
+      "id": "UECE-ING-GRA-055",
+      "reason": "duplicate-options-source",
+      "sourcePage": 1128,
+      "detail": "No PDF original, as alternativas A e C são idênticas; a questão foi bloqueada sem inventar correção."
+    }
+  ],
+  "publishedRemaining": 756,
+  "sourcePositionsRemaining": 766
+}

@@ -1,0 +1,5 @@
+import{UECE_RESTANTE_LOTE_300_21 as A}from"../src/data/questionSources/ueceRestanteLote300_21.js";
+import{UECE_RESTANTE_LOTE_300_22 as B}from"../src/data/questionSources/ueceRestanteLote300_22.js";
+import{UECE_RESTANTE_LOTE_FINAL_23 as C}from"../src/data/questionSources/ueceRestanteLoteFinal_23.js";
+import{auditQuestionBank}from"../src/data/questionAuditEngine.js";
+const lots=[["21",A,300],["22",B,300],["23",C,156]];let all=[];for(const[n,q,c]of lots){if(q.length!==c)throw new Error("lote "+n+": "+q.length);const a=auditQuestionBank(q);if(a.stats.published!==c||a.stats.quarantined||a.stats.duplicates){console.error(a.quarantined.map(x=>({id:x.id,issues:x.auditIssues})));throw new Error("catraca lote "+n+": "+JSON.stringify(a.stats))}all.push(...q)}if(new Set(all.map(q=>q.id)).size!==756)throw new Error("ids");const d=all.reduce((a,q)=>(a[q.discipline]=(a[q.discipline]||0)+1,a),{});if(d.Sociologia!==208||d["Inglês"]!==213||d.Espanhol!==335)throw new Error(JSON.stringify(d));console.log("Restante UECE OK — lote21 300 | lote22 300 | lote23 156 | total 756 | bloqueadas na fonte 10");
