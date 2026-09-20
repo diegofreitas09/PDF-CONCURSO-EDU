@@ -2,7 +2,9 @@ name: Finalizar UECE lotes 21 a 23
 on:
   push:
     branches: ["main"]
-    paths: ["scripts/integrar_uece_restante_final.py"]
+    paths:
+      - "scripts/integrar_uece_restante_final.py"
+      - "docs/UECE_TRIGGER.md"
   workflow_dispatch:
 permissions:
   contents: write
