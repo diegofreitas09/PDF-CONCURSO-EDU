@@ -10,6 +10,8 @@ const files={
   platform:read("src/pages/PlatformPages.jsx"),
   router:read("src/routes/router.jsx"),
   catalog:read("src/utils/platformCatalog.js"),
+  scanner:read("src/components/simulations/AnswerSheetScanner.jsx"),
+  redacao:read("src/pages/CorretorRedacao.jsx"),
 };
 const checks=[];
 const ok=(name,condition,detail="")=>checks.push({name,condition:Boolean(condition),detail});
@@ -25,6 +27,9 @@ ok("biblioteca lê busca da URL",files.platform.includes('params.get("busca")')&
 ok("busca global usa catálogo",files.header.includes("resolveQuestionSearch")&&files.header.includes("savePlatformSelection"));
 ok("dashboard mede cobertura",files.dashboard.includes("answeredCoverage")&&files.dashboard.includes("COBERTURA"));
 ok("dashboard mostra qualidade",files.dashboard.includes("qualityPct")&&files.dashboard.includes("em quarentena"));
+ok("tipo de prova executa changePaperType",files.simulados.includes("changePaperType")&&files.simulados.includes("paperSelectionToDigital"));
+ok("cartão-resposta mapeia A-D",files.scanner.includes('option value="0">A')&&files.scanner.includes('option value="3">D')&&files.scanner.includes("onApply?.(scan.answers)"));
+ok("redação atualiza competência pelo seletor",files.redacao.includes("SCORE_VALUES")&&files.redacao.includes("updateScore(index, e.target.value)"));
 for(const route of ["estudos","questoes","simulados","desempenho","biblioteca","cronograma","flashcards","mapas-mentais","corretor-redacao","assistente-ia","configuracoes"])ok("rota "+route,files.router.includes(`path: "${route}"`));
 const staleActive=[
   ["Questões","src/pages/Questoes.jsx",files.questoes],
