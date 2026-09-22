@@ -29,7 +29,9 @@ import {
 } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router";
 import "../styles/functions.css";
-import { QUESTION_BANK } from "../data/questionBank";
+import { REGISTERED_QUESTIONS } from "../data/questionRegistry";
+import { DISCIPLINE_STATS, TOTAL_TOPICS, buildQuestionsRoute, savePlatformSelection } from "../utils/platformCatalog";
+import { disciplineIcon } from "../utils/disciplineIcons";
 const STORAGE_KEY = "pdf-concurso-edu-state-v1";
 
 const DEFAULT_STATE = {
@@ -43,51 +45,14 @@ const DEFAULT_STATE = {
   settings: { name: "Diego", weeklyGoal: 300 }
 };
 
-const STUDY_DATA = [
-  {
-    title: "Legislação Educacional",
-    icon: BookOpenText,
-    description: "Base legal e fundamentos da educação brasileira.",
-    topics: [
-      "Constituição Federal — Educação",
-      "Lei de Diretrizes e Bases — LDB",
-      "Estatuto da Criança e do Adolescente — ECA",
-      "Plano Nacional de Educação — PNE",
-      "Diretrizes Curriculares Nacionais",
-      "BNCC",
-      "Legislação Educacional"
-    ]
-  },
-  {
-    title: "Filosofia",
-    icon: Network,
-    description: "Conteúdos específicos para preparação do concurso.",
-    topics: [
-      "Filosofia Antiga",
-      "Filosofia Medieval",
-      "Filosofia Moderna",
-      "Filosofia Contemporânea",
-      "Ética e Filosofia Política",
-      "Epistemologia",
-      "Filosofia da Educação"
-    ]
-  },
-  {
-    title: "Língua Portuguesa",
-    icon: FileText,
-    description: "Gramática, interpretação e conhecimentos linguísticos.",
-    topics: [
-      "Interpretação de Textos",
-      "Ortografia",
-      "Classes de Palavras",
-      "Sintaxe",
-      "Concordância",
-      "Regência",
-      "Crase",
-      "Pontuação"
-    ]
-  }
-];
+const QUESTION_BANK = REGISTERED_QUESTIONS;
+const STUDY_DATA = DISCIPLINE_STATS.map((item) => ({
+  title: item.discipline,
+  icon: disciplineIcon(item.discipline),
+  description: `${item.questions} questões auditadas em ${item.topicCount} assunto(s).`,
+  topics: item.topics,
+  questions: item.questions,
+}));
 
 const LIBRARY = [
   { title: "Constituição Federal — Educação", type: "Legislação", note: "Artigos constitucionais relacionados ao direito à educação." },
@@ -160,7 +125,7 @@ export function Dashboard() {
   const correct = state.answers.filter((a) => a.correct).length;
   const accuracy = total ? Math.round((correct / total) * 100) : 0;
   const studiedMinutes = Math.floor(state.studySeconds / 60);
-  const totalTopics = STUDY_DATA.reduce((acc, d) => acc + d.topics.length, 0);
+  const totalTopics = TOTAL_TOPICS;
   const progress = Math.round((state.completedTopics.length / totalTopics) * 100);
 
   return (
@@ -221,7 +186,8 @@ export function Estudos() {
 
   function startStudy(discipline, topic) {
     update((s) => ({ ...s, studySeconds: s.studySeconds + 900 }));
-    navigate(`/questoes?disciplina=${encodeURIComponent(discipline)}&topico=${encodeURIComponent(topic)}`);
+    savePlatformSelection(discipline, topic);
+    navigate(buildQuestionsRoute(discipline, topic));
   }
 
   return (
@@ -248,7 +214,7 @@ export function Estudos() {
                   );
                 })}
               </div>
-              <button className="study-main-action" onClick={() => navigate(`/questoes?disciplina=${encodeURIComponent(discipline.title)}`)}>Praticar disciplina<ArrowRight size={17} /></button>
+              <button className="study-main-action" onClick={() => { savePlatformSelection(discipline.title, ""); navigate(buildQuestionsRoute(discipline.title)); }}>Praticar disciplina · {discipline.questions} questões<ArrowRight size={17} /></button>
             </section>
           );
         })}
@@ -399,7 +365,16 @@ export function Cronograma() {
 }
 
 export function Biblioteca() {
-  const [search, setSearch] = useState("");
+  const [params, setParams] = useSearchParams();
+  const [search, setSearch] = useState(() => params.get("busca") || "");
+  useEffect(() => { setSearch(params.get("busca") || ""); }, [params]);
+
+  function updateSearch(value) {
+    setSearch(value);
+    const next = new URLSearchParams(params);
+    value.trim() ? next.set("busca", value) : next.delete("busca");
+    setParams(next, { replace: true });
+  }
 
   const materials = LIBRARY_MATERIALS.filter((m) =>
     `${m.title} ${m.type} ${m.discipline}`
@@ -422,7 +397,7 @@ export function Biblioteca() {
         <Search size={19} />
         <input
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => updateSearch(e.target.value)}
           placeholder="Buscar material, disciplina ou tipo..."
         />
       </div>
