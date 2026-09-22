@@ -17,7 +17,8 @@ const embeddedNext=/(?:^|\s)(?:\d{1,3})\)\s*\(UECE\b/gi;
 const leakedOptions=/\bA\)\s+.{3,}?\bB\)\s+.{3,}?\bC\)/is;
 const badChars=/[�\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/;
 const splitWord=/\b(?:n\s+ão|pa\s+rte|te\s+mperaturas|pos\s+sí­?vel|serv\s+iço|mom\s+ento|hu\s+mana|ve\s+getação|organi\s+zação|condiçõe\s+s)\b/i;
-const danglingCommand=/(?:\bque|\bde|\bdo|\bda|\bem|\bcom|\bpara|\bpor|\bseja|\bé|\bsão|\btem|\bpossui|\bcorresponde)\s*$/i;
+const suspiciousDangling=/\b(?:e|ou|de|do|da|dos|das|com|para|por|em|no|na|nos|nas)\s*$/i;
+const validOpenStem=/(?:é correto afirmar que|é incorreto afirmar que|assinale a alternativa|assinale a opção|pode-se afirmar que|é igual a|corresponde a|equivale a|é dada por|é definido por|é definida por|é composto por|é composta por|é constituído por|é constituída por|tem valor|vale|é|são|será|indica|representa|resulta em|deve ser|pode ser)\s*$/i;
 const commandCue=/(?:assinale|marque|indique|afirme|identifique|determine|calcule|considere|analise|observe|julgue|é correto|é incorreto|pode-se afirmar|corresponde|equivale|resulta|vale|igual a|sequência correta|alternativa correta|opção correta)/i;
 const onlyKeyComment=/^gabarito(?: oficial)?(?: da apostila)?:?\s*[A-D](?:\.|,)?$/i;
 
