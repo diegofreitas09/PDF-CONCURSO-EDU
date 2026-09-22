@@ -1,4 +1,3 @@
-import "../../styles/questionAudit.css";
 import { getEditorialComment } from "../questionCommentary.js";
 import { QUESTION_BANK as LEGACY_QUESTION_BANK } from "../questionBank.js";
 import { SIMULADO_05_TEORIAS_PEDAGOGICAS } from "./simulado05TeoriasPedagogicas.js";
