@@ -1,0 +1,37 @@
+name: Auditoria integral do banco
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "src/data/questionSources/**"
+      - "src/data/questionRegistry.js"
+      - "src/data/questionAuditEngine.js"
+      - "scripts/audit-question-bank-complete.mjs"
+      - ".github/workflows/audit-question-bank.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - name: Auditoria completa
+        id: audit
+        continue-on-error: true
+        run: node scripts/audit-question-bank-complete.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: question-bank-full-audit
+          path: audit/
+      - name: Falhar catraca se houver críticos
+        if: steps.audit.outcome == 'failure'
+        run: exit 1
