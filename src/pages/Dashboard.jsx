@@ -3,6 +3,7 @@ import{ArrowRight,BookOpenText,Clock3,Database,FileText,ListChecks,PlayCircle,Ta
 import{useNavigate}from"react-router";
 import{REGISTERED_QUESTIONS,QUESTION_BANK_STATS}from"../data/questionRegistry";
 import{LIBRARY_MATERIALS}from"../data/libraryMaterials";
+import{answeredCoverage,readPlatformSelection,buildQuestionsRoute}from"../utils/platformCatalog";
 import"../styles/functions.css";
 
 const ALL_QUESTIONS=REGISTERED_QUESTIONS;
@@ -27,14 +28,19 @@ export default function Dashboard(){
  const analyzedCount=QUESTION_BANK_STATS?.raw??publishedQuestions;
  const duplicateCount=QUESTION_BANK_STATS?.duplicates||0;
  const goal=Number(state.settings?.weeklyGoal||300);const goalPct=Math.min(100,Math.round(studiedMinutes/Math.max(1,goal)*100));
+ const coverage=useMemo(()=>answeredCoverage(state.answers||[]),[state.answers]);
+ const selection=readPlatformSelection();
+ const qualityPct=analyzedCount?Math.round(publishedQuestions/analyzedCount*100):100;
  return <section className="page dashboard-page dashboard-pro">
   <div className="dashboard-hero">
    <div className="dashboard-hero-copy"><div className="page-eyebrow">CENTRAL DE PREPARAÇÃO</div><h1>Olá, {state.settings?.name||"Diego"}.</h1><p>Seu estudo, suas questões e sua evolução em um único painel.</p><div className="hero-actions"><button className="primary-button" onClick={()=>navigate("/questoes")}><PlayCircle size={19}/>Resolver questões<ArrowRight size={17}/></button><button className="hero-secondary" onClick={()=>navigate("/simulados")}><FileText size={18}/>Criar simulado</button></div></div>
-   <div className="hero-focus"><div className="hero-focus-icon"><Sparkles size={22}/></div><div><span>FOCO DA SESSÃO</span><strong>{totalAnswered?`${accuracy}% de aproveitamento`:`Comece pelas questões`}</strong><small>{totalAnswered?`${correct} acertos em ${totalAnswered} respostas registradas`:`Use o banco para gerar seu primeiro diagnóstico.`}</small></div></div>
+   <div className="hero-focus"><div className="hero-focus-icon"><Sparkles size={22}/></div><div><span>FOCO DA SESSÃO</span><strong>{selection.topic||selection.discipline||(totalAnswered?`${accuracy}% de aproveitamento`:"Comece pelas questões")}</strong><small>{selection.discipline?`${selection.discipline}${selection.topic?` · ${selection.topic}`:""} — foco sincronizado entre módulos`:totalAnswered?`${correct} acertos em ${totalAnswered} respostas registradas`:"Use o banco para gerar seu primeiro diagnóstico."}</small>{selection.discipline&&<button type="button" className="hero-focus-link" onClick={()=>navigate(buildQuestionsRoute(selection.discipline,selection.topic))}>Continuar neste foco <ArrowRight size={14}/></button>}</div></div>
   </div>
-  <div className="stats-grid stats-pro">
-   <Stat icon={ListChecks} label="QUESTÕES" value={totalAnswered} description={`${publishedQuestions} disponíveis`} tone="blue"/>
-   <Stat icon={Target} label="APROVEITAMENTO" value={`${accuracy}%`} description={`${correct} respostas corretas`} tone="green"/>
+  <div className="stats-grid stats-pro dashboard-kpis-6">
+   <Stat icon={Database} label="BANCO ATIVO" value={publishedQuestions} description={`${uniqueDisciplines} disciplinas · ${uniqueTopics} assuntos`} tone="blue"/>
+   <Stat icon={ListChecks} label="RESPOSTAS" value={totalAnswered} description={`${coverage.uniqueAnswered} questões únicas`} tone="blue"/>
+   <Stat icon={Target} label="APROVEITAMENTO" value={`${accuracy}%`} description={`${correct} acertos`} tone="green"/>
+   <Stat icon={TrendingUp} label="COBERTURA" value={`${coverage.coverage}%`} description="do banco já praticado" tone="green"/>
    <Stat icon={FileText} label="SIMULADOS" value={state.simulations||0} description="realizados até agora" tone="red"/>
    <Stat icon={Clock3} label="TEMPO DE ESTUDO" value={`${studiedMinutes} min`} description={`${goalPct}% da meta semanal`} tone="amber"/>
   </div>
@@ -45,7 +51,7 @@ export default function Dashboard(){
    </div>
    <div className="dashboard-column">
     <div className="card pro-card knowledge-card"><div className="card-heading"><div><div className="card-eyebrow">BASE PDF CONCURSO EDU</div><h2>Seu ambiente de preparação</h2><p>Conteúdo centralizado e pronto para prática.</p></div><div className="card-icon-soft"><Database size={23}/></div></div><div className="knowledge-number"><strong>{publishedQuestions}</strong><span>questões publicadas</span></div><div className="source-list pro-source-list"><button onClick={()=>navigate("/questoes")}><div className="source-index">01</div><div><strong>Banco de Questões</strong><span>{uniqueDisciplines} disciplinas integradas</span></div><ArrowRight size={17}/></button><button onClick={()=>navigate("/biblioteca")}><div className="source-index">02</div><div><strong>Biblioteca</strong><span>{LIBRARY_MATERIALS.length} materiais cadastrados</span></div><ArrowRight size={17}/></button><button onClick={()=>navigate("/desempenho")}><div className="source-index">03</div><div><strong>Motor de Análise</strong><span>{totalAnswered} respostas no histórico</span></div><ArrowRight size={17}/></button></div></div>
-    <div className="card pro-card audit-card"><div className="audit-status"><div className="audit-icon"><ShieldCheck size={21}/></div><div><span>QUALIDADE DO BANCO</span><strong>{reviewCount?`${reviewCount} itens em revisão`:`Base auditada`}</strong><small>{publishedQuestions} questões liberadas para estudo e simulado</small></div></div><div className="audit-meta"><span>{duplicateCount} repetidas bloqueadas</span><span>{analyzedCount} registros analisados</span></div></div>
+    <div className="card pro-card audit-card"><div className="audit-status"><div className="audit-icon"><ShieldCheck size={21}/></div><div><span>QUALIDADE DO BANCO</span><strong>{reviewCount?`${reviewCount} itens em revisão`:`Base auditada`}</strong><small>{publishedQuestions} questões liberadas para estudo e simulado</small></div></div><div className="audit-meta"><span>{duplicateCount} repetidas bloqueadas</span><span>{reviewCount} em quarentena</span><span>{analyzedCount} analisados</span><span>{qualityPct}% liberados</span></div></div>
    </div>
   </div>
  </section>
