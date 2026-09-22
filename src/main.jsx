@@ -6,6 +6,7 @@ import { AuthProvider } from "./context/AuthContext";
 import "./styles/global.css";
 import "./styles/uiRefinement.css";
 import "./styles/questionSelector.css";
+import "./styles/questionAudit.css";
 import "./styles/mobileFix.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
