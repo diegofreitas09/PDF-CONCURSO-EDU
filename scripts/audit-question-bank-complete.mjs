@@ -7,7 +7,7 @@ const issueCounts=new Map();
 const rows=[];
 const add=(q,type,severity,detail="")=>{
   sev[severity]=(sev[severity]||0)+1;
-  issueCounts.set(type,(issueCounts.get(type)||0)+1);
+  issueCounts.set(type,(issueCounts.get(type)||0)+1;
   rows.push({id:q.id,legacyId:q.legacyId||q.originalId||"",discipline:q.discipline||"",topic:q.topic||"",source:q.source||"",type,severity,detail});
 };
 const hasMedia=m=>!!m&&(Array.isArray(m)?m.some(hasMedia):typeof m==="string"?!!clean(m):typeof m==="object"&&Object.values(m).some(v=>Array.isArray(v)?v.length:typeof v==="object"?v&&Object.keys(v).length:!!clean(v)));
@@ -49,8 +49,10 @@ for(const q of REGISTERED_QUESTIONS){
   if(badChars.test(s+" "+ctx+" "+opts.join(" "))) add(q,"invalid-control-or-replacement-char","critical");
   if(splitWord.test(s+" "+ctx+" "+opts.join(" "))) add(q,"ocr-split-word","warning");
   if(suspiciousDangling.test(s)&&!validOpenStem.test(s)) add(q,"command-structure-suspicious","warning",s.slice(-90));
-  const opens=(s.match(/[([{]/g)||[]).length, closes=(s.match(/[)\\]}]/g)||[]).length;
-  if(opens!==closes) add(q,"unbalanced-delimiters","critical",`abre ${opens} / fecha ${closes}`);
+  // Delimitadores simples são apenas heurística: OCR, citações e notação matemática geram falsos positivos.
+  // Só sinalizamos como alerta para revisão; nunca derrubamos a catraca sem confirmação por outra evidência.
+  const opens=(s.match(/[([{]/g)||[]).length, closes=(s.match(/[)\]}]/g)||[]).length;
+  if(opens!==closes) add(q,"unbalanced-delimiters","warning",`abre ${opens} / fecha ${closes}`);
   if(s.length<18) add(q,"statement-too-short","warning",String(s.length));
   if(!commandCue.test(s) && !/[?!.:]$/.test(s) && !validOpenStem.test(s)) add(q,"command-structure-suspicious","warning",s.slice(-100));
   if(opts.some(o=>/^\s*[A-D][).:-]\s*/i.test(o))) add(q,"option-has-embedded-label","warning");
