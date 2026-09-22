@@ -27,10 +27,17 @@ for(const q of REGISTERED_QUESTIONS){
   const opts=Array.isArray(q.options)?q.options.map(clean):[];
   const exp=clean(q.explanation||q.commentary||q.comment||q.resolution);
   if(!s) add(q,"statement-empty","critical");
-  if(opts.length!==4) add(q,"options-not-four","critical",String(opts.length));
+  const uece=/UECE/i.test([q.id,q.legacyId,q.source,q.origin].filter(Boolean).join(" "));
+  if(uece&&opts.length!==4) add(q,"uece-options-not-four","critical",String(opts.length));
+  else if(!uece&&![4,5].includes(opts.length)) add(q,"nonstandard-option-count","warning",String(opts.length));
   if(opts.some(x=>!x)) add(q,"option-empty","critical");
   if(new Set(opts.map(x=>x.toLocaleLowerCase("pt-BR"))).size!==opts.length) add(q,"options-duplicate","critical");
   if(!Number.isInteger(q.answer)||q.answer<0||q.answer>=opts.length) add(q,"answer-invalid","critical",String(q.answer));
+  const keyMatch=exp.match(/gabarito(?: oficial)?(?: da apostila)?\s*:?\s*([A-D])/i);
+  if(keyMatch&&Number.isInteger(q.answer)){
+    const expected=String.fromCharCode(65+q.answer);
+    if(keyMatch[1].toUpperCase()!==expected) add(q,"answer-key-comment-mismatch","critical",`answer=${expected}, comentário=${keyMatch[1].toUpperCase()}`);
+  }
   if(!clean(q.discipline)||!clean(q.topic)) add(q,"classification-missing","critical");
   if(/UECE/i.test([q.id,q.source,q.origin].filter(Boolean).join(" "))&&!clean(q.source||q.origin)) add(q,"origin-missing","critical");
   if(textRef.test(s)&&!ctx) add(q,"context-reference-without-context","critical");
@@ -40,9 +47,11 @@ for(const q of REGISTERED_QUESTIONS){
   if(leakedOptions.test(s)) add(q,"options-leaked-into-statement","critical");
   if(badChars.test(s+" "+ctx+" "+opts.join(" "))) add(q,"invalid-control-or-replacement-char","critical");
   if(splitWord.test(s+" "+ctx+" "+opts.join(" "))) add(q,"ocr-split-word","warning");
-  if(danglingCommand.test(s)) add(q,"command-truncated","critical",s.slice(-90));
+  if(suspiciousDangling.test(s)&&!validOpenStem.test(s)) add(q,"command-structure-suspicious","warning",s.slice(-90));
+  const opens=(s.match(/[([{]/g)||[]).length, closes=(s.match(/[)\\]}]/g)||[]).length;
+  if(opens!==closes) add(q,"unbalanced-delimiters","critical",`abre ${opens} / fecha ${closes}`);
   if(s.length<18) add(q,"statement-too-short","warning",String(s.length));
-  if(!commandCue.test(s) && !/[?!.:]$/.test(s)) add(q,"command-structure-suspicious","warning",s.slice(-100));
+  if(!commandCue.test(s) && !/[?!.:]$/.test(s) && !validOpenStem.test(s)) add(q,"command-structure-suspicious","warning",s.slice(-100));
   if(opts.some(o=>/^\s*[A-D][).:-]\s*/i.test(o))) add(q,"option-has-embedded-label","warning");
   if(!exp) add(q,"comment-missing","critical");
   else {
