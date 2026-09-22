@@ -1,0 +1,27 @@
+name: Auditoria integral da plataforma
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "src/pages/**"
+      - "src/components/**"
+      - "src/utils/**"
+      - "src/styles/**"
+      - "src/routes/**"
+      - "scripts/verificar_integracao_plataforma.mjs"
+      - ".github/workflows/audit-platform.yml"
+  workflow_dispatch:
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm install
+      - name: Auditar seletores, integrações e indicadores
+        run: node scripts/verificar_integracao_plataforma.mjs
+      - name: Validar build completo
+        run: npm run build
