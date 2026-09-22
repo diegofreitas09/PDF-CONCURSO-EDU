@@ -127,6 +127,9 @@ jobs:
       - name: Auditar lote UECE Historia 376-475
         run: node scripts/verificar_uece_lote_15.mjs
 
+      - name: Auditar seletores e indicadores
+        run: node scripts/verificar_integracao_plataforma.mjs
+
       - name: Build
         run: npm run build
 
