@@ -45,3 +45,9 @@
 .omr-item.review{border-color:#d49b18!important}
 .omr-item.correct small{color:#14a364;font-weight:900}.omr-item.wrong small{color:#d12b3a;font-weight:900}.omr-item.review small{color:#d49b18;font-weight:900}
 @media(max-width:700px){.omr-actions{display:grid}.omr-actions .sim-download{width:100%}.omr-live{min-height:240px}.omr-scoreboard{grid-template-columns:repeat(2,minmax(0,1fr))}.omr-scoreboard .percent{grid-column:1/3}.omr-guide span{max-width:85%;white-space:normal;text-align:center}.omr-video{min-height:360px}}
+
+.sim-uece-language{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:0 0 14px;padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--surface-2)}
+.sim-uece-language label{display:grid;gap:6px;min-width:280px}.sim-uece-language label span{font-size:12px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+.sim-uece-language select{min-height:42px;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);padding:0 10px;font-weight:800}
+.sim-uece-language small{color:var(--muted);line-height:1.45;max-width:520px}
+@media(max-width:700px){.sim-uece-language{align-items:stretch;flex-direction:column}.sim-uece-language label{min-width:0}}
